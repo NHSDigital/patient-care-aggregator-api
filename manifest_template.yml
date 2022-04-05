@@ -12,8 +12,8 @@ APIGEE_ENVIRONMENTS:
   #   display_name: Internal QA Sandbox
   # - name: ref
   #   display_name: Reference
-  # - name: sandbox
-  #   display_name: Sandbox
+  - name: sandbox
+    display_name: Sandbox
 # Enable int environment when ready by uncommenting:
   - name: int
     display_name: Integration Testing
