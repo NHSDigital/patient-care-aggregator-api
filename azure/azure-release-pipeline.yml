@@ -32,15 +32,15 @@ extends:
     service_base_path: ${{ variables.service_base_path }} 
     apigee_deployments:
       - environment: internal-dev
-        post_deploy:
-          - template: ./templates/run-smoke-tests.yml
+        # post_deploy:
+        #   - template: ./templates/run-smoke-tests.yml
       - environment: sandbox
         proxy_path: sandbox
-        post_deploy:
-         - template: ./templates/run-smoke-tests.yml
+        # post_deploy:
+        #  - template: ./templates/run-smoke-tests.yml
       - environment: int
         depends_on:
           - internal_qa
           - internal_qa_sandbox
-        post_deploy:
-          - template: ./templates/run-smoke-tests.yml
+        # post_deploy:
+        #   - template: ./templates/run-smoke-tests.yml
