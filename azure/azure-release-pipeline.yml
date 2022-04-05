@@ -32,12 +32,26 @@ extends:
     service_base_path: ${{ variables.service_base_path }} 
     apigee_deployments:
       - environment: internal-dev
-        # post_deploy:
-        #   - template: ./templates/run-smoke-tests.yml
+        post_deploy:
+          - template: ./templates/run-smoke-tests.yml
+      - environment: internal-qa
+        # make_spec_visible: true
+    #    post_deploy:
+    #      - template: ./templates/run-smoke-tests.yml
+    #  - environment: internal-qa-sandbox
+    #    proxy_path: sandbox
+    #    make_spec_visible: true
+    #    post_deploy:
+    #      - template: ./templates/run-smoke-tests.yml
+    # make_spec_visible is false for sandbox environment
+    # (App subscription make sense for most sandbox implementations)
       - environment: sandbox
         proxy_path: sandbox
-        # post_deploy:
-        #  - template: ./templates/run-smoke-tests.yml
+    #    post_deploy:
+    #      - template: ./templates/run-smoke-tests.yml
+    # Enable int environment when ready by uncommenting:
       - environment: int
-        # post_deploy:
-        #   - template: ./templates/run-smoke-tests.yml
+        depends_on:
+          - internal_qa
+        post_deploy:
+          - template: ./templates/run-smoke-tests.yml
