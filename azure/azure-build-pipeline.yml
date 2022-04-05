@@ -22,7 +22,6 @@ resources:
       name: NHSDigital/api-management-utils
       ref: refs/heads/edge
       endpoint: NHSDigital
-
 variables:
   - template: project.yml
 extends:
