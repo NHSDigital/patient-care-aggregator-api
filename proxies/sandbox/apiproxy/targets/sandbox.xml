@@ -15,6 +15,11 @@
         </Response>
     </PreFlow>
     <HTTPTargetConnection>
-      {{ HOSTED_TARGET_CONNECTION }}
+      <SSLInfo>
+        <Enabled>true</Enabled>
+      </SSLInfo>
+      <LoadBalancer>
+        <Server name="patient-care-aggregator-api" />
+      </LoadBalancer>
     </HTTPTargetConnection>
 </TargetEndpoint>
