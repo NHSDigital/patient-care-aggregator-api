@@ -73,12 +73,10 @@ def access_token(environment, client_id, client_secret, redirect_uri, mock_usern
             assert form.tag == "form"
             input_elems = [item for item in form if item.tag == "input"]
             state = dict(input_elems[0].items())["value"]
-    
+
             # TODO make this configurable
             simulated_auth_url = f"https://{environment}.api.service.nhs.uk/mock-nhsid-jwks/simulated_auth"
-            resp2 = SESSION.post(
-                simulated_auth_url, data={"state": state}
-            )
+            resp2 = SESSION.post(simulated_auth_url, data={"state": state})
 
     if "herokuapp" in redirect_uri:
         # Then the herokuapp has done the POST and so we don't need to
@@ -200,7 +198,6 @@ if __name__ == "__main__":
     #     headers={"Authorization": f"Bearer {data['access_token']}", "foo": "bar"},
     # )
 
-
     # for _id in ["9449305552",
     #             "9449306621",
     #             "9449306613",
@@ -221,7 +218,7 @@ if __name__ == "__main__":
     #             "9449306052",
     #             "9449306044",
     #             "9449306036"]:
-    
+
     #     test_resp = SESSION.get(
     #         f"https://int.api.service.nhs.uk/personal-demographics/FHIR/R4/Patient/{_id}",
     #         params={
@@ -229,11 +226,10 @@ if __name__ == "__main__":
     #         headers={"Authorization": f"Bearer {data['access_token']}",
     #                  "foo": "bar",
     #                  "X-Request-ID": str(uuid.uuid4())
-                     
+
     #                  },
     #     )
 
     #     print(test_resp)
     #     with open(f"{_id}.json", "w") as f:
     #         f.write(test_resp.content.decode())
-            
