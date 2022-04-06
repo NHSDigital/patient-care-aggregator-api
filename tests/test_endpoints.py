@@ -1,5 +1,5 @@
 import pytest
-from api_test_utils.oauth_helper import OauthHelper
+# from api_test_utils.oauth_helper import OauthHelper
 from api_test_utils.apigee_api_apps import ApigeeApiDeveloperApps
 from api_test_utils.apigee_api_products import ApigeeApiProducts
 import uuid
@@ -9,6 +9,8 @@ import requests
 from .configuration import config
 
 SESSION = requests.Session()
+
+
 class TestEndpoints:
     @pytest.fixture()
     def app(self):
@@ -59,12 +61,11 @@ class TestEndpoints:
     #     await app.destroy_app()
     #     await product.destroy_product()
 
-
     @pytest.fixture()
     async def get_token(self):
         """Call identity server to get an access token"""
         # Create and sign mock id_token
-        id_token_private_key = config.ENV['id_token_private_key']
+        id_token_private_key = config.ENV["id_token_private_key"]
         with open(id_token_private_key, "r") as f:
             id_token_private_key = f.read()
         headers = {
@@ -81,7 +82,7 @@ class TestEndpoints:
         claims = {
             "sub": "49f470a1-cc52-49b7-beba-0f9cec937c46",
             "birthdate": "1968-02-12",
-            "nhs_number": "9912003072", # you can change this nhs-number as required :) 
+            "nhs_number": "9912003072",  # you can change this nhs-number as required :)
             "iss": "https://internal-dev.api.service.nhs.uk",
             "vtm": "https://auth.sandpit.signin.nhs.uk/trustmark/auth.sandpit.signin.nhs.uk",
             "aud": "some-client-id",
@@ -97,20 +98,17 @@ class TestEndpoints:
             "jti": "8edabe2b-c7ff-40bd-bc7f-0b8dc6a52423",
         }
         id_token_jwt = jwt.encode(
-            claims,
-            id_token_private_key,
-            headers=headers,
-            algorithm="RS512",
+            claims, id_token_private_key, headers=headers, algorithm="RS512"
         )
 
         # Create jwt for client assertion (APIM-authentication)
-        client_assertion_private_key = config.ENV['client_assertion_private_key']
+        client_assertion_private_key = config.ENV["client_assertion_private_key"]
         with open(client_assertion_private_key, "r") as f:
             private_key = f.read()
         url = "https://internal-dev.api.service.nhs.uk/oauth2/token"
         print(url)
         claims = {
-            "sub": "GZGJb7VC02GHC91qlaycTn5i7QHPVbsJ", #TODO:save this on secrets manager or create app on the fly
+            "sub": "GZGJb7VC02GHC91qlaycTn5i7QHPVbsJ",  # TODO:save this on secrets manager or create app on the fly
             "iss": "GZGJb7VC02GHC91qlaycTn5i7QHPVbsJ",
             "jti": str(uuid.uuid4()),
             "aud": url,
@@ -134,8 +132,8 @@ class TestEndpoints:
                 "client_assertion": client_assertion,
             },
         )
-        
-        return resp.json()['access_token']
+
+        return resp.json()["access_token"]
 
     def test_happy_path(self, get_token):
         # Given I have a token
@@ -143,9 +141,7 @@ class TestEndpoints:
         expected_status_code = 200
         proxy_url = f"https://internal-dev.api.service.nhs.uk/{config.ENV['base_path']}/aggregator/status"
         # When calling the proxy
-        headers = {
-            "Authorization" : f"Bearer {token}"
-        }
+        headers = {"Authorization": f"Bearer {token}"}
         resp = SESSION.get(url=proxy_url, headers=headers)
         # Then
         assert resp.status_code == expected_status_code
