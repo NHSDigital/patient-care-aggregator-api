@@ -27,7 +27,7 @@ steps:
 
       if [[ $APIGEE_ENVIRONMENT == "internal-dev" ]]
       then
-        poetry run pytest -v --junitxml=tests/api_tests.xml
+        poetry run pytest -v -s 
       else
         make smoketest
       fi
