@@ -2,4 +2,3 @@ variables:
   service_name: patient-care-aggregator-api
   short_service_name: pcaa
   service_base_path: patient-care-aggregator-api
-
