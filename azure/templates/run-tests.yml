@@ -30,8 +30,9 @@ steps:
         poetry run pytest -v --junitxml=tests/api_tests.xml
       else
         make smoketest
+      fi
     workingDirectory: $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
-    displayName: run smoketests
+    displayName: run tests
 
   - task: PublishTestResults@2
     displayName: 'Publish smoketest results'
