@@ -12,34 +12,12 @@ SESSION = requests.Session()
 
 
 class TestEndpoints:
-    @pytest.fixture()
-    def app(self):
-        """
-        Import the test utils module to be able to:
-            - Create apigee test application
-                - Update custom attributes
-                - Update custom ratelimits
-                - Update products to the test application
-        """
-        return ApigeeApiDeveloperApps()
 
     @pytest.fixture()
-    def product(self):
+    async def test_app_and_product(self):
+        """Create a fresh test app and product consuming the patient-care-agregator-api proxy
+        The app and products are destroyed at the end of the test
         """
-        Import the test utils module to be able to:
-            - Create apigee test product
-                - Update custom scopes
-                - Update environments
-                - Update product paths
-                - Update custom attributes
-                - Update proxies to the product
-                - Update custom ratelimits
-        """
-        return ApigeeApiProducts()
-
-    @pytest.fixture()
-    async def test_app_and_product(self, app, product):
-        """Create a test app and product which can be modified in the test"""
         print("\nCreating Default App and Product..")
         apigee_product = ApigeeApiProducts()
         await apigee_product.create_new_product()
@@ -170,7 +148,7 @@ class TestEndpoints:
                 "client_assertion": client_assertion,
             },
         )
-        print(resp.json())
+
         return resp.json()["access_token"]
 
     def test_happy_path(self, get_token):
