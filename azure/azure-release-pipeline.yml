@@ -33,11 +33,11 @@ extends:
     apigee_deployments:
       - environment: internal-dev
         post_deploy:
-          - template: ./templates/run-smoke-tests.yml
+          - template: ./templates/run-tests.yml
       - environment: internal-qa
         # make_spec_visible: true
-    #    post_deploy:
-    #      - template: ./templates/run-smoke-tests.yml
+        post_deploy:
+          - template: ./templates/run-tests.yml
     #  - environment: internal-qa-sandbox
     #    proxy_path: sandbox
     #    make_spec_visible: true
@@ -47,11 +47,11 @@ extends:
     # (App subscription make sense for most sandbox implementations)
       - environment: sandbox
         proxy_path: sandbox
-    #    post_deploy:
-    #      - template: ./templates/run-smoke-tests.yml
+        post_deploy:
+          - template: ./templates/run-tests.yml
     # Enable int environment when ready by uncommenting:
       - environment: int
         depends_on:
           - internal_qa
         post_deploy:
-          - template: ./templates/run-smoke-tests.yml
+          - template: ./templates/run-tests.yml
