@@ -1,5 +1,5 @@
 SERVICE_NAME: patient-care-aggregator-api
-PRODUCT_DISPLAY_NAME: patient-care-aggregator-api
+PRODUCT_DISPLAY_NAME: Patient Care Aggregator
 DESCRIPTION: example description
 APIGEE_ENVIRONMENTS:
   - name: internal-dev
@@ -61,6 +61,9 @@ apigee:
         proxies:
           - {{ NAME }}
           - identity-service-{{ ENV.name }}
+{% if ENV.name == 'int' %}
+          - identity-service-{{ ENV.name }}-no-smartcard
+{% endif %}
         scopes:
           - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
     specs:
