@@ -14,7 +14,7 @@ APIGEE_ENVIRONMENTS:
   #   display_name: Reference
   - name: sandbox
     display_name: Sandbox
-# Enable int environment when ready by uncommenting:
+    portal_visibility: false
   - name: int
     display_name: Integration Testing
 ---
@@ -72,6 +72,6 @@ apigee:
         description: {{ DESCRIPTION }}
         requireCallbackUrl: false
         title: {{ TITLE }}
-        visibility: false
+        visibility: {{ ENV.portal_visibility | default(true) }}
         specId: {{ NAME }}
 {% endfor %}
