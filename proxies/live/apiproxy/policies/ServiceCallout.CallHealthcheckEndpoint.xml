@@ -11,7 +11,7 @@
             <Enabled>true</Enabled>
         </SSLInfo>
         <LoadBalancer>
-            <Server name="patient-care-aggregator-api" />
+            <Server name="{{ PCA_TARGET_SERVER | default('patient-care-aggregator-api') }}" />
         </LoadBalancer>
         <Path>/aggregator/status</Path>
     </HTTPTargetConnection>

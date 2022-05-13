@@ -36,6 +36,13 @@ extends:
       - environment: internal-dev
         post_deploy:
           - template: ./templates/run-tests.yml
+      - environment: internal-dev
+        stage_name: internal-dev-alpha
+        service_name: "${{ variables.service_name }}-alpha"
+        short_service_name: "${{ variables.short_service_name }}-alpha"
+        service_base_path: "${{ variables.service_base_path }}-alpha"
+        jinja_templates:
+          PCA_TARGET_SERVER: patient-care-aggregator-api-alpha 
       - environment: internal-dev-sandbox
         proxy_path: sandbox
         post_deploy:
