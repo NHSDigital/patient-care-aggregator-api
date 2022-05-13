@@ -69,6 +69,17 @@ apigee:
           - identity-service-{{ ENV.name }}
         scopes:
           - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
+    specs:
+      - name: {{ NAME }}
+        path: {{ SERVICE_NAME }}.json
+    api_catalog:
+      - edgeAPIProductName: {{ NAME }}
+        anonAllowed: true
+        description: {{ DESCRIPTION }}
+        requireCallbackUrl: false
+        title: {{ TITLE }}
+        visibility: {{ ENV.portal_visibility | default(true) }}
+        specId: {{ NAME }}
 {% endfor %}
 {% else %}
   - name: {{ ENV.name }}
