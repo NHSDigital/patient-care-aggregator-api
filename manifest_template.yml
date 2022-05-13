@@ -17,6 +17,9 @@ APIGEE_ENVIRONMENTS:
     portal_visibility: false
   - name: int
     display_name: Integration Testing
+
+INTERNAL_DEV_VARIANTS:
+    - name: alpha
 ---
 meta:
   api:
@@ -30,9 +33,11 @@ apigee:
 {% for ENV in APIGEE_ENVIRONMENTS %}
 {% set TITLE = PRODUCT_DISPLAY_NAME + ' (' + ENV.display_name + ' Environment)' %}
 {% set NAME = SERVICE_NAME + '-' + ENV.name %}
+{% if ENV.name == 'internal-dev' %}
   - name: {{ ENV.name }}
     products:
-      - name: {{ NAME }}
+{% for VARIANT in INTERNAL_DEV_VARIANTS %}
+      - name: {{ SERVICE_NAME }}-{{ VARIANT.service | default(VARIANT.name) }}-{{ ENV.name }}
         approvalType: auto
         attributes:
           - name: access
@@ -60,6 +65,7 @@ apigee:
         environments: [ {{ ENV.name }} ]
         proxies:
           - {{ NAME }}
+          - {{ SERVICE_NAME }}-{{ VARIANT.service | default(VARIANT.name) }}-{{ ENV.name }}
           - identity-service-{{ ENV.name }}
 {% if ENV.name == 'int' %}
           - identity-service-{{ ENV.name }}-no-smartcard
