@@ -115,6 +115,9 @@ apigee:
 {% if ENV.name == 'int' %}
           - identity-service-{{ ENV.name }}-no-smartcard
 {% endif %}
+{% if ENV.name == 'internal-qa' %}
+          - identity-service-internal-qa-int
+{% endif %}
         scopes:
           - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
     specs:
