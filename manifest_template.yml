@@ -65,6 +65,7 @@ apigee:
         proxies:
           - {{ NAME }}
           - {{ SERVICE_NAME }}-alpha-{{ ENV.name }}
+          - {{ SERVICE_NAME }}-nft-{{ ENV.name }}
           - identity-service-{{ ENV.name }}
         scopes:
           - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'

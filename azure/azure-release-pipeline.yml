@@ -41,6 +41,13 @@ extends:
         service_base_path: "${{ variables.service_base_path }}-alpha"
         jinja_templates:
           PCA_TARGET_SERVER: patient-care-aggregator-api-alpha
+      - environment: internal-dev
+        stage_name: internal-dev-nft
+        service_name: "${{ variables.service_name }}-nft"
+        short_service_name: "${{ variables.short_service_name }}-nft"
+        service_base_path: "${{ variables.service_base_path }}-nft"
+        jinja_templates:
+          PCA_TARGET_SERVER: patient-care-aggregator-api-nft           
       - environment: internal-qa
         # make_spec_visible: true
         post_deploy:
