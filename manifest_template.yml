@@ -19,15 +19,9 @@ APIGEE_ENVIRONMENTS:
     display_name: Integration Testing
 
 INTERNAL_DEV_VARIANTS:
-    - name: {{ SERVICE_NAME }}-{{ ENV.name }}
-      title:  PRODUCT_DISPLAY_NAME + ' (' + ENV.display_name + ' Environment)
-      description: 'Patient Care Aggregator Internal Development Environment'
-    - name: {{ SERVICE_NAME }}-alpha-{{ ENV.name }}
-      title:  PRODUCT_DISPLAY_NAME + ' (' + ENV.display_name + ' Alpha Environment)
-      description: 'Patient Care Aggregator Alpha Environment (e-RS integration testing)'
-    - name: {{ SERVICE_NAME }}-nft-{{ ENV.name }}
-      title:  PRODUCT_DISPLAY_NAME + ' (' + ENV.display_name + ' NFT Environment)
-      description: 'Patient Care Aggregator NFT Environment'
+    - name: internal-dev
+    - name: alpha-internal-dev
+    - name: nft-internal-dev
 ---
 meta:
   api:
@@ -45,14 +39,15 @@ apigee:
     - name: internal-dev
       products:
       {% for VARIANT in INTERNAL_DEV_VARIANTS %}
-        - name: {{ VARIANT.name }}
+        {% set PRODUCT_NAME = SERVICE_NAME + '-' + VARIANT.name %}
+        - name: {{ PRODUCT_NAME }}
           approvalType: auto
           attributes:
             - name: access
               value: public
             - name: ratelimiting
               value:
-                {{ VARIANT.name }}:
+                 {{ PRODUCT_NAME }}:
                   quota:
                     enabled: true
                     limit: 6000
@@ -66,8 +61,8 @@ apigee:
                     enabled: false
                   spikeArrest:
                     enabled: false
-          description: {{ VARIANT.description }}
-          displayName: {{ VARIANT.title }}
+          description: {{ DESCRIPTION }}
+          displayName: {{ TITLE }} ({{ ENV.display_name}} - {{ VARIANT.name }})
           environments: [ internal-dev ]
           proxies:
             - {{ VARIANT.name }}
