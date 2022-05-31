@@ -33,13 +33,13 @@ meta:
 apigee:
   environments:
 {% for ENV in APIGEE_ENVIRONMENTS %}
-  {% set TITLE = PRODUCT_DISPLAY_NAME + ' (' + ENV.display_name + ' Environment)' %}
-  {% set NAME = SERVICE_NAME + '-' + ENV.name %}
-  {% if ENV.name == 'internal-dev' %}
+{% set TITLE = PRODUCT_DISPLAY_NAME + ' (' + ENV.display_name + ' Environment)' %}
+{% set NAME = SERVICE_NAME + '-' + ENV.name %}
+{% if ENV.name == 'internal-dev' %}
     - name: internal-dev
       products:
-      {% for VARIANT in INTERNAL_DEV_VARIANTS %}
-        {% set PRODUCT_NAME = SERVICE_NAME + '-' + VARIANT.name %}
+{% for VARIANT in INTERNAL_DEV_VARIANTS %}
+{% set PRODUCT_NAME = SERVICE_NAME + '-' + VARIANT.name %}
         - name: {{ PRODUCT_NAME }}
           approvalType: auto
           attributes:
@@ -69,7 +69,7 @@ apigee:
             - identity-service-internal-dev
           scopes:
             - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
-      {% endfor %}
+{% endfor %}
       specs:
         - name: {{ NAME }}
           path: {{ SERVICE_NAME }}.json
@@ -81,7 +81,7 @@ apigee:
           title: {{ TITLE }}
           visibility: {{ ENV.portal_visibility | default(true) }}
           specId: {{ NAME }}
-  {% else %}
+{% else %}
     - name: {{ ENV.name }}
       products:
         - name: {{ NAME }}
@@ -113,12 +113,12 @@ apigee:
           proxies:
             - {{ NAME }}
             - identity-service-{{ ENV.name }}
-          {% if ENV.name == 'int' %}
+{% if ENV.name == 'int' %}
             - identity-service-{{ ENV.name }}-no-smartcard
-          {% endif %}
-          {% if ENV.name == 'internal-qa' %}
+{% endif %}
+{% if ENV.name == 'internal-qa' %}
             - identity-service-internal-qa-int
-          {% endif %}
+{% endif %}
           scopes:
             - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
       specs:
@@ -132,6 +132,6 @@ apigee:
           title: {{ TITLE }}
           visibility: {{ ENV.portal_visibility | default(true) }}
           specId: {{ NAME }}
-  {% endif %}
+{% endif %}
 {% endfor %}
 
