@@ -19,7 +19,9 @@ APIGEE_ENVIRONMENTS:
     display_name: Integration Testing
 
 INTERNAL_DEV_VARIANTS:
-    - name: alpha
+    - name: internal-dev
+    - name: alpha-internal-dev
+    - name: nft-internal-dev
 ---
 meta:
   api:
@@ -34,103 +36,102 @@ apigee:
 {% set TITLE = PRODUCT_DISPLAY_NAME + ' (' + ENV.display_name + ' Environment)' %}
 {% set NAME = SERVICE_NAME + '-' + ENV.name %}
 {% if ENV.name == 'internal-dev' %}
-  - name: {{ ENV.name }}
-    products:
-      - name: {{ NAME }}
-        approvalType: auto
-        attributes:
-          - name: access
-            value: public
-            # For a parameterised example of rate limiting per environment,
-            # see https://github.com/NHSDigital/personal-demographics-service-api/blob/master/manifest_template.yml
-          - name: ratelimiting
-            value:
-              {{ NAME }}:
-                quota:
-                  enabled: true
-                  limit: 6000
-                  interval: 1
-                  timeunit: minute
-                spikeArrest:
-                  enabled: true
-                  ratelimit: 6000pm # 100 requests per second
-              app:
-                quota:
-                  enabled: false
-                spikeArrest:
-                  enabled: false
-        description: {{ DESCRIPTION }}
-        displayName: {{ TITLE }}
-        environments: [ {{ ENV.name }} ]
-        proxies:
-          - {{ NAME }}
-          - {{ SERVICE_NAME }}-alpha-{{ ENV.name }}
-          - {{ SERVICE_NAME }}-nft-{{ ENV.name }}
-          - identity-service-{{ ENV.name }}
-        scopes:
-          - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
-    specs:
-      - name: {{ NAME }}
-        path: {{ SERVICE_NAME }}.json
-    api_catalog:
-      - edgeAPIProductName: {{ NAME }}
-        anonAllowed: true
-        description: {{ DESCRIPTION }}
-        requireCallbackUrl: false
-        title: {{ TITLE }}
-        visibility: {{ ENV.portal_visibility | default(true) }}
-        specId: {{ NAME }}
+    - name: internal-dev
+      products:
+{% for VARIANT in INTERNAL_DEV_VARIANTS %}
+{% set PRODUCT_NAME = SERVICE_NAME + '-' + VARIANT.name %}
+        - name: {{ PRODUCT_NAME }}
+          approvalType: auto
+          attributes:
+            - name: access
+              value: public
+            - name: ratelimiting
+              value:
+                 {{ PRODUCT_NAME }}:
+                  quota:
+                    enabled: true
+                    limit: 6000
+                    interval: 1
+                    timeunit: minute
+                  spikeArrest:
+                    enabled: true
+                    ratelimit: 6000pm # 100 requests per second
+                app:
+                  quota:
+                    enabled: false
+                  spikeArrest:
+                    enabled: false
+          description: {{ DESCRIPTION }}
+          displayName: {{ TITLE }} ({{ ENV.display_name}} - {{ VARIANT.name }})
+          environments: [ internal-dev ]
+          proxies:
+            - {{ VARIANT.name }}
+            - identity-service-internal-dev
+          scopes:
+            - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
+{% endfor %}
+      specs:
+        - name: {{ NAME }}
+          path: {{ SERVICE_NAME }}.json
+      api_catalog:
+        - edgeAPIProductName: {{ NAME }}
+          anonAllowed: true
+          description: {{ DESCRIPTION }}
+          requireCallbackUrl: false
+          title: {{ TITLE }}
+          visibility: {{ ENV.portal_visibility | default(true) }}
+          specId: {{ NAME }}
 {% else %}
-  - name: {{ ENV.name }}
-    products:
-      - name: {{ NAME }}
-        approvalType: auto
-        attributes:
-          - name: access
-            value: public
-            # For a parameterised example of rate limiting per environment,
-            # see https://github.com/NHSDigital/personal-demographics-service-api/blob/master/manifest_template.yml
-          - name: ratelimiting
-            value:
-              {{ NAME }}:
-                quota:
-                  enabled: true
-                  limit: 6000
-                  interval: 1
-                  timeunit: minute
-                spikeArrest:
-                  enabled: true
-                  ratelimit: 6000pm # 10 requests per second
-              app:
-                quota:
-                  enabled: false
-                spikeArrest:
-                  enabled: false
-        description: {{ DESCRIPTION }}
-        displayName: {{ TITLE }}
-        environments: [ {{ ENV.name }} ]
-        proxies:
-          - {{ NAME }}
-          - identity-service-{{ ENV.name }}
+    - name: {{ ENV.name }}
+      products:
+        - name: {{ NAME }}
+          approvalType: auto
+          attributes:
+            - name: access
+              value: public
+              # For a parameterised example of rate limiting per environment,
+              # see https://github.com/NHSDigital/personal-demographics-service-api/blob/master/manifest_template.yml
+            - name: ratelimiting
+              value:
+                {{ NAME }}:
+                  quota:
+                    enabled: true
+                    limit: 6000
+                    interval: 1
+                    timeunit: minute
+                  spikeArrest:
+                    enabled: true
+                    ratelimit: 6000pm # 10 requests per second
+                app:
+                  quota:
+                    enabled: false
+                  spikeArrest:
+                    enabled: false
+          description: {{ DESCRIPTION }}
+          displayName: {{ TITLE }}
+          environments: [ {{ ENV.name }} ]
+          proxies:
+            - {{ NAME }}
+            - identity-service-{{ ENV.name }}
 {% if ENV.name == 'int' %}
-          - identity-service-{{ ENV.name }}-no-smartcard
+            - identity-service-{{ ENV.name }}-no-smartcard
 {% endif %}
 {% if ENV.name == 'internal-qa' %}
-          - identity-service-internal-qa-int
+            - identity-service-internal-qa-int
 {% endif %}
-        scopes:
-          - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
-    specs:
-      - name: {{ NAME }}
-        path: {{ SERVICE_NAME }}.json
-    api_catalog:
-      - edgeAPIProductName: {{ NAME }}
-        anonAllowed: true
-        description: {{ DESCRIPTION }}
-        requireCallbackUrl: false
-        title: {{ TITLE }}
-        visibility: {{ ENV.portal_visibility | default(true) }}
-        specId: {{ NAME }}
+          scopes:
+            - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
+      specs:
+        - name: {{ NAME }}
+          path: {{ SERVICE_NAME }}.json
+      api_catalog:
+        - edgeAPIProductName: {{ NAME }}
+          anonAllowed: true
+          description: {{ DESCRIPTION }}
+          requireCallbackUrl: false
+          title: {{ TITLE }}
+          visibility: {{ ENV.portal_visibility | default(true) }}
+          specId: {{ NAME }}
 {% endif %}
 {% endfor %}
 
