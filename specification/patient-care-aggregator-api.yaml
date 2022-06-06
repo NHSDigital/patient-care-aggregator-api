@@ -6,7 +6,32 @@ info:
   version: 'Computed and injected at build time by `scripts/set_version.py`'
   description: |
     ## Overview
-    Add a fully fledged description here with markdown syntax.
+    TBC
+    
+    ## Who can use this API
+    TBC
+    
+    ## API status and roadmap
+    TBC
+    
+    ## Service level
+    TBC
+    
+    ## Technology
+    TBC
+    
+    ## Network access
+    TBC
+    
+    ## Security and authorisation
+    TBC
+    
+    ## Environments and testing
+    TBC
+    
+    ## Onboarding
+    TBC
+    
   contact:
     name: 'patient-care-aggregator-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
