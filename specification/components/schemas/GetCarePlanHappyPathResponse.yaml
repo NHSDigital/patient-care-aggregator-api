@@ -18,6 +18,7 @@ properties:
       - "collection"
   entry:
     description: TBC.
+# TBC Confluence says there will always be one CarePlan but what if no care plans are found? What if no Care plans are found but there is an error from one back end?
     type: array
     items:
       type: object
@@ -28,22 +29,22 @@ properties:
       properties:
 # TBC below cut & pasted from Imm Hist - needs changing for this API
         fullUrl:
-          description: URI for the Immunization or Patient resource.
+          description: URI for the TBC resource.
           type: string
           example: "urn:uuid:edea022a-2d81-11eb-adc1-0242ac120001"
         resource:
-          description: The Immunization or Patient resource.
+          description: The TBC resource.
           oneOf:
-            - $ref: Immunization.yaml
-            - $ref: Patient.yaml
+            - $ref: CarePlan.yaml
+            - $ref: OperationOutcome.yaml
         search:
-          description: Search-related information for the Immunization or Patient resource.
+          description: Search-related information for the TBC resource.
           type: object
           required:
             - mode
           properties:
             mode:
-              description: Indicates why this resource is in the result set. For Immunization resources this is always `match` and for Patient resources it is always `include`.
+              description: Indicates why this resource is in the result set. For CarePlan resources this is always `match` and for OperationOutcome resources it is always `include`.
               enum:
                 - match
                 - include
