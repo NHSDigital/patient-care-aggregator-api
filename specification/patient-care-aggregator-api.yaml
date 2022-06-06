@@ -34,6 +34,7 @@ info:
     | Production        | Not yet available                                                             |    
 
 # TBC confirm the URLs are correct including the FHIR/R4 bit
+# TBC URL shouldn't have "-api" as a suffix
 
     ### Sandbox testing
     Details TBC.
@@ -128,7 +129,7 @@ paths:
           content:
             application/fhir+json:   
               schema:
-                $ref: "components/schemas/TBC.yaml"
+                $ref: "components/schemas/GetCarePlanHappyPathResponse.yaml"
               example:
                 $ref: "components/examples/TBC.json"            
         '4XX':
