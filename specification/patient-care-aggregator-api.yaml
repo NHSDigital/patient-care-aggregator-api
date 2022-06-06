@@ -2,8 +2,8 @@
 # for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
 openapi: '3.0.0'
 info:
-  title: 'patient-care-aggregator-api'
-  version: 'Computed and injected at build time by `scripts/set_version.py`'
+  title: "Patietn Care Aggregator API"
+  version: "1.0.0"
   description: |
     ## Overview
     Details TBC.
@@ -33,9 +33,6 @@ info:
     | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         |
     | Production        | Not yet available                                                             |    
 
-# TBC confirm the URLs are correct including the FHIR/R4 bit
-# TBC URL shouldn't have "-api" as a suffix
-
     ### Sandbox testing
     Details TBC.
     
@@ -45,6 +42,8 @@ info:
     ## Onboarding
     Details TBC.
     
+# TBC confirm the URLs are correct including the FHIR/R4 bit
+# TBC URL shouldn't have "-api" as a suffix
   contact:
     name: 'patient-care-aggregator-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
