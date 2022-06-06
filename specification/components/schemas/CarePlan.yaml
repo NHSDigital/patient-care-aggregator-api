@@ -1,0 +1,11 @@
+description: TBC.
+type: object
+required:
+  - resourceType
+# TBC others
+properties:
+  resourceType:
+    description: FHIR resource type.
+    type: string
+    enum:
+      - "CarePlan"
