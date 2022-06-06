@@ -6,31 +6,43 @@ info:
   version: 'Computed and injected at build time by `scripts/set_version.py`'
   description: |
     ## Overview
-    TBC
+    Details TBC.
     
     ## Who can use this API
-    TBC
+    Details TBC.
     
     ## API status and roadmap
-    TBC
+    Details TBC.
     
     ## Service level
-    TBC
+    Details TBC.
     
     ## Technology
-    TBC
+    Details TBC.
     
     ## Network access
-    TBC
+    Details TBC.
     
     ## Security and authorisation
-    TBC
+    Details TBC.
     
     ## Environments and testing
-    TBC
+    | Environment       | Base URL                                                                      |
+    | ----------------- | ----------------------------------------------------------------------------- |
+    | Sandbox           | `https://sandbox.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`     |
+    | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         |
+    | Production        | Not yet available                                                             |    
+
+# TBC confirm the URLs are correct including the FHIR/R4 bit
+
+    ### Sandbox testing
+    Details TBC.
+    
+    ### Integration testing
+    Details TBC.
     
     ## Onboarding
-    TBC
+    Details TBC.
     
   contact:
     name: 'patient-care-aggregator-api API Support'
@@ -43,4 +55,90 @@ servers:
     description: Integration test environment.
   - url: 'https://api.service.nhs.uk/patient-care-aggregator-api'
     description: Production environment.
-paths: {}
+paths:
+  /CarePlan:
+    get:
+# TBC check it's actually a GET
+      summary: TBC
+      operationId: TBC
+      description: |
+        TBC.
+      parameters:
+        - name: patient.identifier
+          in: query
+          description: |
+            The patient's NHS number.
+            Expressed as `<type>|<value>` where `<type>` must be `https://fhir.nhs.uk/Id/nhs-number` and `<value>` must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
+          required: true
+          schema:
+            type: string
+            example: "https://fhir.nhs.uk/Id/nhs-number|9000000009"
+        - name: Authorization
+          in: header
+          description: |
+            An OAuth 2.0 bearer token, obtained using our [NHS login pattern](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-separate-authentication-and-authorisation).
+          required: true
+          schema:
+            type: string
+            format: '^Bearer\ [[:ascii:]]+$'
+            example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+        - name: X-Request-ID
+# TBC Confluence page says "Id" but our standard is "ID" - presume not case sensitive
+          in: header
+          required: false
+# TBC Confluence page says required, but our standard is it's optional
+          description: |
+            A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+
+            Must be a universally unique identifier (UUID) (ideally version 4).
+            
+            Mirrored back in a response header.
+            
+            If you re-send a failed request, use the same value in this header.          
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+            example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
+        - name: X-Correlation-ID
+# TBC Confluence page says "Id" but our standard is "ID" - presume not case sensitive
+          in: header
+          required: false
+# TBC Confluence page says required, but our standard is it's optional
+          description: |
+            An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
+            
+            Mirrored back in a response header.
+          schema:
+            type: string
+            example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+        - name: NHSD-Target-Identifier
+          in: header
+          required: true
+          description: |
+            TBC.
+          schema:
+            type: string
+            example: TBC single enum value
+      responses:
+        '200':
+          description: |
+            TBC.
+          headers:
+            TBC
+          content:
+            application/fhir+json:   
+              schema:
+                $ref: "components/schemas/TBC.yaml"
+              example:
+                $ref: "components/examples/TBC.json"            
+        '4XX':
+          description: |
+            TBC.
+          headers:
+            TBC
+          content:
+            application/fhir+json:   
+              schema:
+                $ref: "components/schemas/TBC.yaml"
+              example:
+                $ref: "components/examples/TBC.json"            
