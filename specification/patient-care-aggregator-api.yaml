@@ -2,7 +2,7 @@
 # for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
 openapi: '3.0.0'
 info:
-  title: "Patietn Care Aggregator API"
+  title: "Patient Care Aggregator API"
   version: "1.0.0"
   description: |
     ## Overview
@@ -123,22 +123,22 @@ paths:
         '200':
           description: |
             TBC.
-          headers:
-            TBC
+#          headers:
+#            TBC what response headers are there? I'm expecting at least X-Request-ID and X-Correlation-ID
           content:
             application/fhir+json:   
               schema:
                 $ref: "components/schemas/GetCarePlanHappyPathResponse.yaml"
               example:
-                $ref: "components/examples/TBC.json"            
-        '4XX':
-          description: |
-            TBC.
-          headers:
-            TBC
-          content:
-            application/fhir+json:   
-              schema:
-                $ref: "components/schemas/TBC.yaml"
-              example:
-                $ref: "components/examples/TBC.json"            
+                $ref: "components/examples/GetCarePlanHappyPathResponse.json"            
+#        '4XX':
+#          description: |
+#            TBC.
+#          headers:
+#            TBC what response headers are there? I'm expecting at least X-Request-ID and X-Correlation-ID
+#          content:
+#            application/fhir+json:   
+#              schema:
+#                $ref: "components/schemas/TBC.yaml"
+#              example:
+#                $ref: "components/examples/TBC.json"            
