@@ -1,0 +1,49 @@
+description: FHIR Bundle containing the TBC.
+type: object
+required:
+  - resourceType
+  - type
+  - entry
+# TBC Confluence page says entry is optional but I'm pretty sure it's mandatory
+properties:
+  resourceType:
+    description: FHIR resource type.
+    type: string
+    enum:
+      - "Bundle"
+  type:
+    description: The type of FHIR bundle.
+    type: string
+    enum:
+      - "collection"
+  entry:
+    description: TBC.
+    type: array
+    items:
+      type: object
+      required:
+        - fullUrl
+        - resource
+        - search
+      properties:
+# TBC below cut & pasted from Imm Hist - needs changing for this API
+        fullUrl:
+          description: URI for the Immunization or Patient resource.
+          type: string
+          example: "urn:uuid:edea022a-2d81-11eb-adc1-0242ac120001"
+        resource:
+          description: The Immunization or Patient resource.
+          oneOf:
+            - $ref: Immunization.yaml
+            - $ref: Patient.yaml
+        search:
+          description: Search-related information for the Immunization or Patient resource.
+          type: object
+          required:
+            - mode
+          properties:
+            mode:
+              description: Indicates why this resource is in the result set. For Immunization resources this is always `match` and for Patient resources it is always `include`.
+              enum:
+                - match
+                - include
