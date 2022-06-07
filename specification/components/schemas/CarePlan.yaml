@@ -1,11 +1,33 @@
 description: TBC.
 type: object
 required:
-  - resourceType
-# TBC others
+  - fullUrl
+  - resource
+  - search
 properties:
-  resourceType:
-    description: FHIR resource type.
+  fullUrl:
+    description: URI for the TBC resource.
     type: string
-    enum:
-      - "CarePlan"
+    example: "https://servita-sandbox.co.uk/CarePlan/1"
+  search:
+    description: Search-related information for the CarePlan resource.
+    type: object
+    required:
+      - mode
+    properties:
+      mode:
+        description: Indicates why this resource is in the result set.
+        enum:
+          - match
+  resource:
+    description: The TBC resource.
+    type: object
+    required:
+      - resourceType
+    # TBC others
+    properties:
+      resourceType:
+        description: FHIR resource type.
+        type: string
+        enum:
+          - "CarePlan"
