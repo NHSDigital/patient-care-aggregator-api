@@ -131,6 +131,7 @@ paths:
                 $ref: "components/schemas/GetCarePlanHappyPathResponse.yaml"
               example:
                 $ref: "components/examples/GetCarePlanHappyPathResponse.json"            
+# TBC example shows fullUrl as 'https://servita-sandbox.co.uk/CarePlan/1' whereas on other APIs its more like a GUID                
 #        '4XX':
 #          description: |
 #            TBC.
