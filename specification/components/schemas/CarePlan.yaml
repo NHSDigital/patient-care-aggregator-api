@@ -1,4 +1,4 @@
-description: TBC.
+description: "TBC."
 type: object
 required:
   - fullUrl
@@ -6,28 +6,193 @@ required:
   - search
 properties:
   fullUrl:
-    description: URI for the TBC resource.
+    description: "URI for the TBC resource."
     type: string
     example: "https://servita-sandbox.co.uk/CarePlan/1"
   search:
-    description: Search-related information for the CarePlan resource.
+    description: "Search-related information for the CarePlan resource."
     type: object
     required:
       - mode
     properties:
       mode:
-        description: Indicates why this resource is in the result set.
+        description: "Indicates why this resource is in the result set."
         enum:
           - match
   resource:
-    description: The TBC resource.
+    description: "The TBC resource."
     type: object
     required:
       - resourceType
-    # TBC others
+      - status
+      - intent
+      - subject
+      - activity
     properties:
       resourceType:
-        description: FHIR resource type.
+        description: "FHIR resource type."
         type: string
         enum:
           - "CarePlan"
+      status:
+        description: "TBC."
+        type: string
+        enum:
+          - "TBC"
+      intent:
+        description: "TBC."
+        type: string
+        enum:
+          - "TBC"
+      subject:
+        description: "TBC."
+        type: object
+#        required:
+#          - TBC
+        properties:
+          identifier:
+            description: "TBC."
+            type: object
+#            required:
+#              - TBC
+            properties:
+              system:
+                description: "TBC."
+                type: string
+                example: "https://fhir.nhs.uk/Id/nhs-number"
+# TBC should this be an enum? Is NHS number the only option?                
+              value:
+                description: "TBC."
+                type: string
+                example: "8462486238"
+# TBC should this be 9000000009?                
+      activity:
+        description: "TBC."
+        type: array
+        items:
+          description: "TBC."
+          type: object
+          required:
+            - detail
+          properties:
+            reference:
+              description: "TBC."
+# TBC looks like this is only included if the activity has come from e-RS
+              type: object
+#              required:
+#                - TBC
+# Confluence says the properties are all optional but I suspect they are required *if* the "reference" object is present
+              properties:
+                type:
+                  description: "TBC."
+                  type: string
+                  enum:
+                    - "ServiceRequest"
+                    - TBC others
+                identifier:
+                  system:
+                    description: "TBC."
+                    type: string
+                    example: "https://fhir.nhs.uk/Id/UBRN"
+                  value:
+                    description: "TBC."
+                    type: string
+                    example: "808993698030"
+            detail:
+              description: "TBC."
+              type: object
+              required:
+                - kind
+                - description
+                - performer
+# Confluence says performer is required but the example has no performer for the "Appointment" activity
+              properties:
+                kind:
+                  description: "TBC."
+                  type: string
+                  enum:
+                    - "ServiceRequest"
+                    - Appointment"
+                extension:
+                  description: "TBC."
+                  type: array
+                  items:
+                    oneOf:
+                      - TBC
+                description:
+                  description: "TBC."
+                  type: string
+                  example: "Rheumatology - Metabolic Bone (inc Complex and Non-Complex cases) - Freeman - Newcastle FT - RTD"
+                scheduledPeriod:
+                  description: "TBC."
+                  type: object
+                  required:
+                    - TBC
+                  properties:
+                    start:
+                      description: "TBC."
+                      type: TBC
+                      example: "2021-05-23T10:02:15.960"
+                    extension:
+                      description: "TBC."
+                      type: array
+                      items:
+                        oneOf:
+                          - description: "TBC planned wait time."
+                            type: object
+#                            required:
+#                              TBC
+                            properties:
+                              url:
+                                description: "TBC."
+                                type: string
+                                enum:
+                                  - "https://fhir.nhs.uk/StructureDefinition/Extension-PlannedWaitTime"
+                              valueDuration:
+                                description: "TBC."
+                                type: object
+#                                required:
+#                                  TBC
+                                properties:
+                                  unit:
+                                    description: "TBC."
+                                    type: string
+                                    enum:
+                                      - "TBC"
+                                  value:
+                                    description: "TBC."
+                                    type: string
+                                    example: "45"
+                          - description: "TBC review due date."
+                            type: object
+#                            required:
+#                              TBC
+                            properties:
+                              url:
+                                description: "TBC."
+                                type: string
+                                enum:
+                                  - "https://fhir.nhs.uk/StructureDefinition/Extension-PlannedWaitTime"
+                              valueDate:
+                                description: "TBC."
+                                type: TBC
+                                example: "2020-11-19"
+                performer:
+                  description: "TBC."
+                  type: array
+                  items:
+                    description: "TBC."
+                    type: object
+#                    required:
+#                      - TBC
+                    properties:
+                      type:
+                        description: "TBC."
+                        type: string
+                        enum:
+                          - "TBC"
+                      display:
+                        description: "TBC."
+                        type: string
+                        example: "THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST"
+# looks like performer could be a HealthcareService or an Organization
