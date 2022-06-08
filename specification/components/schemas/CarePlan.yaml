@@ -123,7 +123,101 @@ properties:
                   type: array
                   items:
                     oneOf:
-                      - TBC
+                      - description: "TBC portal link."
+                        type: object
+#                        required:
+#                          - TBC
+                        properties:
+                          url:
+                            description: "TBC."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
+                          valueUrl:
+                            description: "TBC."
+                            type: string
+                            example: "https://refer.nhs.uk/nhslogin?ubrn=808993698030"
+                          extension:
+                            description: "TBC."
+                            type: array
+                            items:
+                              - description: "TBC."
+                                type: object
+                                required:
+                                  - TBC
+                                properties:
+                                  url:
+                                    description: "TBC"
+                                    type: string
+                                    example: "client-id"
+                                  valueCode:
+                                    description: "TBC."
+                                    type: string
+                                    example: "ers-01"
+                      - description: "TBC eRS service request state."
+                        type: object
+#                        required:
+#                          - TBC
+                        properties:
+                          url:
+                            description: "TBC."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ServiceRequest-State"
+                          valueCoding:
+                            description: "TBC."
+                            type: object
+                            required:
+                              - TBC
+                            properties:
+                              system:
+                                description: "TBC."
+                                type: string
+                                example: "https://fhir.nhs.uk/CodeSystem/eRS-ReferralState"
+                              code:
+                                description: "TBC."
+                                type: string
+                                example: "Bookable"
+                      - description: "TBC specialty."
+                        type: object
+#                        required:
+#                          - TBC
+                        properties:
+                          url:
+                            description: "TBC."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty"
+                          valueCoding:
+                            description: "TBC."
+                            type: object
+                            required:
+                              - TBC
+                            properties:
+                              system:
+                                description: "TBC."
+                                type: string
+                                example: "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
+# TBC why is this a STU3 coding? Ah, probably because e-RS is a STU3 API? Shouldn't we be converting it?                                
+                              code:
+                                description: "TBC."
+                                type: string
+                                example: "TRAUMA & ORTHOPAEDICS"
+                      - description: "TBC consultation medium."
+                        type: object
+#                        required:
+#                          - TBC
+                        properties:
+                          url:
+                            description: "TBC."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty"
+                          valueCode:
+                            description: "TBC."
+                            type: string
+                            example: "FACE_TO_FACE"
+# TBC what are the possible values for this field?
                 description:
                   description: "TBC."
                   type: string
