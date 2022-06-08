@@ -1,4 +1,4 @@
-description: "TBC care plan resource wrapper."
+description: "TBC care plan resource wrapper. "
 type: object
 required:
   - fullUrl
