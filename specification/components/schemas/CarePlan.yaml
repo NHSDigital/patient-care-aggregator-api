@@ -35,48 +35,48 @@ properties:
         enum:
           - "CarePlan"
       status:
-        description: "TBC."
+        description: "TBC status."
         type: string
         enum:
           - "TBC"
       intent:
-        description: "TBC."
+        description: "TBC intent."
         type: string
         enum:
           - "TBC"
       subject:
-        description: "TBC."
+        description: "TBC subject."
         type: object
 #        required:
 #          - TBC
         properties:
           identifier:
-            description: "TBC."
+            description: "TBC identifier."
             type: object
 #            required:
 #              - TBC
             properties:
               system:
-                description: "TBC."
+                description: "TBC system."
                 type: string
                 example: "https://fhir.nhs.uk/Id/nhs-number"
 # TBC should this be an enum? Is NHS number the only option?                
               value:
-                description: "TBC."
+                description: "TBC value."
                 type: string
                 example: "8462486238"
 # TBC should this be 9000000009?                
       activity:
-        description: "TBC."
+        description: "TBC activity array."
         type: array
         items:
-          description: "TBC."
+          description: "TBC activity object."
           type: object
           required:
             - detail
           properties:
             reference:
-              description: "TBC."
+              description: "TBC reference."
 # TBC looks like this is only included if the activity has come from e-RS
               type: object
 #              required:
@@ -84,23 +84,23 @@ properties:
 # Confluence says the properties are all optional but I suspect they are required *if* the "reference" object is present
               properties:
                 type:
-                  description: "TBC."
+                  description: "TBC type."
                   type: string
                   enum:
                     - "ServiceRequest"
                     - TBC others
                 identifier:
-                  description: "TBC."
+                  description: "TBC identifier."
                   type: object
 #                  required:
 #                    - TBC
                   properties:
                     system:
-                      description: "TBC."
+                      description: "TBC system."
                       type: string
                       example: "https://fhir.nhs.uk/Id/UBRN"
                     value:
-                      description: "TBC."
+                      description: "TBC value."
                       type: string
                       example: "808993698030"
             detail:
@@ -113,7 +113,7 @@ properties:
 # Confluence says performer is required but the example has no performer for the "Appointment" activity
               properties:
                 kind:
-                  description: "TBC."
+                  description: "TBC kind."
                   type: string
                   enum:
                     - "ServiceRequest"
@@ -129,53 +129,53 @@ properties:
 #                          - TBC
                         properties:
                           url:
-                            description: "TBC."
+                            description: "TBC url."
                             type: string
                             enum:
                               - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
                           valueUrl:
-                            description: "TBC."
+                            description: "TBC valueUrl."
                             type: string
                             example: "https://refer.nhs.uk/nhslogin?ubrn=808993698030"
                           extension:
-                            description: "TBC portal link extension."
+                            description: "TBC portal link extension array."
                             type: array
                             items:
-                              - description: "TBC."
-                                type: object
-#                                required:
-#                                  - TBC
-                                properties:
-                                  url:
-                                    description: "TBC"
-                                    type: string
-                                    example: "client-id"
-                                  valueCode:
-                                    description: "TBC."
-                                    type: string
-                                    example: "ers-01"
+                              description: "TBC portal link extension object."
+                              type: object
+#                              required:
+#                                - TBC
+                              properties:
+                                url:
+                                  description: "TBC url."
+                                  type: string
+                                  example: "client-id"
+                                valueCode:
+                                  description: "TBC valueCode."
+                                  type: string
+                                  example: "ers-01"
                       - description: "TBC eRS service request state."
                         type: object
 #                        required:
 #                          - TBC
                         properties:
                           url:
-                            description: "TBC."
+                            description: "TBC url."
                             type: string
                             enum:
                               - "https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ServiceRequest-State"
                           valueCoding:
-                            description: "TBC."
+                            description: "TBC valueCoding."
                             type: object
 #                            required:
 #                              - TBC
                             properties:
                               system:
-                                description: "TBC."
+                                description: "TBC system."
                                 type: string
                                 example: "https://fhir.nhs.uk/CodeSystem/eRS-ReferralState"
                               code:
-                                description: "TBC."
+                                description: "TBC code."
                                 type: string
                                 example: "Bookable"
                       - description: "TBC specialty."
@@ -184,23 +184,23 @@ properties:
 #                          - TBC
                         properties:
                           url:
-                            description: "TBC."
+                            description: "TBC url."
                             type: string
                             enum:
                               - "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty"
                           valueCoding:
-                            description: "TBC."
+                            description: "TBC valueCoding."
                             type: object
 #                            required:
 #                              - TBC
                             properties:
                               system:
-                                description: "TBC."
+                                description: "TBC system."
                                 type: string
                                 example: "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
 # TBC why is this a STU3 coding? Ah, probably because e-RS is a STU3 API? Shouldn't we be converting it?                                
                               code:
-                                description: "TBC."
+                                description: "TBC code."
                                 type: string
                                 example: "TRAUMA & ORTHOPAEDICS"
                       - description: "TBC consultation medium."
@@ -209,27 +209,27 @@ properties:
 #                          - TBC
                         properties:
                           url:
-                            description: "TBC."
+                            description: "TBC url."
                             type: string
                             enum:
                               - "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty"
                           valueCode:
-                            description: "TBC."
+                            description: "TBC valueCode."
                             type: string
                             example: "FACE_TO_FACE"
 # TBC what are the possible values for this field?
                 description:
-                  description: "TBC."
+                  description: "TBC description."
                   type: string
                   example: "Rheumatology - Metabolic Bone (inc Complex and Non-Complex cases) - Freeman - Newcastle FT - RTD"
                 scheduledPeriod:
-                  description: "TBC."
+                  description: "TBC scheduledPeriod."
                   type: object
 #                  required:
 #                    - TBC
                   properties:
                     start:
-                      description: "TBC."
+                      description: "TBC start."
                       type: TBC
                       example: "2021-05-23T10:02:15.960"
                     extension:
