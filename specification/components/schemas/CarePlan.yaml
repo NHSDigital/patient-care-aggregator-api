@@ -230,7 +230,7 @@ properties:
                   properties:
                     start:
                       description: "TBC start."
-                      type: TBC
+                      type: string                      
                       example: "2021-05-23T10:02:15.960"
                     extension:
                       description: "TBC scheduled period extension."
