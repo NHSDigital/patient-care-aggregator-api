@@ -90,14 +90,19 @@ properties:
                     - "ServiceRequest"
                     - TBC others
                 identifier:
-                  system:
-                    description: "TBC."
-                    type: string
-                    example: "https://fhir.nhs.uk/Id/UBRN"
-                  value:
-                    description: "TBC."
-                    type: string
-                    example: "808993698030"
+                  description: "TBC."
+                  type: object
+#                  required:
+#                    - TBC
+                  properties:
+                    system:
+                      description: "TBC."
+                      type: string
+                      example: "https://fhir.nhs.uk/Id/UBRN"
+                    value:
+                      description: "TBC."
+                      type: string
+                      example: "808993698030"
             detail:
               description: "TBC."
               type: object
