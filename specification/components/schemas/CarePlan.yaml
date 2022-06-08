@@ -1,4 +1,4 @@
-description: "TBC."
+description: "TBC care plan resource wrapper."
 type: object
 required:
   - fullUrl
@@ -104,7 +104,7 @@ properties:
                       type: string
                       example: "808993698030"
             detail:
-              description: "TBC."
+              description: "TBC detail object."
               type: object
               required:
                 - kind
@@ -119,7 +119,7 @@ properties:
                     - "ServiceRequest"
                     - Appointment"
                 extension:
-                  description: "TBC."
+                  description: "TBC detail extension."
                   type: array
                   items:
                     oneOf:
@@ -138,7 +138,7 @@ properties:
                             type: string
                             example: "https://refer.nhs.uk/nhslogin?ubrn=808993698030"
                           extension:
-                            description: "TBC."
+                            description: "TBC portal link extension."
                             type: array
                             items:
                               - description: "TBC."
@@ -233,7 +233,7 @@ properties:
                       type: TBC
                       example: "2021-05-23T10:02:15.960"
                     extension:
-                      description: "TBC."
+                      description: "TBC scheduled period extension."
                       type: array
                       items:
                         oneOf:
