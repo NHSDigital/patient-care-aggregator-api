@@ -274,7 +274,7 @@ properties:
                                   - "https://fhir.nhs.uk/StructureDefinition/Extension-PlannedWaitTime"
                               valueDate:
                                 description: "TBC."
-                                type: TBC
+                                type: string
                                 example: "2020-11-19"
                 performer:
                   description: "TBC."
