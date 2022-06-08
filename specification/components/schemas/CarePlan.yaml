@@ -143,8 +143,8 @@ properties:
                             items:
                               - description: "TBC."
                                 type: object
-                                required:
-                                  - TBC
+#                                required:
+#                                  - TBC
                                 properties:
                                   url:
                                     description: "TBC"
@@ -167,8 +167,8 @@ properties:
                           valueCoding:
                             description: "TBC."
                             type: object
-                            required:
-                              - TBC
+#                            required:
+#                              - TBC
                             properties:
                               system:
                                 description: "TBC."
@@ -191,8 +191,8 @@ properties:
                           valueCoding:
                             description: "TBC."
                             type: object
-                            required:
-                              - TBC
+#                            required:
+#                              - TBC
                             properties:
                               system:
                                 description: "TBC."
@@ -225,8 +225,8 @@ properties:
                 scheduledPeriod:
                   description: "TBC."
                   type: object
-                  required:
-                    - TBC
+#                  required:
+#                    - TBC
                   properties:
                     start:
                       description: "TBC."
