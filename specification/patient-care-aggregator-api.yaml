@@ -6,25 +6,57 @@ info:
   version: "1.0.0"
   description: |
     ## Overview
-    Details TBC.
+    Use this API to get an aggregated list of referrals and bookings from a variety of places, including:
+    - our e-Referrals Service
+    - TBC where else?
     
     ## Who can use this API
-    Details TBC.
+    Currently, this API is for internal use only - the only API consumer is the NHS App.
+    
+    If you are interested in using this API, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
     ## API status and roadmap
-    Details TBC.
+    This API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - it's available for testing
+    - it's not available in production
+    - we might make breaking changes
     
     ## Service level
-    Details TBC.
+    The [service level](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels) for this API will be confirmed once it moves into production.
     
     ## Technology
-    Details TBC.
-    
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+
+    It also conforms to:
+    - [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir), a global standard for health care data exchange
+    - [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core) for UK-specific extensions to FHIR
+
+    You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
+    In particular:
+    - resource names are capitalised and singular, for example `/CarePlan` not `/care-plans`
+    - array names are singular, for example `entry` not `entries` for FHIR bundle entries
+    - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+
+    There are [libraries and SDKs available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
+
     ## Network access
-    Details TBC.
+    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
+
+    For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
     
     ## Security and authorisation
-    Details TBC.
+    This access mode is [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis), meaning an end user must be present, authenticated and authorised.
+    
+    The end user must be:
+    * a patient who receives health and social care or makes use of NHS services
+    * strongly authenticated, using [NHS login](https://digital.nhs.uk/services/nhs-login)
+     
+    To use this access mode, use one of the following security patterns:
+    
+    |	Security pattern		                                                                                                                                                                                                          |	Technical details	                                  |	Advantages	                                                | Disadvantages                                           |
+    |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ----------------------------------------------------| ------------------------------------------------------------|---------------------------------------------------------|
+    |[NHS login - combined authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-combined-authentication-and-authorisation) |OAuth 2.0 authorisation code with API key and secret |No need to integrate and onboard separately with NHS login.  |No access to user information.                           |
+    |[NHS login - separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-separate-authentication-and-authorisation) |OAuth 2.0 token exchange with signed JWT             |Gives access to user information.                            |Need to integrate and onboard separately with NHS login. |
     
     ## Environments and testing
     | Environment       | Base URL                                                                      |
@@ -33,17 +65,38 @@ info:
     | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         |
     | Production        | Not yet available                                                             |    
 
+    TBC confirm the URLs are correct including the FHIR/R4 bit
+    TBC URL shouldn't have "-api" as a suffix
+
     ### Sandbox testing
-    Details TBC.
+    Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
+    * is for early developer testing
+    * only covers a limited set of scenarios
+    * is open access, so does not allow you to test authorisation
     
+    For details of sandbox test scenarios, or to try out the sandbox using our 'Try this API' feature, see the documentation for each endpoint.
+    
+    TBC is there actually a sandbox?
+    TBC do we provide sandbox scenarios?
+
     ### Integration testing
-    Details TBC.
+    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
+    * is for formal integration testing
+    * includes authorisation
+
+    TBC what test data do we have in place?
+    TBC what back-ends is it connected to?
+    TBC does it require co-ordination?
+
+    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
     
     ## Onboarding
-    Details TBC.
+    You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
     
-# TBC confirm the URLs are correct including the FHIR/R4 bit
-# TBC URL shouldn't have "-api" as a suffix
+    To onboard for this API, follow the [Supplier Conformance Assessment List (SCAL)](https://digital.nhs.uk/developer/guides-and-documentation/onboarding-process#onboard-using-the-supplier-conformance-assessment-list-scal-process) process.
+    
+    To get started with the SCAL process for this API, [contact us](https://digital.nhs.uk/developer/help-and-support)
+    
   contact:
     name: 'patient-care-aggregator-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
