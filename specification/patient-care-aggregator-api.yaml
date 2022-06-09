@@ -199,18 +199,35 @@ paths:
 # TBC why is this even needed - seems a bit bizarre to be calling an API and including a unique ID for the thing you're calling.
 # TBC what happens if the caller passes the wrong thing - is the request rejected?
       responses:
-        '200':
+        '2XX':
           description: |
-            TBC.
+            The request was valid and the API was able to request information from the various back-end applications.
+
+            There are two possible outcomes:
+
+            | HTTP status | Description                                                         |
+            | ----------- | ------------------------------------------------------------------- |
+            | 200         | All back-end systems responded normally. The response is a FHIR Bundle containing a single `CarePlan` resource.                    |
+            | 207         | One or more back-end systems returned an error. The response is a FHIR Bundle containing a single `CarePlan` resource and an `OperationOutcome` - which contains details of the error(s). |
+            
 #          headers:
 #            TBC what response headers are there? I'm expecting at least X-Request-ID and X-Correlation-ID
           content:
             application/fhir+json:   
               schema:
                 $ref: "components/schemas/GetCarePlanHappyPathResponse.yaml"
-              example:
-                $ref: "components/examples/GetCarePlanHappyPathResponse.json"            
+              examples:
+                happyPath:
+                  summary: "All back-end systems responded normally. The response is a FHIR Bundle containing a single `CarePlan` resource."
+                  value:
+                    $ref: "components/examples/GetCarePlanHappyPathResponse.json"
 # TBC example shows fullUrl as 'https://servita-sandbox.co.uk/CarePlan/1' whereas on other APIs its more like a GUID                
+                oneOrMoreErrors:
+                  summary: "One or more back-end systems returned an error. The response is a FHIR Bundle containing a single `CarePlan` resource and an `OperationOutcome` - which contains details of the error(s)."
+                  value:
+                    $ref: "components/examples/GetCarePlanHappyPathResponse.json"
+# TBC change this to a non-happy path response, including an OperationOutcome
+
 #        '4XX':
 #          description: |
 #            TBC.
