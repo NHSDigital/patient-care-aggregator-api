@@ -6,7 +6,7 @@ info:
   version: "1.0.0"
   description: |
     ## Overview
-    Use this API to get an aggregated list of referrals and bookings at secondary care providers.
+    Use this API to get an aggregated list of referrals and bookings for a given patient from secondary care providers.
     
     The API aggregates details of referrals and bookings from the following systems:
     - e-Referrals Service (referrals and bookings)
@@ -122,7 +122,17 @@ paths:
       summary: Get referrals and bookings
       operationId: get-referrals-and-bookings
       description: |
-        TBC.
+        Use this endpoint to get an aggregated list of referrals and bookings for a given patient from secondary care providers.
+        The endpoint checks fo referrals and bookings with a number of back-end applications.
+        
+        The endpoint returns the list as a FHIR 'bundle' which includes:
+        - one `CarePlan` resource, including all referrals and bookings found for the patient
+        - one `OperationOutcome` resource, if any of the back-end applications returned an error
+        
+        If no referrals or bookings were found for the patient in any of the back-end systems,
+        the endpoint returns a `CarePlan` resource, but no entries in the `activity` array.
+        
+# TBC is this true?        
       parameters:
         - name: patient.identifier
           in: query
@@ -154,7 +164,8 @@ paths:
             
             Mirrored back in a response header.
             
-            If you re-send a failed request, use the same value in this header.          
+            If you re-send a failed request, use the same value in this header.
+# TBC is it actually mirrored back?
           schema:
             type: string
             pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
@@ -168,6 +179,7 @@ paths:
             An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
             
             Mirrored back in a response header.
+# TBC is it actually mirrored back?
           schema:
             type: string
             example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
@@ -175,10 +187,17 @@ paths:
           in: header
           required: true
           description: |
-            TBC.
+            A unique identifier for this API, as required by the Booking and Referral Standard (BaRS). Specifically, it is a Base64 encoding of:
+            
+            `{ "system": "urn:ietf:rfc:3986", "value": "db71698b-cd7c-4dd5-95c4-0aa9776595f5" }`
+            
+            (where the GUID `db71698b-cd7c-4dd5-95c4-0aa9776595f5` is the unique identifier for this API)
           schema:
             type: string
-            example: TBC single enum value
+            enum:
+              - "ewrCoCDCoCAic3lzdGVtIjogInVybjppZXRmOnJmYzozOTg2IiwKwqAgwqAgInZhbHVlIjogImRiNzE2OThiLWNkN2MtNGRkNS05NWM0LTBhYTk3NzY1OTVmNSIKfQ=="
+# TBC why is this even needed - seems a bit bizarre to be calling an API and including a unique ID for the thing you're calling.
+# TBC what happens if the caller passes the wrong thing - is the request rejected?
       responses:
         '200':
           description: |
