@@ -6,9 +6,16 @@ info:
   version: "1.0.0"
   description: |
     ## Overview
-    Use this API to get an aggregated list of referrals and bookings from a variety of places, including:
-    - our e-Referrals Service
-    - TBC where else?
+    Use this API to get an aggregated list of referrals and bookings at secondary care providers.
+    
+    The API aggregates details of referrals and bookings from the following systems:
+    - e-Referrals Service (referrals and bookings)
+    - DrDoctor (bookings only)
+    - Patient Knows Best (bookings only)
+    
+    Other providers may be added in the future.
+    
+    This API is only for use in patient-facing applications, not in point-of-care applications.
     
     ## Who can use this API
     Currently, this API is for internal use only - the only API consumer is the NHS App.
@@ -112,8 +119,8 @@ paths:
   /CarePlan:
     get:
 # TBC check it's actually a GET
-      summary: TBC
-      operationId: TBC
+      summary: Get referrals and bookings
+      operationId: get-referrals-and-bookings
       description: |
         TBC.
       parameters:
