@@ -9,9 +9,9 @@ info:
     Use this API to get an aggregated list of referrals and bookings for a given patient from secondary care providers.
     
     The API aggregates details of referrals and bookings from the following systems:
-    - e-Referrals Service (referrals and bookings)
-    - DrDoctor (bookings only)
-    - Patient Knows Best (bookings only)
+    - [NHS e-Referral Service](https://digital.nhs.uk/services/e-referral-service) (referrals and bookings)
+    - [DrDoctor](https://www.drdoctor.co.uk/) (bookings only)
+    - [Patients Know Best](https://patientsknowbest.com/) (bookings only)
     
     Other providers may be added in the future.
     
@@ -118,7 +118,6 @@ servers:
 paths:
   /CarePlan:
     get:
-# TBC check it's actually a GET
       summary: Get referrals and bookings
       operationId: get-referrals-and-bookings
       description: |
@@ -238,4 +237,6 @@ paths:
 #              schema:
 #                $ref: "components/schemas/TBC.yaml"
 #              example:
-#                $ref: "components/examples/TBC.json"            
+#                $ref: "components/examples/TBC.json"
+
+# TBC include section for 5xx errors. See, erm, which API for an example?
