@@ -1,4 +1,4 @@
-description: "TBC care plan resource wrapper. "
+description: "Details of the referrals and bookings found for the patient, expressed as a FHIR `CarePlan` resource."
 type: object
 required:
   - fullUrl
@@ -6,21 +6,21 @@ required:
   - search
 properties:
   fullUrl:
-    description: "URI for the TBC resource."
+    description: "URI for the `CarePlan` resource."
     type: string
     example: "https://servita-sandbox.co.uk/CarePlan/1"
   search:
-    description: "Search-related information for the CarePlan resource."
+    description: "Search-related information for the `CarePlan` resource."
     type: object
     required:
       - mode
     properties:
       mode:
-        description: "Indicates why this resource is in the result set."
+        description: "Indicates why this resource is in the result set - in this case because it includes infomation that matched the requested patient."
         enum:
           - match
   resource:
-    description: "The TBC resource."
+    description: "The `CarePlan` resource itself."
     type: object
     required:
       - resourceType
@@ -35,15 +35,15 @@ properties:
         enum:
           - "CarePlan"
       status:
-        description: "TBC status."
+        description: "Care plan status status."
         type: string
         enum:
-          - "TBC"
+          - "active"
       intent:
         description: "TBC intent."
         type: string
         enum:
-          - "TBC"
+          - "order"
       subject:
         description: "TBC subject."
         type: object
