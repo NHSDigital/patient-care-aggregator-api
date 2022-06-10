@@ -1,4 +1,4 @@
-description: FHIR Bundle containing the TBC.
+description: FHIR Bundle containing the TBC. 
 type: object
 required:
   - resourceType
