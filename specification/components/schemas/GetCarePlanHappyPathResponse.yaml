@@ -1,10 +1,9 @@
-description: FHIR Bundle containing the TBC. 
+description: A FHIR Bundle containing results of the request.
 type: object
 required:
   - resourceType
   - type
-  - entry
-# TBC Confluence page says entry is optional but I'm pretty sure it's mandatory
+# TBC if no referrals or bookings are found, is the entry field omitted or is it present but with zero items in the array?
 properties:
   resourceType:
     description: FHIR resource type.
@@ -17,9 +16,14 @@ properties:
     enum:
       - "collection"
   entry:
-    description: TBC.
-# TBC Confluence says there will always be one CarePlan but what if no care plans are found? What if no Care plans are found but there is an error from one back end?
+    description: |
+      The FHIR resources within the bundle.
+      Includes zero or one `CarePlan` resources (containing the referral and booking information, if any found)
+      and zero or one `OperationOutcome` resources (if any back-end system errors occurred).
+# TBC if no referrals or bookings are found, is the entry field omitted or is it present but with zero items in the array?
     type: array
+    minItems: 1
+    maxItems: 2
     items:
       oneOf:
         - $ref: CarePlan.yaml
