@@ -84,7 +84,9 @@ info:
     For details of sandbox test scenarios, or to try out the sandbox using our 'Try this API' feature, see the documentation for each endpoint.
     
     TBC is there actually a sandbox?
-    TBC do we provide sandbox scenarios?
+    TBC what are the sandbox scenarios?
+    TBC what other environment are there e.g. AOS
+    TBC which NHS login environments do the APIM environments link to?
 
     ### Integration testing
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
@@ -125,13 +127,12 @@ paths:
         The endpoint checks fo referrals and bookings with a number of back-end applications.
         
         The endpoint returns the list as a FHIR 'bundle' which includes:
-        - one `CarePlan` resource, including all referrals and bookings found for the patient
+        - one `CarePlan` resource, including all referrals and bookings found for the patient, but only if any referrals or boongs were found
         - one `OperationOutcome` resource, if any of the back-end applications returned an error
         
         If no referrals or bookings were found for the patient in any of the back-end systems,
-        the endpoint returns a `CarePlan` resource, but no entries in the `activity` array.
+        and there were no errors, the endpoint returns an empty FHIR bundle.
         
-# TBC is this true?        
       parameters:
         - name: patient.identifier
           in: query
@@ -206,7 +207,7 @@ paths:
 
             | HTTP status | Description                                                         |
             | ----------- | ------------------------------------------------------------------- |
-            | 200         | All back-end systems responded normally. The response is a FHIR Bundle containing a single `CarePlan` resource.                    |
+            | 200         | All back-end systems responded normally. If any referrals or bookings were found, the response includes a single `CarePlan` resource. |
             | 207         | One or more back-end systems returned an error. The response is a FHIR Bundle containing a single `CarePlan` resource and an `OperationOutcome` - which contains details of the error(s). |
             
 #          headers:
@@ -217,12 +218,12 @@ paths:
                 $ref: "components/schemas/GetCarePlanHappyPathResponse.yaml"
               examples:
                 happyPath:
-                  summary: "All back-end systems responded normally. The response is a FHIR Bundle containing a single `CarePlan` resource."
+                  summary: "A response with one referral and one booking (HTTP status 200)."
                   value:
                     $ref: "components/examples/GetCarePlanHappyPathResponse.json"
 # TBC example shows fullUrl as 'https://servita-sandbox.co.uk/CarePlan/1' whereas on other APIs its more like a GUID                
                 oneOrMoreErrors:
-                  summary: "One or more back-end systems returned an error. The response is a FHIR Bundle containing a single `CarePlan` resource and an `OperationOutcome` - which contains details of the error(s)."
+                  summary: "A response with one referral and one appointment, and also one back-end system error (HTTP status 207)."
                   value:
                     $ref: "components/examples/GetCarePlanHappyPathResponse.json"
 # TBC change this to a non-happy path response, including an OperationOutcome
