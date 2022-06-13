@@ -1,2 +1,9 @@
 {
+    "resourceType": "OperationOutcome",
+    "issue": [{
+        "severity": "error",
+        "code": "exception",
+        "diagnostics": "\"patient:identifier\" is required"
+        }
+    ]
 }
