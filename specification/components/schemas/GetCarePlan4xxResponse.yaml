@@ -1,1 +1,37 @@
-# TBC
+description: "Details of the issue(s) that have occurred."
+type: object
+required:
+  - resourceType
+  - issue
+properties:
+  resourceType:
+    description: "FHIR resource type."
+    type: string
+    enum:
+      - "OperationOutcome"
+  issue:
+    description: "List of issues that have occurred. Usually there is only one issue, but there can be more than one."
+    type: array
+    minItems: 1
+    items:
+      description: "Details of an issue that has occurred."
+      type: object
+#      required:
+#        - TBC
+      properties:
+        severity:
+          description: "TBC."
+          type: string
+          enum:
+            - fatal
+            - error
+            - warning
+            - information
+        code:
+          description: "Error code."
+          type: string
+          example: "forbidden"
+        diagnostics:
+          description: "Additional diagnostic information about the issue."
+          type: string
+          example: "UNDER_16_DENIED"
