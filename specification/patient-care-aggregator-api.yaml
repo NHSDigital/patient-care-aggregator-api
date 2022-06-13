@@ -147,6 +147,7 @@ paths:
           in: header
           description: |
             An OAuth 2.0 bearer token, obtained using our [NHS login pattern](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-separate-authentication-and-authorisation).
+# Is this right? Confluence says it should be an NHS login ID token! I hope not, you're supposed to be using OAuth 2.0 properly!            
           required: true
           schema:
             type: string
@@ -226,18 +227,31 @@ paths:
                   summary: "A response with one referral and one appointment, and also one back-end system error (HTTP status 207)."
                   value:
                     $ref: "components/examples/GetCarePlanHappyPathResponse.json"
-# TBC change this to a non-happy path response, including an OperationOutcome
-
-#        '4XX':
-#          description: |
-#            TBC.
-#          headers:
-#            TBC what response headers are there? I'm expecting at least X-Request-ID and X-Correlation-ID
-#          content:
-#            application/fhir+json:   
-#              schema:
-#                $ref: "components/schemas/TBC.yaml"
-#              example:
-#                $ref: "components/examples/TBC.json"
-
-# TBC include section for 5xx errors. See, erm, which API for an example?
+        '4XX':
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code        | Description                                                         |
+            | ----------- | ----------------- | ------------------------------------------------------------------- |
+            | 400         | `exception`       | Missing or invalid NHS number                                       |
+            | 401         | `processing`      | Missing or invalid OAuth 2.0 bearer token                           |
+            | 401         | `processing`      | NHS number in request doesn't match NHS number in NHS login account |
+            | 403         | `forbidden`       | Patient is under 16 years of age                                    |
+            | 404         | `not-found`       | Invalid value in `NHSD-Target-Identifier` header                    |
+            | 429         | TOO_MANY_REQUESTS | You have exceeded your application's [rate limit](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits). |
+            
+            For details see the `diagnostics` field.
+            
+# TBC feels like the error codes should be more specific e.g. UNDER_16_DENIED would be better as an error code, not a diagnostic codee
+# TBC is the input parameter an ID token or an OAuth 2.0 access token?
+# TBC invalid NHS number includes the NHS number in the diagnostics - might be better not to include it
+# TBC error code format for 401 errors - PDS spec says ACCESS_DENIED
+          content:
+            application/fhir+json:   
+              schema:
+                $ref: "components/schemas/GetCarePlan4xxResponse.yaml"
+              example:
+                $ref: "components/examples/GetCarePlan4xxResponse.json"
+        "5XX":
+          description: |
+            A 5xx status code means the server has a problem. For more details on the most common 5xx status codes and their meanings see the [HTTP status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes).
