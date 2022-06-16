@@ -20,7 +20,7 @@ properties:
       The FHIR resources within the bundle.
       Includes zero or one `CarePlan` resources (containing the referral and booking information, if any found)
       and zero or one `OperationOutcome` resources (if any back-end system errors occurred).
-# TBC if no referrals or bookings are found, is the entry field omitted or is it present but with zero items in the array?
+# TBC if no referrals or bookings are found, is the entry field present but with zero items in the array, or is it omitted entirely?
     type: array
     minItems: 1
     maxItems: 2
