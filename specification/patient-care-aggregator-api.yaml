@@ -15,12 +15,12 @@ info:
     
     Other providers may be added in the future.
     
-    This API is only for use in patient-facing applications, not in point-of-care applications.
+    This API is only for use in patient-facing applications, not point-of-care applications.
     
     ## Who can use this API
     Currently, this API is for internal use only - the only API consumer is the NHS App.
     
-    If you are interested in using this API, [contact us](https://digital.nhs.uk/developer/help-and-support).
+    If you are interested in using this API in another context, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
     ## API status and roadmap
     This API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
@@ -34,9 +34,12 @@ info:
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
 
-    It also conforms to:
-    - [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir), a global standard for health care data exchange
-    - [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core) for UK-specific extensions to FHIR
+    It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
+    global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/),
+    except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
+
+    It includes some country-specific FHIR extensions, which have built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core),
+    specifically [UK.core.r4 1.0.0](https://simplifier.net/packages/uk.core.r4/1.0.0).
 
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
@@ -72,9 +75,12 @@ info:
     | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         |
     | Production        | Not yet available                                                             |    
 
-    TBC confirm the URLs are correct including the FHIR/R4 bit
-    TBC URL shouldn't have "-api" as a suffix
+    TBC URL shouldn't have "-api" as a suffix.
 
+    TBC which NHS login environments do the APIM environments link to?
+
+    TBC what other environment are there e.g. AOS?
+    
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
     * is for early developer testing
@@ -84,21 +90,22 @@ info:
     For details of sandbox test scenarios, or to try out the sandbox using our 'Try this API' feature, see the documentation for each endpoint.
     
     TBC is there actually a sandbox?
+    
     TBC what are the sandbox scenarios?
-    TBC what other environment are there e.g. AOS
-    TBC which NHS login environments do the APIM environments link to?
-
+    
     ### Integration testing
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
     * is for formal integration testing
     * includes authorisation
 
-    TBC what test data do we have in place?
-    TBC what back-ends is it connected to?
-    TBC does it require co-ordination?
-
     For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
     
+    TBC what test data do we have in place?
+    
+    TBC what back-ends is it connected to - e-RS, DrDoctor, PatientsKnowBest environments?
+    
+    TBC does it require co-ordination or is it self-serve?
+
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
     
@@ -124,13 +131,13 @@ paths:
       operationId: get-referrals-and-bookings
       description: |
         Use this endpoint to get an aggregated list of referrals and bookings for a given patient from secondary care providers.
-        The endpoint checks fo referrals and bookings with a number of back-end applications.
+        The endpoint checks for referrals and bookings from multiple back-end applications and aggregates them into a single list.
         
         The endpoint returns the list as a FHIR 'bundle' which includes:
-        - one `CarePlan` resource, including all referrals and bookings found for the patient, but only if any referrals or boongs were found
+        - one `CarePlan` resource, including all referrals and bookings found for the patient, but only if any referrals or bookings were found
         - one `OperationOutcome` resource, if any of the back-end applications returned an error
         
-        If no referrals or bookings were found for the patient in any of the back-end systems,
+        If no referrals or bookings were found for the patient,
         and there were no errors, the endpoint returns an empty FHIR bundle.
         
       parameters:
@@ -208,8 +215,8 @@ paths:
 
             | HTTP status | Description                                                         |
             | ----------- | ------------------------------------------------------------------- |
-            | 200         | All back-end systems responded normally. If any referrals or bookings were found, the response includes a single `CarePlan` resource. |
-            | 207         | One or more back-end systems returned an error. The response is a FHIR Bundle containing a single `CarePlan` resource and an `OperationOutcome` - which contains details of the error(s). |
+            | 200         | All back-end systems responded normally. If any referrals or bookings were found, the response includes them all in a single `CarePlan` resource. |
+            | 207         | One or more back-end systems returned an error. The response includes all the errors in a single `OperationOutcome` resource. |
             
 #          headers:
 #            TBC what response headers are there? I'm expecting at least X-Request-ID and X-Correlation-ID
@@ -219,12 +226,12 @@ paths:
                 $ref: "components/schemas/GetCarePlanHappyPathResponse.yaml"
               examples:
                 happyPath:
-                  summary: "A response with one referral and one booking (HTTP status 200)."
+                  summary: "A response with a `CarePlan` resource containing one referral and one booking (HTTP status 200)."
                   value:
                     $ref: "components/examples/GetCarePlanHappyPathResponse.json"
 # TBC example shows fullUrl as 'https://servita-sandbox.co.uk/CarePlan/1' whereas on other APIs its more like a GUID                
                 oneOrMoreErrors:
-                  summary: "A response with one referral and one appointment, and also one back-end system error (HTTP status 207)."
+                  summary: "A response with a `CarePlan` resource containing one referral and one booking, and an `OperationOutcome` resource containing one back-end system error (HTTP status 207)."
                   value:
                     $ref: "components/examples/GetCarePlanHappyPathResponse.json"
         '4XX':
