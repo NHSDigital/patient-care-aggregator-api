@@ -29,7 +29,8 @@ info:
     - we might make breaking changes
     
     ## Service level
-    The [service level](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels) for this API will be confirmed once it moves into production.
+    The [service level](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels) for this API
+    will be confirmed once it moves into production. It is likely to be gold.
     
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
@@ -71,7 +72,7 @@ info:
     ## Environments and testing
     | Environment       | Base URL                                                                      |
     | ----------------- | ----------------------------------------------------------------------------- |
-    | Sandbox           | `https://sandbox.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`     |
+    | Sandbox           | Not available                                                                 |
     | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         |
     | Production        | Not yet available                                                             |    
 
@@ -82,16 +83,7 @@ info:
     TBC what other environment are there e.g. AOS?
     
     ### Sandbox testing
-    Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
-    * is for early developer testing
-    * only covers a limited set of scenarios
-    * is open access, so does not allow you to test authorisation
-    
-    For details of sandbox test scenarios, or to try out the sandbox using our 'Try this API' feature, see the documentation for each endpoint.
-    
-    TBC is there actually a sandbox?
-    
-    TBC what are the sandbox scenarios?
+    This API does not currently have a sandbox environment.
     
     ### Integration testing
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
