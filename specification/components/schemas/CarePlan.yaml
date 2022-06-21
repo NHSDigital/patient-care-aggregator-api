@@ -79,35 +79,36 @@ properties:
             - detail
           properties:
             reference:
-              description: "TBC reference."
-# TBC looks like this is only included if the activity has come from e-RS
+              description: "e-RS Unique Booking Reference Number (UBRN) for the referral, if this activity is an e-RS referral, expressed as a referencve to a FHIR `ServiceRequest` resource."
               type: object
-#              required:
-#                - TBC
+              required:
+                - type
+                - identifier
 # Confluence says the properties are all optional but I suspect they are required *if* the "reference" object is present
               properties:
                 type:
-                  description: "TBC type."
+                  description: "FHIR resource type for the reference."
                   type: string
                   enum:
                     - "ServiceRequest"
-                    - TBC others
+# TBC Confluence spec says this could be "ServiceRequest" or null, but under what conditions would the reference object be present and the type be null? I suspect that doesn't happen.
                 identifier:
-                  description: "TBC identifier."
+                  description: "Unique identifier for the e-RS referral - specifically an e-RS Unique Booking Reference Number (UBRN)."
                   type: object
-#                  required:
-#                    - TBC
+                  required:
+                    - system
+                    - value
                   properties:
                     system:
-                      description: "TBC system."
+                      description: "Code system used for the identifier."
                       type: string
                       example: "https://fhir.nhs.uk/Id/UBRN"
                     value:
-                      description: "TBC value."
+                      description: "The e-RS Unique Booking Reference Number (UBRN) itself."
                       type: string
                       example: "808993698030"
             detail:
-              description: "TBC detail object."
+              description: "Details of the referral or booking."
               type: object
               required:
                 - kind
@@ -116,11 +117,11 @@ properties:
 # Confluence says performer is required but the example has no performer for the "Appointment" activity
               properties:
                 kind:
-                  description: "TBC kind."
+                  description: "Type of activity - referral (`ServiceRequest`) or booking (`Appointment`)."
                   type: string
                   enum:
                     - "ServiceRequest"
-                    - Appointment"
+                    - "Appointment"
                 extension:
                   description: "TBC detail extension."
                   type: array
