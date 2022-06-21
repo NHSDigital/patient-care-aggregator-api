@@ -215,12 +215,12 @@ paths:
           content:
             application/fhir+json:   
               schema:
-                $ref: "components/schemas/GetCarePlanHappyPathResponse.yaml"
+                $ref: "components/schemas/GetCarePlanResponseHappyPath.yaml"
               examples:
                 happyPath:
                   summary: "A response with a `CarePlan` resource containing one referral and one booking (HTTP status 200)."
                   value:
-                    $ref: "components/examples/GetCarePlanHappyPathResponse.json"
+                    $ref: "components/examples/GetCarePlanResponseWithErrors.json"
 # TBC example shows fullUrl as 'https://servita-sandbox.co.uk/CarePlan/1' whereas on other APIs its more like a GUID                
                 oneOrMoreErrors:
                   summary: "A response with a `CarePlan` resource containing one referral and one booking, and an `OperationOutcome` resource containing one back-end system error (HTTP status 207)."
