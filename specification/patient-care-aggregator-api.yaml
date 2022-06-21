@@ -220,12 +220,12 @@ paths:
                 happyPath:
                   summary: "A response with a `CarePlan` resource containing one referral and one booking (HTTP status 200)."
                   value:
-                    $ref: "components/examples/GetCarePlanResponseWithErrors.json"
+                    $ref: "components/examples/GetCarePlanResponseHappyPath.json"
 # TBC example shows fullUrl as 'https://servita-sandbox.co.uk/CarePlan/1' whereas on other APIs its more like a GUID                
                 oneOrMoreErrors:
                   summary: "A response with a `CarePlan` resource containing one referral and one booking, and an `OperationOutcome` resource containing one back-end system error (HTTP status 207)."
                   value:
-                    $ref: "components/examples/GetCarePlanHappyPathResponse.json"
+                    $ref: "components/examples/GetCarePlanResponseWithErrors.json"
         '4XX':
           description: |
             An error occurred as follows:
@@ -248,9 +248,9 @@ paths:
           content:
             application/fhir+json:   
               schema:
-                $ref: "components/schemas/GetCarePlan4xxResponse.yaml"
+                $ref: "components/schemas/GetCarePlanResponse4xx.yaml"
               example:
-                $ref: "components/examples/GetCarePlan4xxResponse.json"
+                $ref: "components/examples/GetCarePlanResponse4xx.json"
         "5XX":
           description: |
             A 5xx status code means the server has a problem. For more details on the most common 5xx status codes and their meanings see the [HTTP status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes).
