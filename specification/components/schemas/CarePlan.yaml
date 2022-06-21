@@ -35,42 +35,45 @@ properties:
         enum:
           - "CarePlan"
       status:
-        description: "Care plan status status."
+        description: "Status of the care plan."
         type: string
         enum:
           - "active"
       intent:
-        description: "TBC intent."
+        description: "Level of authority / intentionality associated with the care plan and where the care plan fits into the workflow chain."
         type: string
         enum:
           - "order"
       subject:
-        description: "TBC subject."
+        description: "Patient or group whose intended care is described by the plan."
         type: object
-#        required:
-#          - TBC
+        required:
+          - identifier
+# TBC Confluence spec doesn't mention identifier but it's in the JSON example - I assume it is a thing, and I assume it's required          
         properties:
           identifier:
-            description: "TBC identifier."
+            description: "Unique identifier for the patient - specifically, their NHS number."
             type: object
-#            required:
-#              - TBC
+            required:
+              - system
+              - value
+# TBC Confluence spec say system and value are optional, but I suspect they are required              
             properties:
               system:
-                description: "TBC system."
+                description: "Type of identifier."
                 type: string
-                example: "https://fhir.nhs.uk/Id/nhs-number"
-# TBC should this be an enum? Is NHS number the only option?                
+                enum:
+                  - "https://fhir.nhs.uk/Id/nhs-number"
               value:
-                description: "TBC value."
+                description: "The NHS number itself."
                 type: string
                 example: "8462486238"
-# TBC should this be 9000000009?                
+# TBC should this be our standard example NHS number 9000000009? All "fake" NHS numbers should at least begin with a "9"
       activity:
-        description: "TBC activity array."
+        description: "List of referrals and bookings found for the patient."
         type: array
         items:
-          description: "TBC activity object."
+          description: "A single referral or booking for the patient."
           type: object
           required:
             - detail
