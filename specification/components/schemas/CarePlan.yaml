@@ -123,105 +123,172 @@ properties:
                     - "ServiceRequest"
                     - "Appointment"
                 extension:
-                  description: "TBC detail extension."
+                  description: "FHIR extension wrapper for various country-specific data items."                  
                   type: array
                   items:
                     oneOf:
-                      - description: "TBC portal link."
+                      - description: "URL for a patient-facing web application for the referral or booking."
+# Is this extension always present?                      
                         type: object
-#                        required:
-#                          - TBC
+                        required:
+                          - url
+                          - valueUrl
+# Confluence spec says the extension for the back-end application details is optional - is this correct or is it always present?                          
                         properties:
                           url:
-                            description: "TBC url."
+                            description: "FHIR extension type."
                             type: string
                             enum:
                               - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
                           valueUrl:
-                            description: "TBC valueUrl."
+                            description: "The URL itself."
                             type: string
                             example: "https://refer.nhs.uk/nhslogin?ubrn=808993698030"
                           extension:
-                            description: "TBC portal link extension array."
+                            description: "FHIR extension wrapper for the details of which back-end application the referral or booking came from."
                             type: array
                             items:
-                              description: "TBC portal link extension object."
+                              description: "Unique identifier for the back-end application the referral or booking came from."
                               type: object
-#                              required:
-#                                - TBC
+                              required:
+                                - url
+                                - valueCode
                               properties:
                                 url:
-                                  description: "TBC url."
+                                  description: "FHIR extension type for the identifier."
                                   type: string
-                                  example: "client-id"
+                                  enum:
+                                    - "client-id"
+# TBC this is not a valid URL - would expect it to be a FHIR UK Core extension
                                 valueCode:
-                                  description: "TBC valueCode."
+                                  description: "The identifier itself. Note that identifiers ending in `static-mock` only occur in test environments."
                                   type: string
-                                  example: "ers-01"
-                      - description: "TBC eRS service request state."
+                                  enum:
+                                    - ers-static-mock
+                                    - pkb-static-mock
+                                    - drdoctor-static-mock
+                                    - netcall-static-mock
+                                    - zesty-static-mock
+                                    - netcall-01
+                                    - dr-doctor-01
+                                    - zesty-01
+                      - description: "Status of the activity, if it is an e-RS referral."
+# Is this extension always present for an e-RS referral?
                         type: object
-#                        required:
-#                          - TBC
+                        required:
+                          - url
+                          - valueCoding
                         properties:
                           url:
-                            description: "TBC url."
+                            description: "FHIR extension type for the e-RS referral status."
                             type: string
                             enum:
                               - "https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ServiceRequest-State"
                           valueCoding:
-                            description: "TBC valueCoding."
+                            description: "Wrapper for the e-RS referral status."
                             type: object
-#                            required:
-#                              - TBC
+                            required:
+                              - system
+                              - code
+# TBC Confluence spec says system and code are optional but I'd be surprised if they are!                              
                             properties:
                               system:
-                                description: "TBC system."
+                                description: "Code system used for the e-RS referral status."
                                 type: string
-                                example: "https://fhir.nhs.uk/CodeSystem/eRS-ReferralState"
+                                enum:
+                                  - "https://fhir.nhs.uk/CodeSystem/eRS-ReferralState"
                               code:
-                                description: "TBC code."
+                                description: "The e-RS request status itself."
                                 type: string
-                                example: "Bookable"
-                      - description: "TBC specialty."
+                                enum:
+                                  - bookable
+                                  - bookableWasCancelled
+                                  - inReview
+# TBC JSON example is "Bookable" (capital B) whereas the Confluence spec says "bookable" - which is correct?                                
+                      - description: "Status of the activity, if it is a booking."
+# Is this extension always present for a booking?
+# TBC all through the spec I say "booking" because that's the language BaRS uses. But the Confluence spec uses "appointment" and FHIR says "appointment". Which should I use? Need to discuss with BaRS team.
                         type: object
-#                        required:
-#                          - TBC
+                        required:
+                          - url
+                          - valueCoding
                         properties:
                           url:
-                            description: "TBC url."
+                            description: "FHIR extension type for the booking status."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status"
+                          valueCoding:
+                            description: "Wrapper for the booking status."
+                            type: object
+                            required:
+                              - system
+                              - code
+# TBC Confluence spec says system and code are optional but I'd be surprised if they are!                              
+                            properties:
+                              system:
+                                description: "Code system used for the booking status."
+                                type: string
+                                enum:
+                                  - "http://hl7.org/fhir/appointmentstatus"
+                              code:
+                                description: "The e-RS request status itself."
+                                type: string
+                                enum:
+                                  - booked
+                                  - cancelled
+                                  - bookedPendingCancellation
+                                  - bookedPendingReschedule
+                                  - bookedPendingChange
+                                  - cancelledPendingReschedule
+                      - description: "The specialty of the service to which the referral or booking applies."
+# Is this extension always present? Or is it only for a booking? Or only for a referral?
+                        type: object
+                        required:
+                          - url
+                          - valueCoding
+                        properties:
+                          url:
+                            description: "FHIR extension type for the specialty."
                             type: string
                             enum:
                               - "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty"
                           valueCoding:
-                            description: "TBC valueCoding."
+                            description: "Wrapper for the specialty."
                             type: object
-#                            required:
-#                              - TBC
+                            required:
+                              - system
+                              - display
+# TBC Confluence spec says system and code are optional but I'd be surprised if they are!
                             properties:
                               system:
-                                description: "TBC system."
+                                description: "Code system used for the specialty."
                                 type: string
-                                example: "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
+                                enum:
+                                  - "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
 # TBC why is this a STU3 coding? Ah, probably because e-RS is a STU3 API? Shouldn't we be converting it?                                
-                              code:
-                                description: "TBC code."
+                              display:
+                                description: "The specialty itself, in plain text."
                                 type: string
                                 example: "TRAUMA & ORTHOPAEDICS"
-                      - description: "TBC consultation medium."
+                      - description: "The consultation medium for the booking (face-to-face or virtual), if the activity is a booking."
+# Is this extension always present for a booking?
                         type: object
-#                        required:
-#                          - TBC
+                        required:
+                          - url
+                          - valueCode
                         properties:
                           url:
-                            description: "TBC url."
+                            description: "FHIR extension type for the consultation medium code."
                             type: string
                             enum:
-                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty"
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium"
                           valueCode:
-                            description: "TBC valueCode."
+                            description: "The consultation code medium itself."
                             type: string
-                            example: "FACE_TO_FACE"
-# TBC what are the possible values for this field?
+                            enum:
+                              - "FACE_TO_FACE"
+                              - "VIRTUAL"
                 description:
                   description: "TBC description."
                   type: string
