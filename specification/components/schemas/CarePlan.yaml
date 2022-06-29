@@ -290,79 +290,91 @@ properties:
                               - "FACE_TO_FACE"
                               - "VIRTUAL"
                 description:
-                  description: "TBC description."
+                  description: "Extra information describing the activity to perform."
                   type: string
                   example: "Rheumatology - Metabolic Bone (inc Complex and Non-Complex cases) - Freeman - Newcastle FT - RTD"
                 scheduledPeriod:
-                  description: "TBC scheduledPeriod."
+                  description: "The period over which the activity is to occur."
                   type: object
-#                  required:
-#                    - TBC
+                  required:
+                    - extension
+# Confluence says the start date and time is optional - is it really?
+# Confluence says the extension is mandatory - is it really? Under what circumstances will it be present?
                   properties:
                     start:
-                      description: "TBC start."
-                      type: string                      
+                      description: "The date and time at which the activity is scheduled to start."
+                      type: string
                       example: "2021-05-23T10:02:15.960"
                     extension:
-                      description: "TBC scheduled period extension."
+                      description: "FHIR extension wrapper for various properties of the scheduled period."
                       type: array
                       items:
                         oneOf:
-                          - description: "TBC planned wait time."
+                          - description: "Planned wait time for the activity."
+# TBC what is "planned wait time" and under what circumstances will it be present?                          
                             type: object
-#                            required:
-#                              TBC
+                            required:
+                              - url
+                              - valueDuration
                             properties:
                               url:
-                                description: "TBC."
+                                description: "FHIR extension type."
                                 type: string
                                 enum:
                                   - "https://fhir.nhs.uk/StructureDefinition/Extension-PlannedWaitTime"
                               valueDuration:
-                                description: "TBC."
+                                description: "Planned wait time for the activity, expressed as a duration with units and a value."
                                 type: object
-#                                required:
-#                                  TBC
+                                required:
+                                  - unit
+                                  - value
                                 properties:
                                   unit:
-                                    description: "TBC."
+                                    description: "Unit of measure for the planned wait time duration."
                                     type: string
                                     enum:
-                                      - "TBC"
+                                      - "Days"
                                   value:
-                                    description: "TBC."
-                                    type: string
-                                    example: "45"
-                          - description: "TBC review due date."
+                                    description: "The planned wait time duration itself, relative to the unit of measure."
+                                    type: number
+                                    example: 45
+                          - description: "The date on which the activity is to be reviewed."
+# TBS what is "review date due" and under what circumstances will it be present?
                             type: object
-#                            required:
-#                              TBC
+                            required:
+                              - url
+                              - valueDate
                             properties:
                               url:
-                                description: "TBC."
+                                description: "FHIR extension type."
                                 type: string
                                 enum:
-                                  - "https://fhir.nhs.uk/StructureDefinition/Extension-PlannedWaitTime"
+                                  - "https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ReviewDueDate"
                               valueDate:
-                                description: "TBC."
+                                description: "The review due date itself."
                                 type: string
                                 example: "2020-11-19"
                 performer:
-                  description: "TBC."
+                  description: "Details of the entities responsible for performing the activity."
+# TBC Is this always present? Confluence example has no performer for the appointment
                   type: array
+                  minItems: 1
+# TBC Will there always be at least one entry in the array?                  
                   items:
-                    description: "TBC."
+                    description: "Details of one of the entities responsible for performing the activity."
                     type: object
-#                    required:
-#                      - TBC
+                    required:
+                      - type
+                      - display
                     properties:
                       type:
-                        description: "TBC."
+                        description: "Type of entity."
                         type: string
                         enum:
-                          - "TBC"
+                          - "HealthcareService"
+                          - "Organization"
+# TBC Possible values? Example has HealthcareService and Organization
                       display:
-                        description: "TBC."
+                        description: "Plain text description of the entity."
                         type: string
                         example: "THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST"
-# looks like performer could be a HealthcareService or an Organization
