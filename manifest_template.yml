@@ -53,12 +53,16 @@ apigee:
                   timeunit: minute
                 spikeArrest:
                   enabled: true
-                  ratelimit: 6000pm # 100 requests per second
+                  ratelimit: 9000pm # Matching e-RS strategy of 1.5x quota
               app:
                 quota:
-                  enabled: false
+                  enabled: true
+                  limit: 6000
+                  interval: 1
+                  timeunit: minute
                 spikeArrest:
-                  enabled: false
+                  enabled: true
+                  ratelimit: 9000pm
         description: {{ DESCRIPTION }}
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]
@@ -100,12 +104,16 @@ apigee:
                   timeunit: minute
                 spikeArrest:
                   enabled: true
-                  ratelimit: 6000pm # 10 requests per second
+                  ratelimit: 9000pm
               app:
                 quota:
                   enabled: false
+                  limit: 6000
+                  interval: 1
+                  timeunit: minute
                 spikeArrest:
                   enabled: false
+                  ratelimit: 9000pm
         description: {{ DESCRIPTION }}
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]
