@@ -3,7 +3,8 @@ type: object
 required:
   - resourceType
   - type
-# TBC if no referrals or bookings are found, is the entry field omitted or is it present but with zero items in the array?
+  - entry
+# TBC if no referrals or bookings are found, is the entry field omitted or is it present but with zero items in the array? the latter
 properties:
   resourceType:
     description: FHIR resource type.
@@ -20,9 +21,9 @@ properties:
       The FHIR resources within the bundle.
       Includes zero or one `CarePlan` resources (containing the referral and booking information, if any found)
       and zero or one `OperationOutcome` resources (if any back-end system errors occurred).
-# TBC if no referrals or bookings are found, is the entry field present but with zero items in the array, or is it omitted entirely?
+# TBC if no referrals or bookings are found, is the entry field present but with zero items in the array, or is it omitted entirely? the former
     type: array
-    minItems: 1
+    minItems: 0
     maxItems: 2
     items:
       oneOf:
