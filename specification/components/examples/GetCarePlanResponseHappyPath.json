@@ -1,0 +1,100 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [ {
+    "fullUrl": "https://servita-sandbox.co.uk/CarePlan/1",
+    "search": {
+      "mode": "match"
+    },
+    "resource": {
+      "resourceType": "CarePlan",
+      "status": "active",
+      "intent": "order",
+      "subject": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/nhs-number",
+          "value": "9000000009"
+        }
+      },
+      "activity": [ {
+        "reference": {
+          "type": "ServiceRequest",
+          "identifier": [ {
+            "system": "https://fhir.nhs.uk/Id/UBRN",
+            "value": "808993698030"
+          } ]
+        },
+        "detail": {
+          "kind": "ServiceRequest",
+          "extension": [ {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link",
+            "valueUrl": "https://refer.nhs.uk/nhslogin?ubrn=808993698030",
+            "extension": [ {
+              "url": "client-id",
+              "valueCode": "ers-01"
+            } ]
+          }, {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ServiceRequest-State",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/eRS-ReferralState",
+              "code": "bookable"
+            }
+          }, {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1",
+              "display": "TRAUMA & ORTHOPAEDICS"
+            }
+          }, {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",
+            "valueCode": "FACE_TO_FACE"
+          } ],
+          "description": "Rheumatology - Metabolic Bone (inc Complex and Non-Complex cases) - Freeman - Newcastle FT - RTD",
+          "scheduledPeriod": {
+            "start": "2021-05-23T10:02:15.960",
+            "extension": [ {
+              "url": "http://fhir.nhs.net/StructureDefinition/Extension-eRS-ReviewDueDate",
+              "valueDate": "2020-11-19"
+            } ]
+          },
+          "performer": [ {
+            "type": "Organization",
+            "display": "THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST"
+          } ]
+        }
+      }, {
+        "detail": {
+          "kind": "Appointment",
+          "extension": [ {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link",
+            "valueUrl": "https://refer.nhs.uk/nhslogin?ubrn=808993698030",
+            "extension": [{
+              "url": "client-id",
+              "valueCode": "ers-01"
+            }]
+          }, {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status",
+            "valueCoding": {
+              "system": "http://hl7.org/fhir/appointmentstatus",
+              "code": "booked"
+            }
+          }, {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1",
+              "display": "TRAUMA & ORTHOPAEDICS"
+            }
+          }, {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",
+            "valueCode": "FACE_TO_FACE"
+          } ],
+          "description": "Rheumatology Consulatation - Clinic 5, Main Outpatients Dept, Freeman Hospital",
+          "scheduledPeriod": {
+            "start": "2022-06-02T18:25:42.660",
+            "extension": [ ]
+          }
+        }
+      } ]
+    }
+  } ]
+}
