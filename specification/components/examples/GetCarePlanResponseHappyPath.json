@@ -13,7 +13,7 @@
       "subject": {
         "identifier": {
           "system": "https://fhir.nhs.uk/Id/nhs-number",
-          "value": "8462486238"
+          "value": "9000000009"
         }
       },
       "activity": [ {
@@ -37,7 +37,7 @@
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ServiceRequest-State",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/eRS-ReferralState",
-              "code": "Bookable"
+              "code": "bookable"
             }
           }, {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty",
@@ -53,20 +53,11 @@
           "scheduledPeriod": {
             "start": "2021-05-23T10:02:15.960",
             "extension": [ {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-PlannedWaitTime",
-              "valueDuration": {
-                "unit": "Days",
-                "value": "45"
-              }
-            }, {
               "url": "http://fhir.nhs.net/StructureDefinition/Extension-eRS-ReviewDueDate",
               "valueDate": "2020-11-19"
             } ]
           },
           "performer": [ {
-            "type": "HealthcareService",
-            "display": "Rheumatology - Metabolic Bone (inc Complex and Non-Complex cases) - Freeman - Newcastle FT - RTD"
-          }, {
             "type": "Organization",
             "display": "THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST"
           } ]
@@ -100,13 +91,7 @@
           "description": "Rheumatology Consulatation - Clinic 5, Main Outpatients Dept, Freeman Hospital",
           "scheduledPeriod": {
             "start": "2022-06-02T18:25:42.660",
-            "extension": [ {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-PlannedWaitTime",
-              "valueDuration": {
-                "unit": "Days",
-                "value": "45"
-              }
-            } ]
+            "extension": [ ]
           }
         }
       } ]
