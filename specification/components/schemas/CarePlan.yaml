@@ -50,7 +50,6 @@ properties:
         type: object
         required:
           - identifier
-# TBC Confluence spec doesn't mention identifier but it's in the JSON example - I assume it is a thing, and I assume it's required - yes and yes
         properties:
           identifier:
             description: "Unique identifier for the patient - specifically, their NHS number."
@@ -58,7 +57,6 @@ properties:
             required:
               - system
               - value
-# TBC Confluence spec say system and value are optional, but I suspect they are required - yes they are
             properties:
               system:
                 description: "Type of identifier."
@@ -68,8 +66,7 @@ properties:
               value:
                 description: "The NHS number itself."
                 type: string
-                example: "8462486238"
-# TBC should this be our standard example NHS number 9000000009? All "fake" NHS numbers should at least begin with a "9" - cool
+                example: "9000000009"
       activity:
         description: "List of referrals and bookings found for the patient."
         type: array
@@ -85,14 +82,12 @@ properties:
               required:
                 - type
                 - identifier
-# Confluence says the properties are all optional but I suspect they are required *if* the "reference" object is present - agreed
               properties:
                 type:
                   description: "FHIR resource type for the reference."
                   type: string
                   enum:
                     - "ServiceRequest"
-# TBC Confluence spec says this could be "ServiceRequest" or null, but under what conditions would the reference object be present and the type be null? I suspect that doesn't happen. agreed - it would just not be there.
                 identifier:
                   description: "Unique identifier for the e-RS referral - specifically an e-RS Unique Booking Reference Number (UBRN)."
                   type: object
@@ -114,7 +109,6 @@ properties:
               required:
                 - kind
                 - description
-# Confluence says performer is required but the example has no performer for the "Appointment" activity - correct - only for referrals
               properties:
                 kind:
                   description: "Type of activity - referral (`ServiceRequest`) or booking (`Appointment`)."
@@ -127,13 +121,12 @@ properties:
                   type: array
                   items:
                     oneOf:
-                      - description: "URL for a patient-facing web application for the referral or booking."
-# Is this extension always present? yes for both
+                      - description: "URL for a patient-facing web application for the referral or booking. Always present."
                         type: object
                         required:
                           - url
                           - valueUrl
-# Confluence spec says the extension for the back-end application details is optional - is this correct or is it always present?   yes                       
+                          - extension
                         properties:
                           url:
                             description: "FHIR extension type."
@@ -144,7 +137,6 @@ properties:
                             description: "The URL itself."
                             type: string
                             example: "https://refer.nhs.uk/nhslogin?ubrn=808993698030"
-# TBC change test NHS number
                           extension:
                             description: "FHIR extension wrapper for the details of which back-end application the referral or booking came from."
                             type: array
@@ -160,22 +152,11 @@ properties:
                                   type: string
                                   enum:
                                     - "client-id"
-# TBC this is not a valid URL - would expect it to be a FHIR UK Core extension - daniel thinks this is OK because it's an extension within an extension
                                 valueCode:
-                                  description: "The identifier itself. Note that identifiers ending in `static-mock` only occur in test environments."
+                                  description: "The identifier itself."
                                   type: string
-                                  enum:
-                                    - ers-static-mock
-                                    - pkb-static-mock
-                                    - drdoctor-static-mock
-                                    - netcall-static-mock
-                                    - zesty-static-mock
-                                    - netcall-01
-                                    - dr-doctor-01
-                                    - zesty-01
-# TBC don't include the explicit list                                    
-                      - description: "Status of the activity, if it is an e-RS referral."
-# Is this extension always present for an e-RS referral? yes
+                                  example: "ers-01"
+                      - description: "Status of the activity, if it is an e-RS referral. Always present for an e-RS referral."
                         type: object
                         required:
                           - url
@@ -192,7 +173,6 @@ properties:
                             required:
                               - system
                               - code
-# TBC Confluence spec says system and code are optional but I'd be surprised if they are! yes
                             properties:
                               system:
                                 description: "Code system used for the e-RS referral status."
@@ -206,10 +186,7 @@ properties:
                                   - bookable
                                   - bookableWasCancelled
                                   - inReview
-# TBC JSON example is "Bookable" (capital B) whereas the Confluence spec says "bookable" - which is correct? lower case       
-                      - description: "Status of the activity, if it is a booking."
-# Is this extension always present for a booking? yes
-# TBC all through the spec I say "booking" because that's the language BaRS uses. But the Confluence spec uses "appointment" and FHIR says "appointment". Which should I use? Need to discuss with BaRS team.
+                      - description: "Status of the activity, if it is a booking. Always present for a booking."
                         type: object
                         required:
                           - url
@@ -226,7 +203,6 @@ properties:
                             required:
                               - system
                               - code
-# TBC Confluence spec says system and code are optional but I'd be surprised if they are!                              
                             properties:
                               system:
                                 description: "Code system used for the booking status."
@@ -243,8 +219,7 @@ properties:
                                   - bookedPendingReschedule
                                   - bookedPendingChange
                                   - cancelledPendingReschedule
-                      - description: "The specialty of the service to which the referral or booking applies."
-# Is this extension always present? Or is it only for a booking? Or only for a referral? always for a booking, optional for a referral (if the referral hasn't been booked yet)
+                      - description: "The specialty of the service to which the referral or booking applies. Always present for a booking; only present for a referral if the referral has been booked."
                         type: object
                         required:
                           - url
@@ -261,20 +236,18 @@ properties:
                             required:
                               - system
                               - display
-# TBC Confluence spec says system and display are optional but I'd be surprised if they are! yes
                             properties:
                               system:
                                 description: "Code system used for the specialty."
                                 type: string
                                 enum:
                                   - "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
-# TBC why is this a STU3 coding? Ah, probably because e-RS is a STU3 API? Shouldn't we be converting it? Has been checked by IOPS.
                               display:
                                 description: "The specialty itself, in plain text."
                                 type: string
                                 example: "TRAUMA & ORTHOPAEDICS"
                       - description: "The consultation medium for the booking (face-to-face or virtual), if the activity is a booking."
-# Is this extension always present for a booking?
+# TBC Is this extension always present for a booking?
                         type: object
                         required:
                           - url
@@ -300,11 +273,10 @@ properties:
                   type: object
                   required:
                     - extension
-# Confluence says the start date and time is optional - is it really? yes, both for bookkings and referrals
-# Confluence says the extension is mandatory - is it really? Under what circumstances will it be present? remove
+# Confluence says the extension is mandatory - is it really, or only if there is something in it
                   properties:
                     start:
-                      description: "The date and time at which the activity is scheduled to start."
+                      description: "The date and time at which the activity is scheduled to start, if known."
                       type: string
                       example: "2021-05-23T10:02:15.960"
                     extension:
@@ -312,36 +284,7 @@ properties:
                       type: array
                       items:
                         oneOf:
-                          - description: "Planned wait time for the activity."
-# TBC what is "planned wait time" and under what circumstances will it be present?                          remove this from spec
-                            type: object
-                            required:
-                              - url
-                              - valueDuration
-                            properties:
-                              url:
-                                description: "FHIR extension type."
-                                type: string
-                                enum:
-                                  - "https://fhir.nhs.uk/StructureDefinition/Extension-PlannedWaitTime"
-                              valueDuration:
-                                description: "Planned wait time for the activity, expressed as a duration with units and a value."
-                                type: object
-                                required:
-                                  - unit
-                                  - value
-                                properties:
-                                  unit:
-                                    description: "Unit of measure for the planned wait time duration."
-                                    type: string
-                                    enum:
-                                      - "Days"
-                                  value:
-                                    description: "The planned wait time duration itself, relative to the unit of measure."
-                                    type: number
-                                    example: 45
-                          - description: "The date on which the activity is to be reviewed."
-# TBS what is "review date due" and under what circumstances will it be present? for a service request from e-rs, it might be present - date the referral will be reviewed
+                          - description: "The date on which the activity is to be reviewed, if it is a referral. Not always present, even for referrals."
                             type: object
                             required:
                               - url
@@ -357,12 +300,10 @@ properties:
                                 type: string
                                 example: "2020-11-19"
                 performer:
-                  description: "Details of the entities responsible for performing the activity."
-# TBC Is this always present? Confluence example has no performer for the appointment - correct
+                  description: "Details of the entities responsible for performing the activity, if known."
                   type: array
                   minItems: 1
                   maxItems: 1
-# TBC Will there always be at least one entry in the array?                  exactly one
                   items:
                     description: "Details of one of the entities responsible for performing the activity."
                     type: object
@@ -374,9 +315,7 @@ properties:
                         description: "Type of entity."
                         type: string
                         enum:
-                          - "HealthcareService"
                           - "Organization"
-# TBC Possible values? Example has HealthcareService and Organization - only ever org
                       display:
                         description: "Plain text description of the entity."
                         type: string
