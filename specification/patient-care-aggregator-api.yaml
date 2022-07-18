@@ -6,6 +6,9 @@ info:
   version: "1.0.0"
   description: |
     ## Overview
+    
+    TBC diagram
+    
     Use this API to get an aggregated list of referrals and bookings for a given patient from secondary care providers.
     
     The API aggregates details of referrals and bookings from the following systems:
@@ -70,15 +73,11 @@ info:
     |[NHS login - separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-separate-authentication-and-authorisation) |OAuth 2.0 token exchange with signed JWT             |Gives access to user information.                            |Need to integrate and onboard separately with NHS login. |
     
     ## Environments and testing
-    | Environment       | Base URL                                                                      |
-    | ----------------- | ----------------------------------------------------------------------------- |
-    | Sandbox           | Not available                                                                 |
-    | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         |
-    | Production        | Not yet available                                                             |    
-
-    TBC URL shouldn't have "-api" as a suffix. Agreed to see if we can change this - need to check with NHS App team.
-
-    TBC which NHS login environments do the APIM environments link to? AOS
+    | Environment       | Base URL                                                                      | Linked NHS login environment  |
+    | ----------------- | ----------------------------------------------------------------------------- | ----------------------------- |
+    | Sandbox           | Not available                                                                 | Not applicable                |
+    | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         | NHS login - integration (AOS) |
+    | Production        | Not yet available                                                             | NHS login - Live (production) |
 
     ### Sandbox testing
     This API does not currently have a sandbox environment.
@@ -88,14 +87,12 @@ info:
     * is for formal integration testing
     * includes authorisation
 
-    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
+    It is an end-to-end environment - it includes instances of each of the back-end applications, and is linked to the Integration (AOS) instance of NHS login.
     
-    TBC what test data do we have in place? There is a set of test data - see SA section on confluence
-    
-    TBC what back-ends is it connected to - e-RS, DrDoctor, PatientsKnowBest environments? yes - all of them
-    
-    TBC does it require co-ordination or is it self-serve? self-serve sort of
+    For details of test data, see [Patient care aggregator test data packs](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-fhir/patient-care-aggregator-fhir-api-test-data).
 
+    For more details on integration testing, see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
+    
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
     
@@ -144,40 +141,34 @@ paths:
           in: header
           description: |
             An OAuth 2.0 bearer token, obtained using our [NHS login pattern](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-separate-authentication-and-authorisation).
-# Is this right? Confluence says it should be an NHS login ID token! I hope not, you're supposed to be using OAuth 2.0 properly!            Yes it's an oauth access token
           required: true
           schema:
             type: string
             format: '^Bearer\ [[:ascii:]]+$'
             example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
         - name: X-Request-ID
-# TBC Confluence page says "Id" but our standard is "ID" - presume not case sensitive - correct
           in: header
           required: false
-# TBC Confluence page says required, but our standard is it's optional - agreed it's optional
           description: |
             A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
             Must be a universally unique identifier (UUID) (ideally version 4).
             
-            Mirrored back in a response header.
+            Not mirrored back in a response header (we might change this).
             
             If you re-send a failed request, use the same value in this header.
-# TBC is it actually mirrored back? No. TH to request code change (Matt Visser -> Sophie something)
           schema:
             type: string
             pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
             example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
         - name: X-Correlation-ID
-# TBC Confluence page says "Id" but our standard is "ID" - presume not case sensitive
           in: header
           required: false
 # TBC Confluence page says required, but our standard is it's optional - BARS have said it's mandatory - TH to check with Richard Ward / Aubyn
           description: |
             An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
             
-            Mirrored back in a response header.
-# TBC is it actually mirrored back? No - code change reqyest
+            Not mirrored back in a response header (we might change this).
           schema:
             type: string
             example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
@@ -195,7 +186,6 @@ paths:
             enum:
               - "ewrCoCDCoCAic3lzdGVtIjogInVybjppZXRmOnJmYzozOTg2IiwKwqAgwqAgInZhbHVlIjogImRiNzE2OThiLWNkN2MtNGRkNS05NWM0LTBhYTk3NzY1OTVmNSIKfQ=="
 # TBC why is this even needed - seems a bit bizarre to be calling an API and including a unique ID for the thing you're calling.
-# TBC what happens if the caller passes the wrong thing - is the request rejected?
 # TBC discuss with Richard Ward
       responses:
         '2XX':
@@ -209,8 +199,6 @@ paths:
             | 200         | All back-end systems responded normally. If any referrals or bookings were found, the response includes them all in a single `CarePlan` resource. |
             | 207         | One or more back-end systems returned an error. The response includes all the errors in a single `OperationOutcome` resource. |
             
-#          headers:
-#            TBC what response headers are there? I'm expecting at least X-Request-ID and X-Correlation-ID - there are none for now
           content:
             application/fhir+json:   
               schema:
@@ -240,7 +228,7 @@ paths:
             
             For details see the `diagnostics` field.
             
-# TBC feels like the error codes should be more specific e.g. UNDER_16_DENIED would be better as an error code, not a diagnostic codee
+# TBC feels like the error codes should be more specific e.g. UNDER_16_DENIED would be better as an error code, not a diagnostic code
 # TBC is the input parameter an ID token or an OAuth 2.0 access token?
 # TBC invalid NHS number includes the NHS number in the diagnostics - might be better not to include it
 # TBC error code format for 401 errors - PDS spec says ACCESS_DENIED
