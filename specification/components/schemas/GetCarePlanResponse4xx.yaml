@@ -1,4 +1,4 @@
-description: "Details of the issue(s) that have occurred."
+description: "Details of the issues that have occurred."
 type: object
 required:
   - resourceType
@@ -16,8 +16,10 @@ properties:
     items:
       description: "Details of an issue that has occurred."
       type: object
-#      required:
-#        - TBC
+      required:
+        - severity
+        - code
+        - diagnostics
       properties:
         severity:
           description: "Severity of the issue."

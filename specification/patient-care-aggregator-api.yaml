@@ -5,6 +5,22 @@ info:
   title: "Patient Care Aggregator API"
   version: "1.0.0"
   description: |
+  
+    <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
+        <div class="nhsd-a-box nhsd-a-box--border-blue">
+            <div class="nhsd-m-emphasis-box__image-box">
+                <figure class="nhsd-a-image">
+                    <picture class="nhsd-a-image__picture">
+                        <img src="//nhs-prod.global.ssl.fastly.net/svg-magic/binaries/content/gallery/icons/info.svg?colour=231f20" alt="" style="object-fit:fill">
+                    </picture>
+                </figure>
+            </div>
+            <div class="nhsd-m-emphasis-box__content-box">
+                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is currently for internal NHS Digital use only.</p></div>            
+            </div>
+        </div>
+    </div>
+    
     ## Overview
     
     ![Patient Care Aggregator FHIR API context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-api-context-diagram.svg?raw=true)
@@ -16,7 +32,7 @@ info:
     - [DrDoctor](https://www.drdoctor.co.uk/) (bookings only)
     - [Patients Know Best](https://patientsknowbest.com/) (bookings only)
     
-    Other providers may be added in the future.
+    We might add other providers in the future.
     
     This API is only for use in patient-facing applications, not point-of-care applications.
     
@@ -42,7 +58,7 @@ info:
     global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/),
     except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
 
-    It includes some country-specific FHIR extensions, which have built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
+    It includes some country-specific FHIR extensions, which have been built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
 
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
