@@ -20,7 +20,7 @@ properties:
 #        - TBC
       properties:
         severity:
-          description: "TBC."
+          description: "Severity of the issue."
           type: string
           enum:
             - fatal

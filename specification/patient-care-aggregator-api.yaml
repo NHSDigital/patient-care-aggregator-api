@@ -7,9 +7,9 @@ info:
   description: |
     ## Overview
     
-    TBC diagram
+    ![Patient Care Aggregator FHIR API context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-api-context-diagram.svg?raw=true)
     
-    Use this API to get an aggregated list of referrals and bookings for a given patient from secondary care providers.
+    Use this API to get an aggregated list of referrals and bookings for a patient from secondary care providers.
     
     The API aggregates details of referrals and bookings from the following systems:
     - [NHS e-Referral Service](https://digital.nhs.uk/services/e-referral-service) (referrals and bookings)
@@ -42,8 +42,7 @@ info:
     global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/),
     except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
 
-    It includes some country-specific FHIR extensions, which have built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core),
-    specifically [UK.core.r4 1.0.0](https://simplifier.net/packages/uk.core.r4/1.0.0).
+    It includes some country-specific FHIR extensions, which have built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
 
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
@@ -59,13 +58,13 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
     
     ## Security and authorisation
-    This access mode is [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis), meaning an end user must be present, authenticated and authorised.
+    This API is [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis), meaning an end user must be present, authenticated and authorised.
     
     The end user must be:
     * a patient who receives health and social care or makes use of NHS services
     * strongly authenticated, using [NHS login](https://digital.nhs.uk/services/nhs-login)
      
-    To use this access mode, use one of the following security patterns:
+    To use this API, use one of the following security patterns:
     
     |	Security pattern		                                                                                                                                                                                                          |	Technical details	                                  |	Advantages	                                                | Disadvantages                                           |
     |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ----------------------------------------------------| ------------------------------------------------------------|---------------------------------------------------------|
@@ -80,7 +79,7 @@ info:
     | Production        | Not yet available                                                             | NHS login - Live (production) |
 
     ### Sandbox testing
-    This API does not currently have a sandbox environment.
+    This API does not currently have a sandbox environment. If you would like us to add one, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
     ### Integration testing
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
@@ -98,7 +97,7 @@ info:
     
     To onboard for this API, follow the [Supplier Conformance Assessment List (SCAL)](https://digital.nhs.uk/developer/guides-and-documentation/onboarding-process#onboard-using-the-supplier-conformance-assessment-list-scal-process) process.
     
-    To get started with the SCAL process for this API, [contact us](https://digital.nhs.uk/developer/help-and-support)
+    To get started with the SCAL process for this API, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
   contact:
     name: 'patient-care-aggregator-api API Support'
@@ -117,7 +116,7 @@ paths:
       summary: Get referrals and bookings
       operationId: get-referrals-and-bookings
       description: |
-        Use this endpoint to get an aggregated list of referrals and bookings for a given patient from secondary care providers.
+        Use this endpoint to get an aggregated list of referrals and bookings for a patient from secondary care providers.
         The endpoint checks for referrals and bookings from multiple back-end applications and aggregates them into a single list.
         
         The endpoint returns the list as a FHIR 'bundle' which includes:
@@ -140,7 +139,7 @@ paths:
         - name: Authorization
           in: header
           description: |
-            An OAuth 2.0 bearer token, obtained using our [NHS login pattern](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-separate-authentication-and-authorisation).
+            An OAuth 2.0 bearer token, obtained using one of the security patterns explained in the 'Security and authorisation' section above.
           required: true
           schema:
             type: string
@@ -163,8 +162,7 @@ paths:
             example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
         - name: X-Correlation-ID
           in: header
-          required: false
-# TBC Confluence page says required, but our standard is it's optional - BARS have said it's mandatory - TH to check with Richard Ward / Aubyn
+          required: true
           description: |
             An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
             
@@ -197,7 +195,7 @@ paths:
             | HTTP status | Description                                                         |
             | ----------- | ------------------------------------------------------------------- |
             | 200         | All back-end systems responded normally. If any referrals or bookings were found, the response includes them all in a single `CarePlan` resource. |
-            | 207         | One or more back-end systems returned an error. The response includes all the errors in a single `OperationOutcome` resource. |
+            | 207         | One or more back-end systems returned an error. If any referrals or bookings were found, the response includes them all in a single `CarePlan` resource. The response also includes all the errors in a single `OperationOutcome` resource. |
             
           content:
             application/fhir+json:   
@@ -205,26 +203,26 @@ paths:
                 $ref: "components/schemas/GetCarePlanResponseHappyPath.yaml"
               examples:
                 happyPath:
-                  summary: "A response with a `CarePlan` resource containing one referral and one booking (HTTP status 200)."
+                  summary: "A response where all back-end systems responded normally (HTTP status 200). Contains a `CarePlan` resource containing one referral and one booking."
                   value:
                     $ref: "components/examples/GetCarePlanResponseHappyPath.json"
 # TBC example shows fullUrl as 'https://servita-sandbox.co.uk/CarePlan/1' whereas on other APIs its more like a GUID                
                 oneOrMoreErrors:
-                  summary: "A response with a `CarePlan` resource containing one referral and one booking, and an `OperationOutcome` resource containing one back-end system error (HTTP status 207)."
+                  summary: "A response where one back-end system returned an error (HTTP status 207). Includes a `CarePlan` resource containing one referral and one booking, and an `OperationOutcome` resource containing one back-end system error."
                   value:
                     $ref: "components/examples/GetCarePlanResponseWithErrors.json"
         '4XX':
           description: |
             An error occurred as follows:
             
-            | HTTP status | Error code        | Description                                                         |
-            | ----------- | ----------------- | ------------------------------------------------------------------- |
-            | 400         | `exception`       | Missing or invalid NHS number                                       |
-            | 401         | `processing`      | Missing or invalid OAuth 2.0 bearer token                           |
-            | 401         | `processing`      | NHS number in request doesn't match NHS number in NHS login account |
-            | 403         | `forbidden`       | Patient is under 16 years of age                                    |
-            | 404         | `not-found`       | Invalid value in `NHSD-Target-Identifier` header                    |
-            | 429         | TOO_MANY_REQUESTS | You have exceeded your application's [rate limit](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits). |
+            | HTTP status | Error code          | Description                                                         |
+            | ----------- | ------------------- | ------------------------------------------------------------------- |
+            | 400         | `exception`         | Missing or invalid NHS number                                       |
+            | 401         | `processing`        | Missing or invalid OAuth 2.0 bearer token                           |
+            | 401         | `processing`        | NHS number in request doesn't match NHS number in NHS login account |
+            | 403         | `forbidden`         | Patient is under 16 years of age                                    |
+            | 404         | `not-found`         | Invalid value in `NHSD-Target-Identifier` header                    |
+            | 429         | `TOO_MANY_REQUESTS` | You have exceeded your application's [rate limit](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits). |
             
             For details see the `diagnostics` field.
             
