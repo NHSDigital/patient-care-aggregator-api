@@ -271,16 +271,13 @@ properties:
                 scheduledPeriod:
                   description: "The period over which the activity is to occur."
                   type: object
-                  required:
-                    - extension
-# Confluence says the extension is mandatory - is it really, or only if there is something in it
                   properties:
                     start:
                       description: "The date and time at which the activity is scheduled to start, if known."
                       type: string
                       example: "2021-05-23T10:02:15.960"
                     extension:
-                      description: "FHIR extension wrapper for various properties of the scheduled period."
+                      description: "FHIR extension wrapper for various properties of the scheduled period, if there are any."
                       type: array
                       items:
                         oneOf:
