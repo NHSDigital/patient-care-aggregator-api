@@ -16,8 +16,10 @@ properties:
     items:
       description: "Details of an issue that has occurred."
       type: object
-#      required:
-#        - TBC
+      required:
+        - severity
+        - code
+        - diagnostics
       properties:
         severity:
           description: "Severity of the issue."
