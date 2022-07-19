@@ -1,4 +1,4 @@
-description: A FHIR Bundle containing results of the request.
+description: A FHIR bundle containing results of the request.
 type: object
 required:
   - resourceType
