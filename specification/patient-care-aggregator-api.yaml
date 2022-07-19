@@ -16,7 +16,7 @@ info:
     - [DrDoctor](https://www.drdoctor.co.uk/) (bookings only)
     - [Patients Know Best](https://patientsknowbest.com/) (bookings only)
     
-    Other providers may be added in the future.
+    We might add other providers in the future.
     
     This API is only for use in patient-facing applications, not point-of-care applications.
     
@@ -42,7 +42,7 @@ info:
     global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/),
     except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
 
-    It includes some country-specific FHIR extensions, which have built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
+    It includes some country-specific FHIR extensions, which have been built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
 
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
