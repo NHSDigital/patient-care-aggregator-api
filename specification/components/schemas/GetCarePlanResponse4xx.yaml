@@ -1,4 +1,4 @@
-description: "Details of the issue(s) that have occurred."
+description: "Details of the issues that have occurred."
 type: object
 required:
   - resourceType
