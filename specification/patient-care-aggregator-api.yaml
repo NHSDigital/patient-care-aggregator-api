@@ -7,7 +7,7 @@ info:
   description: |
     ## Overview
     
-    TBC diagram
+    ![Patient Care Aggregator FHIR API context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-api-context-diagram.svg?raw=true)
     
     Use this API to get an aggregated list of referrals and bookings for a given patient from secondary care providers.
     
