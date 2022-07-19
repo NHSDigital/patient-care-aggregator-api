@@ -246,7 +246,7 @@ properties:
                                 description: "The specialty itself, in plain text."
                                 type: string
                                 example: "TRAUMA & ORTHOPAEDICS"
-                      - description: "The consultation medium for the booking (face-to-face or virtual), if the activity is a booking. Always present if the activity is a booking, but might be blank if the underlying consultation type isn't recognised."
+                      - description: "The consultation medium for the booking (face-to-face or virtual), if the activity is a booking. Always present if the activity is a booking, but might be blank if the underlying consultation type is not recognised."
                         type: object
                         required:
                           - url
@@ -258,7 +258,7 @@ properties:
                             enum:
                               - "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium"
                           valueCode:
-                            description: "The consultation code medium itself."
+                            description: "The consultation code medium itself. Will be blank (empty string) if the underlying consultation type is not recognised."
                             type: string
                             enum:
                               - "FACE_TO_FACE"
