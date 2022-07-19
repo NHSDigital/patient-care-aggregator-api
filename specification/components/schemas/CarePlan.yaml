@@ -77,7 +77,7 @@ properties:
             - detail
           properties:
             reference:
-              description: "e-RS Unique Booking Reference Number (UBRN) for the referral, if this activity is an e-RS referral, expressed as a referencve to a FHIR `ServiceRequest` resource."
+              description: "e-RS Unique Booking Reference Number (UBRN) for the referral, if this activity is an e-RS referral, expressed as a reference to a FHIR `ServiceRequest` resource."
               type: object
               required:
                 - type
