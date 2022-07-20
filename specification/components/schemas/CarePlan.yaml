@@ -90,19 +90,23 @@ properties:
                     - "ServiceRequest"
                 identifier:
                   description: "Unique identifier for the e-RS referral - specifically an e-RS Unique Booking Reference Number (UBRN)."
-                  type: object
-                  required:
-                    - system
-                    - value
-                  properties:
-                    system:
-                      description: "Code system used for the identifier."
-                      type: string
-                      example: "https://fhir.nhs.uk/Id/UBRN"
-                    value:
-                      description: "The e-RS Unique Booking Reference Number (UBRN) itself."
-                      type: string
-                      example: "808993698030"
+                  type: array
+                  minItems: 1
+                  maxItems: 1
+                  items:
+                    type: object
+                    required:
+                      - system
+                      - value
+                    properties:
+                      system:
+                        description: "Code system used for the identifier."
+                        type: string
+                        example: "https://fhir.nhs.uk/Id/UBRN"
+                      value:
+                        description: "The e-RS Unique Booking Reference Number (UBRN) itself."
+                        type: string
+                        example: "808993698030"
             detail:
               description: "Details of the referral or booking."
               type: object
