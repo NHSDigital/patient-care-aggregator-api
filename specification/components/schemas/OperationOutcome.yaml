@@ -50,8 +50,17 @@ properties:
               type: string
               example: "error"
             code:
-              description: "Error code for the issue."
+              description: |
+                Error code for the issue.
+                `timeout` means the request to the back-end application timed out;
+                `structure` means the response we received from the back-end application failed out validation;
+                `transient` or `exception` means we received an unexpected error from the back-end application
               type: string
+              enum:
+                - "timeout"
+                - "structure"
+                - "transient"
+                - "exception"
               example: "structure"
             extension:
               description: "FHIR extension wrapper for the details of which back-end application returned the error."
