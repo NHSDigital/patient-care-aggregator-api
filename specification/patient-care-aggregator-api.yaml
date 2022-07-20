@@ -233,8 +233,8 @@ paths:
             
             | HTTP status | Error code          | Description                                                         |
             | ----------- | ------------------- | ------------------------------------------------------------------- |
-            | 400         | `exception`         | Missing or invalid NHS number                                       |
-            | 401         | `processing`        | Missing or invalid OAuth 2.0 bearer token                           |
+            | 400         | `exception`         | Missing or invalid NHS number in request                            |
+            | 401         | `processing`        | Missing or invalid OAuth 2.0 bearer token in request                |
             | 401         | `processing`        | NHS number in request doesn't match NHS number in NHS login account |
             | 403         | `forbidden`         | Patient is under 16 years of age                                    |
             | 404         | `not-found`         | Invalid value in `NHSD-Target-Identifier` header                    |
