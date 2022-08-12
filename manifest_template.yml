@@ -17,6 +17,9 @@ APIGEE_ENVIRONMENTS:
     portal_visibility: false
   - name: int
     display_name: Integration Testing
+  - name: prod
+    display_name: Production
+    approval_type: manual
 
 INTERNAL_DEV_VARIANTS:
     - name: alpha
@@ -33,11 +36,12 @@ apigee:
 {% for ENV in APIGEE_ENVIRONMENTS %}
 {% set TITLE = PRODUCT_DISPLAY_NAME + ' (' + ENV.display_name + ' Environment)' %}
 {% set NAME = SERVICE_NAME + '-' + ENV.name %}
+{% set approval_type = env.approval_type | default('auto') %}
 {% if ENV.name == 'internal-dev' %}
   - name: {{ ENV.name }}
     products:
       - name: {{ NAME }}
-        approvalType: auto
+        approvalType: {{ approval_type }}
         attributes:
           - name: access
             value: public
@@ -88,7 +92,7 @@ apigee:
   - name: {{ ENV.name }}
     products:
       - name: {{ NAME }}
-        approvalType: auto
+        approvalType: {{ approval_type }}
         attributes:
           - name: access
             value: public
