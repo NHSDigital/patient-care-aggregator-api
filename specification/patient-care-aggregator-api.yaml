@@ -48,7 +48,7 @@ info:
     
     ## Service level
     The [service level](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels) for this API
-    is TBC.
+    is gold.
     
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
