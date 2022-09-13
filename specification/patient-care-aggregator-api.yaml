@@ -41,15 +41,14 @@ info:
     
     If you are interested in using this API in another context, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
-    ## API status and roadmap
-    This API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it's available for testing
-    - it's not available in production
+    ## API status
+    This API is in [private beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - it's available in production for private beta participants
     - we might make breaking changes
     
     ## Service level
     The [service level](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels) for this API
-    will be confirmed once it moves into production. It is likely to be gold.
+    is gold.
     
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
@@ -88,11 +87,11 @@ info:
     |[NHS login - separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-separate-authentication-and-authorisation) |OAuth 2.0 token exchange with signed JWT             |Gives access to user information.                            |Need to integrate and onboard separately with NHS login. |
     
     ## Environments and testing
-    | Environment       | Base URL                                                                      | Linked NHS login environment  |
-    | ----------------- | ----------------------------------------------------------------------------- | ----------------------------- |
-    | Sandbox           | Not available                                                                 | Not applicable                |
-    | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         | NHS login - integration (AOS) |
-    | Production        | Not yet available                                                             | NHS login - Live (production) |
+    | Environment       | Base URL                                                                        | Linked NHS login environment  |
+    | ----------------- | ------------------------------------------------------------------------------- | ----------------------------- |
+    | Sandbox           | Not available                                                                   | Not applicable                |
+    | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/aggregator/events/` | NHS login - integration (AOS) |
+    | Production        | `https://api.service.nhs.uk/patient-care-aggregator-api/aggregator/events/`     | NHS login - Live (production) |
 
     ### Sandbox testing
     This API does not currently have a sandbox environment. If you would like us to add one, [contact us](https://digital.nhs.uk/developer/help-and-support).
