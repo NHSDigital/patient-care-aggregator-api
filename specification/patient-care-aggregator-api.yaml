@@ -87,11 +87,11 @@ info:
     |[NHS login - separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-login-separate-authentication-and-authorisation) |OAuth 2.0 token exchange with signed JWT             |Gives access to user information.                            |Need to integrate and onboard separately with NHS login. |
     
     ## Environments and testing
-    | Environment       | Base URL                                                                      | Linked NHS login environment  |
-    | ----------------- | ----------------------------------------------------------------------------- | ----------------------------- |
-    | Sandbox           | Not available                                                                 | Not applicable                |
-    | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/FHIR/R4/`         | NHS login - integration (AOS) |
-    | Production        | `https://api.service.nhs.uk/patient-care-aggregator-api/aggregator/events/`   | NHS login - Live (production) |
+    | Environment       | Base URL                                                                        | Linked NHS login environment  |
+    | ----------------- | ------------------------------------------------------------------------------- | ----------------------------- |
+    | Sandbox           | Not available                                                                   | Not applicable                |
+    | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/aggregator/events/` | NHS login - integration (AOS) |
+    | Production        | `https://api.service.nhs.uk/patient-care-aggregator-api/aggregator/events/`     | NHS login - Live (production) |
 
     ### Sandbox testing
     This API does not currently have a sandbox environment. If you would like us to add one, [contact us](https://digital.nhs.uk/developer/help-and-support).
