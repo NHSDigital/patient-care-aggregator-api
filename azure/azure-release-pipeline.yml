@@ -50,26 +50,13 @@ extends:
         jinja_templates:
           PCA_TARGET_SERVER: patient-care-aggregator-api-nft           
       - environment: internal-qa
-        # make_spec_visible: true
         post_deploy:
           - template: ./templates/run-tests.yml
-    #  - environment: internal-qa-sandbox
-    #    proxy_path: sandbox
-    #    make_spec_visible: true
-    #    post_deploy:
-    #      - template: ./templates/run-smoke-tests.yml
-    # make_spec_visible is false for sandbox environment
-    # (App subscription make sense for most sandbox implementations)
-      - environment: sandbox
-        proxy_path: sandbox
-        post_deploy:
-          - template: ./templates/run-tests.yml
-    # Enable int environment when ready by uncommenting:
       - environment: int
         depends_on:
           - internal_qa
         post_deploy:
           - template: ./templates/run-tests.yml
       - environment: prod
-        depends_on:              # which environments to depend on before deploying
+        depends_on:
           - internal_qa
