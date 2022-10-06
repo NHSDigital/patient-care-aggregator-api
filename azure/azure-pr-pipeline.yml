@@ -50,7 +50,3 @@ extends:
         service_base_path: "${{ variables.service_base_path }}-nft"
         jinja_templates:
           PCA_TARGET_SERVER: patient-care-aggregator-api-nft 
-      - environment: internal-dev-sandbox
-        proxy_path: sandbox
-        post_deploy:
-          - template: ./templates/run-tests.yml
