@@ -42,11 +42,10 @@ info:
     If you are interested in using this API in another context, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
     ## API status
-    This API is [in production, beta but for internal](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses) NHS digital use only.
+    This API is [in production, beta but for internal](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses) NHS Digital use only.
     
     If you would still like to be involved in our beta programme or use this API, [contact us](https://digital.nhs.uk/developer/help-and-support).
-    
-    
+        
         ## Service level
     The [service level](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels) for this API
     is gold.
