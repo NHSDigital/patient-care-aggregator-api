@@ -16,7 +16,7 @@ info:
                 </figure>
             </div>
             <div class="nhsd-m-emphasis-box__content-box">
-                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is currently for internal NHS Digital use only.</p></div>            
+                <div data-uipath="website.contentblock.emphasis.content" class="nhsd-t-word-break"><p class="nhsd-t-body">This API is <a href="https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses">in production, beta but internal</a>, meaning the API is not currently available for integration by external third parties. If you still want to use it, <a href="https://digital.nhs.uk/developer/help-and-support">contact us</a>.</p></div>
             </div>
         </div>
     </div>
@@ -42,10 +42,10 @@ info:
     If you are interested in using this API in another context, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
     ## API status
-    This API is in [private beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it's available in production for private beta participants
-    - we might make breaking changes
-    
+    This API is [in production, beta but internal](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning the API is not currently available for integration by external third parties. If you still want to use it, [contact us](https://digital.nhs.uk/developer/help-and-support).
+        
+    If you would still like to be involved in our beta programme or use this API, [contact us](https://digital.nhs.uk/developer/help-and-support).
+        
     ## Service level
     The [service level](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels) for this API
     is gold.
