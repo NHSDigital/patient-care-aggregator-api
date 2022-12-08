@@ -130,10 +130,10 @@ apigee:
     specs:
       - name: {{ NAME }}
         path: {{ SERVICE_NAME }}.json
-      - name: patient-care-aggregator-appointment-api-standard
-        path: patient-care-aggregator-appointment-api-standard.json
-      - name: patient-care-aggregator-record-service-api
-        path: patient-care-aggregator-record-service-api.json
+      - name: patient-care-aggregator-api-appointment-standard
+        path: patient-care-aggregator-api-appointment-standard.json
+      - name: patient-care-aggregator-api-record-service
+        path: patient-care-aggregator-api-record-service.json
     api_catalog:
       - edgeAPIProductName: {{ NAME }}
         anonAllowed: true
