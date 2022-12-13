@@ -71,6 +71,10 @@ apigee:
     specs:
       - name: {{ NAME }}
         path: {{ SERVICE_NAME }}.json
+      - name: {{ NAME }}-appointment-standard
+        path: {{ SERVICE_NAME }}-appointment-standard.json
+      - name: {{ NAME }}-record-service
+        path: {{ SERVICE_NAME }}-record-service.json
     api_catalog:
       - edgeAPIProductName: {{ NAME }}
         anonAllowed: true
@@ -126,6 +130,10 @@ apigee:
     specs:
       - name: {{ NAME }}
         path: {{ SERVICE_NAME }}.json
+      - name: {{ NAME }}-appointment-standard
+        path: {{ SERVICE_NAME }}-appointment-standard.json
+      - name: {{ NAME }}-record-service
+        path: {{ SERVICE_NAME }}-record-service.json
     api_catalog:
       - edgeAPIProductName: {{ NAME }}
         anonAllowed: true

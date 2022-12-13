@@ -1,0 +1,42 @@
+# This is an OpenAPI Specification (https://swagger.io/specification/) 
+# for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
+openapi: '3.0.0'
+info:
+  title: "Patient Care Aggregator Record Service API"
+  version: "1.0.0"
+  description: |
+    TBC
+  contact:
+    name: 'patient-care-aggregator-api API Support'
+    url: 'https://digital.nhs.uk/developer/help-and-support'
+    email: api.management@nhs.net
+servers:
+  - url: 'https://tbc'
+    description: Sandbox environment.
+  - url: 'https://tbc'
+    description: Integration test environment.
+  - url: 'https://tbc'
+    description: Production environment.
+paths:
+  /records:
+    post:
+      summary: TBC
+      operationId: tbc
+      description: |
+        TBC
+      parameters:
+        - name: tbc
+          in: query
+          description: |
+            TBC
+          required: true
+          schema:
+            type: string
+            example: "TBC"
+      responses:
+        '2XX':
+          description: |
+            TBC
+        '4XX':
+          description: |
+            TBC
