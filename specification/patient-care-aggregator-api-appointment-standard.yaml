@@ -5,7 +5,58 @@ info:
   title: "Patient Care Aggregator Record Service API"
   version: "1.0.0"
   description: |
-    TBC
+    ## Overview 
+    ![Patient Care Aggregator Get Appointments API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
+
+    Use this API standard as a secondary care provider to build an API that provides a list of bookings for a patient to the Patient Care Aggregator. 
+
+    The Patient Care Aggregator aggregates this information with similar information from other providers before returning them to the NHS App for the patient to see. 
+
+    As a secondary care provider, you’ll also need to: 
+    - use the Patient Cate Aggregator Record Service API to let the let the Patient Care Aggregator API know which patients you have bookings for 
+    - build a ‘portal’ web application that the patient can access via a hyperlink from the NHS App 
+
+    For more details, see [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings#top).
+
+    ## Who can use this API standard 
+    You can only use this API standard if you are integrating a secondary care booking system with our Patient Care Aggregator. 
+
+    ### Status 
+    This API standard is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning it is available for use but might be subject to breaking changes.
+
+    ### Service level 
+    Your API must be a gold service, meaning it is operational and supported 24 x 7 x 365. 
+
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels). 
+
+    ## Technology 
+
+    This API standard: 
+    - is RESTful 
+    - conforms to the FHIR global standard for health care data exchange 
+    - specifically conforms to FHIR R4 (v4.0.1), except that it does not include capabilities interaction 
+    - TBC does it use FHIR UK Core?
+    
+    You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
+    In particular:
+    - resource names are capitalised and singular, for example `/CarePlan` not `/care-plans`
+    - array names are singular, for example `entry` not `entries` for FHIR bundle entries
+    - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+
+    There are [libraries and SDKs available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
+
+    ## Network access 
+    Your API must be available on the internet. 
+
+    ## Security and authorisation 
+    TBC 
+
+    ## Environments and testing 
+    TBC 
+
+    ## Onboarding 
+    TBC   
+  
   contact:
     name: 'patient-care-aggregator-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
