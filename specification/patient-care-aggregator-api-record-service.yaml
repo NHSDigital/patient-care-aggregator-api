@@ -5,7 +5,58 @@ info:
   title: "Patient Care Aggregator Record Service API"
   version: "1.0.0"
   description: |
-    TBC
+    ## Overview 
+
+    (diagram)
+
+    Use this API as a secondary care provider to let the Patient Care Aggregator know which patients you have bookings for. 
+
+    The Patient Care Aggregator needs this information in advance so it knows which secondary care providers to ask for a list of bookings when a patient requests the list using the NHS App. 
+
+    As a secondary care provider, you’ll also need to: 
+
+    Build an API using the Patient Care Aggregator Get Applications API standard that the Patient Care Aggregator can use to get a list of bookings for a patient 
+
+    build a ‘portal’ web application that the patient can access via a hyperlink from the NHS App 
+
+    For more details, see Building healthcare software – patient access to referrals and bookings. 
+
+    ## Who can use this API 
+
+    You can only use this API standard if you are integrating a secondary care booking system with our Patient Care Aggregator. 
+
+    ## API status 
+
+    TBC 
+
+    ## Service level 
+
+    This API is a gold service, meaning it is operational and supported 24 x 7 x 365. 
+
+    For more details, see service levels. 
+
+    ## Technology 
+
+    This API is RESTful. 
+
+    ## Network access 
+
+    This API is available on the internet and, indirectly, on the Health and Social Care Network (HSCN). 
+
+    For more details see Network access for APIs. 
+
+    ## Security and authorisation 
+
+    TBC 
+
+    ## Environments and testing 
+
+    TBC 
+
+    ## Onboarding 
+
+    TBC 
+
   contact:
     name: 'patient-care-aggregator-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
