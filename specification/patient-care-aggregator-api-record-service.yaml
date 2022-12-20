@@ -46,7 +46,7 @@ info:
     TBC 
 
     ## Onboarding 
-    TBC 
+    To onboard to this API, see [Secondary care booking systems (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings#secondary-care-booking-systems).
 
   contact:
     name: 'patient-care-aggregator-api API Support'
