@@ -51,6 +51,13 @@ info:
     ## Security and authorisation 
     TBC 
 
+    ## Capacity and response times
+    Your API must be capable:
+    - responding to requests within 400ms (at the 95th percentile)
+    - at a throughput of 100 transactions per second
+    
+    TBC is the above correct?
+
     ## Environments and testing 
     TBC 
 
