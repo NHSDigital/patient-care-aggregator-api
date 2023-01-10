@@ -8,23 +8,23 @@ info:
     ## Overview 
     ![Patient Care Aggregator Get Appointments API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
 
-    Use this API standard as a secondary care provider to build an API that provides a list of bookings for a patient to the Patient Care Aggregator. 
+    Use this API standard, as a secondary care provider, to build an API that the Patient Care Aggregator can use to get a list of bookings for a patient. 
 
     The Patient Care Aggregator aggregates this information with similar information from other providers before returning them to the NHS App for the patient to see. 
 
     As a secondary care provider, you’ll also need to: 
-    - use the Patient Cate Aggregator Record Service API to let the let the Patient Care Aggregator API know which patients you have bookings for 
-    - build a ‘portal’ web application that the patient can access via a hyperlink from the NHS App 
+    - use the [Patient Cate Aggregator Record Service API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api) to let the let the Patient Care Aggregator know which patients you have bookings for 
+    - build a ‘patient portal’ web application that the patient can access via a hyperlink from the NHS App 
 
     For more details, see [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings#top).
 
     ## Who can use this API standard 
     You can only use this API standard if you are integrating a secondary care booking system with our Patient Care Aggregator. 
 
-    ### Status 
+    ## Status 
     This API standard is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning it is available for use but might be subject to breaking changes.
 
-    ### Service level 
+    ## Service level 
     Your API must be a gold service, meaning it is operational and supported 24 x 7 x 365. 
 
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels). 
@@ -32,9 +32,9 @@ info:
     ## Technology 
 
     This API standard: 
-    - is RESTful 
-    - conforms to the FHIR global standard for health care data exchange 
-    - specifically conforms to FHIR R4 (v4.0.1), except that it does not include capabilities interaction 
+    - is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest) 
+    - conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange 
+    - specifically conforms to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not include capabilities interaction 
     - TBC does it use FHIR UK Core?
     
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
@@ -51,16 +51,26 @@ info:
     ## Security and authorisation 
     TBC 
 
+    ## Capacity and response times
+    Your API must be capable:
+    - responding to requests within 400ms (at the 95th percentile)
+    - at a throughput of 100 transactions per second
+    
+    TBC is the above correct?
+
     ## Environments and testing 
     TBC 
 
     ## Onboarding 
-    TBC   
+    To onboard to this API standard, see [Secondary care booking systems (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings#secondary-care-booking-systems).
   
   contact:
     name: 'patient-care-aggregator-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
     email: api.management@nhs.net
+x-spec-publication:
+  try-this-api:
+    disabled: true
 servers:
   - url: 'https://tbc'
     description: Sandbox environment.
@@ -69,9 +79,9 @@ servers:
   - url: 'https://tbc'
     description: Production environment.
 paths:
-  /records:
-    post:
-      summary: TBC
+  /tbc:
+    get:
+      summary: Get appointments
       operationId: tbc
       description: |
         TBC
