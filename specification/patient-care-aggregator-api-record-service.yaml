@@ -40,10 +40,26 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis). 
 
     ## Security and authorisation 
-    TBC app-restricted?
+    This API is [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis).
+    
+    It uses API key authentication, so you'll need to pass an API key with each API request. The API key is unique to your application.
+    
+    This API doesn't use our standard API platform API keys - you'll have to request an API key from us. You'll need a separate API key per environment.
+
+    To see how to include the API key with your API request, see the endpoint description below.
 
     ## Environments and testing 
-    TBC 
+
+    | Environment       | Base URL                                                               |
+    | ----------------- | ---------------------------------------------------------------------- |
+    | Sandbox           | `https://tbc`        |
+    | Integration test  | `https://tbc`        |
+    | Performance test  | `https://tbc`        |
+    | End-to-end test   | `https://tbc`        |
+    | Production        | `https://tbc`        |
+
+    For more details on how to use these environments,
+    see the 'Testing' section in [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings).
 
     ## Onboarding 
     To onboard to this API, see [Secondary care booking systems (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings#secondary-care-booking-systems).

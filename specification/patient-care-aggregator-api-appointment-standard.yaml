@@ -16,7 +16,7 @@ info:
     - use the [Patient Cate Aggregator Record Service API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api) to let the let the Patient Care Aggregator know which patients you have bookings for 
     - build a ‘patient portal’ web application that the patient can access via a hyperlink from the NHS App 
 
-    For more details, see [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings#top).
+    For more details, see [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings).
 
     ## Who can use this API standard 
     You can only use this API standard if you are integrating a secondary care booking system with our Patient Care Aggregator. 
@@ -49,17 +49,21 @@ info:
     Your API must be available on the internet. 
 
     ## Security and authorisation 
-    TBC 
+    Your API must use TLS-MA for security.
+    
+    TBC details
+    
+    In the future, we're planning to change the security to use OAuth 2.0.
 
     ## Capacity and response times
     Your API must be capable:
     - responding to requests within 400ms (at the 95th percentile)
     - at a throughput of 100 transactions per second
     
-    TBC is the above correct?
-
     ## Environments and testing 
-    TBC 
+    You'll need to deploy your API into a number test environments.
+    
+    For more details, see the 'Testing' section in [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings).
 
     ## Onboarding 
     To onboard to this API standard, see [Secondary care booking systems (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings#secondary-care-booking-systems).
