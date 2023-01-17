@@ -88,28 +88,29 @@ paths:
       security:
         - bearerAuth: []
       tags:
-      - GET Appointments
+        - GET Appointments
       summary: "Note: this is an example path. You may use a different path if required."
+      operationId: get-appointments
       parameters:
-      - name: Authorization
-        in: header
-        required: true
-        description: 'Authorization Header. The NHS Login ID Token passed as a Bearer token. This is generated when the user logs into NHS App via NHS Login as passed to this API for validation and signature verification.'
-        schema:
-          type: string
-      - name: x-correlation-id
-        in: header
-        required: true
-        description: 'Header parameter. A GUID, e.g. 8772a09a-8d55-4514-8d8b-a1526055c599, that is logged by all the Wayfinder services that process the request. Used for end-to-end debugging.'
-        schema:
-          type: string
-      - name: patient:identifier
-        in: query
-        required: true
-        description: 'Query parameter. The NHS Number of the patient, passed as a FHIR patient identifier, e.g. patient:identifier=https://fhir.nhs.uk/Id/nhs-number|9726779057. '
-        schema:
-          pattern: ^https:\/\/fhir\.nhs\.uk\/Id\/nhs-number\|[1-9][0-9]{9}$
-          type: string
+        - name: Authorization
+          in: header
+          required: true
+          description: 'Authorization Header. The NHS Login ID Token passed as a Bearer token. This is generated when the user logs into NHS App via NHS Login as passed to this API for validation and signature verification.'
+          schema:
+            type: string
+        - name: x-correlation-id
+          in: header
+          required: true
+          description: 'Header parameter. A GUID, e.g. 8772a09a-8d55-4514-8d8b-a1526055c599, that is logged by all the Wayfinder services that process the request. Used for end-to-end debugging.'
+          schema:
+            type: string
+        - name: patient:identifier
+          in: query
+          required: true
+          description: 'Query parameter. The NHS Number of the patient, passed as a FHIR patient identifier, e.g. patient:identifier=https://fhir.nhs.uk/Id/nhs-number|9726779057. '
+          schema:
+            pattern: ^https:\/\/fhir\.nhs\.uk\/Id\/nhs-number\|[1-9][0-9]{9}$
+            type: string
       responses:
         200:
           description: Successful
