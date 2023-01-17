@@ -69,32 +69,96 @@ info:
     url: 'https://digital.nhs.uk/developer/help-and-support'
     email: api.management@nhs.net
 servers:
-  - url: 'https://tbc'
-    description: Sandbox environment.
-  - url: 'https://tbc'
-    description: Integration test environment.
-  - url: 'https://tbc'
+  - url: 'https://integration.servita-demo.co.uk'
+    description: Connectivity and data quality test environment.
+  - url: 'https://aos-base.patient-care-aggregator.com'
+    description: End-to-end test environment.
+  - url: 'https://prod-base.patient-care-aggregator.com'
     description: Production environment.
 paths:
+  /status:
+    get:
+      summary: Service Health Check
+      operationId: getStatus
+      description: Return the current status of the API
+      tags:
+        - status
+      responses:
+        default:
+          description: Successful
   /records:
     post:
-      summary: TBC
-      operationId: tbc
-      description: |
-        TBC
+      summary: 'Creates or Updates a Record for one or more NHS Numbers. This endpoint is idempotent. You may send the same NHS Number multiple times if required.'
+      security:
+        - bearerAuth: []
       parameters:
-        - name: tbc
-          in: query
-          description: |
-            TBC
+        - name: Authorization
+          in: header
           required: true
+          description: Bearer token/API Key allocated by Wayfinder
           schema:
             type: string
-            example: "TBC"
+            example: Bearer 6b882ddf-82f5-4611-9390-71ca6a045a60
+      requestBody:
+        description: 'Your Client ID and an array of one or more NHS Numbers for which you are notifying Wayfinder that you have data.'
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: string
+                  example: 'pep-01'
+                nhsNumbers:
+                  type: array
+                  items: 
+                    type: string
+                    example: ['9726779057', '9726779391']
       responses:
-        '2XX':
-          description: |
-            TBC
-        '4XX':
-          description: |
-            TBC
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    enum: 
+                      - success
+        '400':
+          description: Bad request due to invalid JSON, invalid NHS Number(s) or Bearer token/API Key not matching Client ID in payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - "error.bad-request"
+                  data:
+                    type: string
+                    example: 'clientId mismatch'
+
+        '401':
+          description: Unauthorized due to unrecognised Bearer token/API Key
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum: 
+                      - 'error.unauthorized'
+                  data:
+                    type: string
+                    enum:
+                      - 'Bad token'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
