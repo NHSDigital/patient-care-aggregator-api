@@ -3,7 +3,7 @@
 openapi: '3.0.0'
 info:
   title: "Patient Care Aggregator Record Service API"
-  version: "1.0.0"
+  version: "1.0.1"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
