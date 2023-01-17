@@ -86,7 +86,7 @@ paths:
   /status:
     get:
       summary: Service Health Check
-      operationId: getStatus
+      operationId: get-status
       description: Return the current status of the API
       tags:
         - status
@@ -96,6 +96,7 @@ paths:
   /records:
     post:
       summary: 'Creates or Updates a Record for one or more NHS Numbers. This endpoint is idempotent. You may send the same NHS Number multiple times if required.'
+      operationId: post-records
       security:
         - bearerAuth: []
       parameters:
