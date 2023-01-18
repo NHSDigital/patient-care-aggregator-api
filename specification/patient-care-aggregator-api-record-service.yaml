@@ -86,18 +86,20 @@ servers:
 paths:
   /status:
     get:
-      summary: Service Health Check
+      summary: "Check service status"
       operationId: get-status
-      description: Return the current status of the API
-      tags:
-        - status
+      description: Return the current status of the API.
       responses:
         default:
           description: Successful
   /records:
     post:
-      summary: 'Creates or Updates a Record for one or more NHS Numbers. This endpoint is idempotent. You may send the same NHS Number multiple times if required.'
+      summary: 'Send patient list"
       operationId: post-records
+      description: |
+        Send a list of NHS numbers to the Patient Care Aggregator so it knows which patients you have appointments for.
+
+        This endpoint is idempotent - you may send the same NHS Number multiple times if required.
       security:
         - bearerAuth: []
       parameters:
