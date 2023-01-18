@@ -77,7 +77,7 @@ x-spec-publication:
     disabled: true
 servers:
   - url: 'https://integration.servita-demo.co.uk'
-    description: Connectivity and data quality test environment.
+    description: Sandbox environment.
   - url: 'https://aos.patient-care-aggregator.com'
     description: End-to-end test environment.
   - url: 'https://prod.patient-care-aggregator.com'
