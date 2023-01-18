@@ -3,7 +3,7 @@
 openapi: '3.0.0'
 info:
   title: "Patient Care Aggregator Record Service API"
-  version: "1.0.0"
+  version: "1.0.1"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
@@ -76,32 +76,510 @@ x-spec-publication:
   try-this-api:
     disabled: true
 servers:
-  - url: 'https://tbc'
+  - url: 'https://integration.servita-demo.co.uk'
     description: Sandbox environment.
-  - url: 'https://tbc'
-    description: Integration test environment.
-  - url: 'https://tbc'
+  - url: 'https://aos.patient-care-aggregator.com'
+    description: End-to-end test environment.
+  - url: 'https://prod.patient-care-aggregator.com'
     description: Production environment.
 paths:
-  /tbc:
+  /fhir/R4/Appointment:
     get:
-      summary: Get appointments
-      operationId: tbc
-      description: |
-        TBC
+      security:
+        - bearerAuth: []
+      tags:
+        - GET Appointments
+      summary: "Note: this is an example path. You may use a different path if required."
+      operationId: get-appointments
       parameters:
-        - name: tbc
-          in: query
-          description: |
-            TBC
+        - name: Authorization
+          in: header
           required: true
+          description: 'Authorization Header. The NHS Login ID Token passed as a Bearer token. This is generated when the user logs into NHS App via NHS Login as passed to this API for validation and signature verification.'
           schema:
             type: string
-            example: "TBC"
+        - name: x-correlation-id
+          in: header
+          required: true
+          description: 'Header parameter. A GUID, e.g. 8772a09a-8d55-4514-8d8b-a1526055c599, that is logged by all the Wayfinder services that process the request. Used for end-to-end debugging.'
+          schema:
+            type: string
+        - name: patient:identifier
+          in: query
+          required: true
+          description: 'Query parameter. The NHS Number of the patient, passed as a FHIR patient identifier, e.g. patient:identifier=https://fhir.nhs.uk/Id/nhs-number|9726779057. '
+          schema:
+            pattern: ^https:\/\/fhir\.nhs\.uk\/Id\/nhs-number\|[1-9][0-9]{9}$
+            type: string
       responses:
-        '2XX':
-          description: |
-            TBC
-        '4XX':
-          description: |
-            TBC
+        200:
+          description: Successful
+          content:
+            'application/json':
+              schema:
+                description: A FHIR bundle containing results of the request.
+                type: object
+                required:
+                  - resourceType
+                  - type
+                  - entry
+                properties:
+                  resourceType:
+                    description: "FHIR resource type is Bundle"
+                    type: string
+                    enum:
+                      - "Bundle"
+                  type:
+                    description: Bundle type is collection
+                    type: string
+                    enum:
+                      - "collection"
+                  entry:
+                    type: array
+                    items:
+                      description: Appointment FHIR resource
+                      type: object
+                      required: 
+                        - resourceType
+                        - identifier
+                        - status
+                        - description
+                        - start
+                        - end
+                        - participant
+                      properties:
+                        resourceType:
+                          description: "FHIR resource type of Appointment"
+                          type: string
+                          enum:
+                            - Appointment     
+                        id:
+                          description: "Portal ID of Appointment"
+                          type: string
+                          example: "b710e648-c12e-4f66-80e2-9957a254900f"
+                        extension:
+                          description: "Extensions for Priority [Optional], Request Status [Required], Appointment Status [Required], Consultation Medium [Required] and Deeplink [Required]"
+                          type: array
+                          items:
+                            anyOf: 
+                              - description: "NHS Priority"
+                                type: object
+                                properties:
+                                  url:
+                                    type: string
+                                    enum:
+                                      - "https://fhir.nhs.uk/StructureDefinition/Extension-ServiceRequest-Priority"
+                                  valueCoding:
+                                    type: object
+                                    properties:
+                                      system:
+                                        type: string
+                                        enum: 
+                                          - "https://fhir.nhs.uk/CodeSystem/eRS-Priority"
+                                      code:
+                                        type: string
+                                        enum:
+                                          - 'URGENT'
+                                          - 'ROUTINE'
+                                          - 'TWO_WEEK_WAIT'
+                              - description: "The status of the appointments as per the source system"
+                                type: object
+                                required:
+                                  - url
+                                  - valueCode
+                                properties:
+                                  url:
+                                    type: string
+                                    enum:
+                                      - "https://servita.com/fhir/StructureDefinition/ExtensionAppointmentStatus"
+                                  valueCode:
+                                    type: string
+                                    enum:
+                                      - "Pending Change"
+                                      - "Pending Reschedule"
+                                      - "Pending Cancellation"
+                                      - "Pending Attendance"
+                              - description: "Used if 'dumb booking' is supported. E.g. when a patient requests to cancel an appointment but the source system status is still booked."
+                                type: object
+                                properties:
+                                  url:
+                                    type: string
+                                    enum:
+                                      - 	https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-RequestStatus
+                                  valueCode:
+                                    type: string
+                                    enum:
+                                      - Pending Change 
+                                      - Pending Reschedule 
+                                      - Pending Cancellation 
+                                      - Confirmed Attendance                                
+                              - description: "Whether visit is face-to-face or remote"
+                                type: object
+                                required:
+                                  - url
+                                  - valueCode
+                                properties:
+                                  url:
+                                    type: string
+                                    enum:
+                                      - "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium"
+                                  valueCode:
+                                    type: string
+                                    enum:
+                                      - "FACE_TO_FACE"
+                                      - "VIRTUAL"
+                              - description: "Deeplink to appointment in portal system"
+                                type: object
+                                required:
+                                  - url
+                                  - valueCode
+                                properties:
+                                  url:
+                                    type: string
+                                    enum:
+                                      - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
+                                  valueCode:
+                                    type: string
+                                    example: "https://wayfinder.example-pep.com/fhir/Appointment/770DA42C-C8F2-A5F7-6185-40EE9409B494"
+                        identifier:
+                          type: array
+                          items:
+                            anyOf:
+                              - description: "Source System ID"
+                                type: object
+                                properties:
+                                  system:
+                                    description: "Source system UUID"
+                                    type: string
+                                    example: "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/Appointment"
+                                  code:
+                                    description: "Source Appointment ID"
+                                    type: string
+                                    example: "4817508"
+                              - description: "Portal System ID"
+                                type: object
+                                properties:
+                                  system:
+                                    description: "Portal system UUID"
+                                    type: string
+                                    example: "https://sandbox.patientsknowbest.com/fhir/Appointment"
+                                  code:
+                                    description: "Portal Appointment ID"
+                                    type: string
+                                    example: "3a146c43-2b21-44e9-95bc-6f4849e504c8"
+                        specialty:
+                          type: array
+                          items:
+                            oneOf:
+                              - type: object
+                                properties:
+                                  coding:
+                                    type: array
+                                    items:
+                                      oneOf:
+                                        - type: object
+                                          properties:
+                                            system: 
+                                              type: string
+                                              enum:
+                                                - "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
+                                            code:
+                                              description: "Three-digit NHS Specialty Code. Equivalent to NHS Data Dictionary Treatment Function Code"
+                                              type: string
+                                              example: "330"
+                                            display:
+                                              description: "NHS Specialty Name"
+                                              type: string
+                                              example: "DERMATOLOGY"
+                        status:
+                          description: "Booking status of Appointment"
+                          type: string
+                          enum:
+                            - proposed
+                            - pending
+                            - booked
+                            - arrived
+                            - fulfilled
+                            - cancelled
+                            - noshow
+                            - entered-in-error
+                            - checked-in
+                            - waitlist
+                        description:
+                          description: "Portal description of appointment"
+                          type: string
+                          example: "Dermatology New"
+                        start:
+                          description: "Start date/time of appointment in local time zone"
+                          type: string
+                          example: "2021-06-13T12:30:00+00:00"
+                        end:
+                          description: "End date/time of appointment in local time zone"
+                          type: string
+                          example: "2021-06-13T12:45:00+00:00"
+                        slot:
+                          description: "Slot USRN and internal ID"
+                          type: array
+                          items: 
+                            anyOf:
+                              - description: "USRN"
+                                type: object
+                                properties:
+                                  identifier:
+                                    type: object
+                                    properties:
+                                      system:
+                                        type: string
+                                        enum:
+                                          - "https://fhir.nhs.uk/Id/USRN"
+                                      value:
+                                        type: string
+                                        example: "000000000000"
+                              - description: "Source System Slot ID"
+                                type: object
+                                properties:
+                                  identifier:
+                                    type: object
+                                    properties:
+                                      system:
+                                        type: string
+                                        enum:
+                                          - "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/Slot"
+                                      value:
+                                        type: string
+                                        example: "65468756"
+                        basedOn:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              identifier:
+                                type: array
+                                items: 
+                                  anyOf:
+                                    - description: "UBRN"
+                                      type: object
+                                      properties:
+                                        system:
+                                          type: string
+                                          enum:
+                                            - "https://fhir.nhs.uk/Id/UBRN"
+                                        value:
+                                          type: string
+                                          example: "000000000001"
+                                    - description: "Referral ID"
+                                      type: object
+                                      properties:
+                                        system:
+                                          type: string
+                                          example: "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/ServiceRequest"
+                                        value:
+                                          type: string
+                                          example: "265413"
+                                    - description: "Pathway ID"
+                                      type: object
+                                      properties:
+                                        system:
+                                          type: string
+                                          example: "https://fhir-open.cerner.com/PathwayId"
+                                        value:
+                                          type: string
+                                          example: "RBH5644312231"               
+                        participant:
+                          type: array
+                          items:
+                            anyOf:
+                              - description: 'Patient. Only populated if the patient is in attendance, i.e. not for hidden appointments'
+                                type: object
+                                properties:
+                                  actor:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                        enum:
+                                          - "Patient"
+                                      identifier:
+                                        type: object
+                                        properties:
+                                          system:
+                                            type: string
+                                            enum:
+                                              - "https://fhir.nhs.uk/Id/nhs-number"
+                                          value:
+                                            type: string
+                                            example: "0000000001"
+                                  status:
+                                    type: string
+                                    enum:
+                                      - accepted 
+                                      - declined 
+                                      - tentative 
+                                      - needs-action
+                              - description: 'Attending clinican [Optional]'
+                                type: object
+                                properties:
+                                  actor:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                        enum:
+                                          - "Practitioner"
+                                      display:
+                                        type: string
+                                        example: "Dr. John Doe"
+                                      identifier:
+                                        type: object
+                                        properties:
+                                          system:
+                                            type: string
+                                            enum:
+                                              - "https://fhir.nhs.uk/Id/sds-user-id"
+                                          value:
+                                            type: string
+                                            example: "999999999"
+                                  status:
+                                    type: string
+                                    enum:
+                                      - accepted 
+                                      - declined 
+                                      - tentative 
+                                      - needs-action
+                              - description: 'Portal Healthcare Service. [Optional]'
+                                type: object
+                                properties:
+                                  actor:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                        enum:
+                                          - "HealthcareService"
+                                      display:
+                                        type: string
+                                        example: "Dermatology Check-up"
+                                  status:
+                                    type: string
+                                    enum:
+                                      - accepted 
+                                      - declined 
+                                      - tentative 
+                                      - needs-action                                    
+                              - description: 'Source System Healthcare Service [Optional]'
+                                type: object
+                                properties:
+                                  actor:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                        enum:
+                                          - "HealthcareService"
+                                      display:
+                                        type: string
+                                        example: "Dematology New Appointment"
+                                      identifier:
+                                        type: object
+                                        properties:
+                                          system:
+                                            type: string
+                                            example: "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/HealthcareService"
+                                          value:
+                                            type: string
+                                            example: "4817508"
+                                  status:
+                                    type: string
+                                    enum:
+                                      - accepted 
+                                      - declined 
+                                      - tentative 
+                                      - needs-action
+                              - description: 'e-RS Service ID [Optional]'
+                                type: object
+                                properties:
+                                  actor:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                        enum:
+                                          - "HealthcareService"
+                                      identifier:
+                                        type: object
+                                        properties:
+                                          system:
+                                            type: string
+                                            enum:
+                                              - "https://fhir.nhs.uk/Id/ers-service"
+                                          value:
+                                            type: string
+                                            example: "4817508"
+                                      display:
+                                        type: string
+                                        example: "General Dermatology - Main OPD - Barnsley NHS Foundation Trust - RFF"
+
+                                  status:
+                                    type: string
+                                    enum:
+                                      - accepted 
+                                      - declined 
+                                      - tentative 
+                                      - needs-action                                                                   
+                              - description: 'ODS Code [Required]'
+                                type: object
+                                required: 
+                                  - actor
+                                properties:
+                                  actor:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                        enum:
+                                          - "Location"
+                                      identifier:
+                                        type: object
+                                        properties:
+                                          system:
+                                            type: string
+                                            enum:
+                                              - "https://fhir.nhs.uk/Id/ods-organization-code"
+                                          value:
+                                            type: string
+                                            example: "RFF"
+                                      display:
+                                        type: string
+                                        example: "BARNSLEY HOSPITAL NHS FOUNDATION TRUST"
+                                  status:
+                                    type: string
+                                    enum:
+                                      - accepted 
+                                      - declined 
+                                      - tentative 
+                                      - needs-action        
+                              - description: 'Appointment Location [Optional]'
+                                type: object
+                                properties:
+                                  actor:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                        enum:
+                                          - "Location"
+                                      display:
+                                        type: string
+                                        example: "Main Outpatients Department, 101 Main Road, London EC1 1AB"
+                                  status:
+                                    type: string
+                                    enum:
+                                      - accepted 
+                                      - declined 
+                                      - tentative 
+                                      - needs-action                                                           
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer                            
