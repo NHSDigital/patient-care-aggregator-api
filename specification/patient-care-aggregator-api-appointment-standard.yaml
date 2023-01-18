@@ -90,6 +90,29 @@ paths:
       tags:
         - GET Appointments
       summary: "Note: this is an example path. You may use a different path if required."
+      description: |
+        ## Overview
+        This endpoint returns a list of appointments from a secondary care booking system for a given patient.
+        
+        It returns the appointments as a FHIR 'Bundle' containing FHIR 'Appointment' resources.
+        
+        ## Business rules
+        - The endpoint only returns appointments for care settings in the NHS in England, not for any other territories.
+        - The endpoint does not return any information for a patient identified as sensitive in PDS (TBC what does it do?).
+        - The endpoint does not return 'ghost' appointments (TBC what is this?).
+        - The endpoint includes future cancelled appointments, so that the patient can see / confirm that an appointment has been cancelled.
+        - The Patient Care Aggregator will never request information for patients under 16, so the endpoint does not need to filter these out.
+        - If the patient has no appointments, the endpoint returns a response with an HTTP status of 200 and an empty FHIR 'Bundle'.
+        - If the endpoint takes more than 9000ms to process the request, it should time out ans return an HTTP response of 504.
+        - Any data changes made by the patient via the patient portal (such as a status change) should be reflected in the responses from this endpoint within 3 seconds.
+        
+        ## Non-functional requirements
+        - All requests to the endpoint must be logged for diagnostic purposes
+        - Log records must include the X-Correlation ID
+        - Log records must be identifiable as having come from the Patient Care Aggregator
+        - Persionally identifiable and clinical information must be omitted from logs in production
+        - Log records must be held for a minimum of 90 days
+        
       operationId: get-appointments
       parameters:
         - name: Authorization
@@ -136,6 +159,7 @@ paths:
                       - "collection"
                   entry:
                     type: array
+                    minItems: 0
                     items:
                       description: Appointment FHIR resource
                       type: object
