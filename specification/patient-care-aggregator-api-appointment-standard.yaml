@@ -96,6 +96,17 @@ paths:
         
         It returns the appointments as a FHIR 'Bundle' containing FHIR 'Appointment' resources.
         
+        ## Appointment inclusion and exclusion rules
+        SRCBR1a - Excluded patients (Trust): Appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system) must be filtered out from the feed to the Aggregator.
+        SRCBR1b - Excluded patients (PDS): Appointments for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
+        SRCBR2 - Excluded clinics: Appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        SRCBR3 - Encounter types: Only outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator i.e. hidden appointments and appointments at ghost clinics are filtered out.
+        SRCBR4 - Excluded specialities: Appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        NHS in England only: Appointments for care settings outside of the NHS in England must be flitered out.
+
+        ## Patients with no appointments
+        Where a patient has no appointments, including where appointments have been excluded
+        
         ## Business rules
         - The endpoint only returns appointments for care settings in the NHS in England, not for any other territories.
         - The endpoint does not return any information for a patient identified as sensitive in PDS (TBC what does it do?).
