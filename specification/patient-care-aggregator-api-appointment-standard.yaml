@@ -49,9 +49,14 @@ info:
     Your API must be available on the internet. 
 
     ## Security and authorisation 
-    Your API must use TLS-MA for security.
+    Your API must use:
+    - TLS-MA to authenticate the Patient Care Aggregator as the calling system
+    - Open ID Connect to authenticate the patient end user
     
-    TBC details
+    For details of how to implement TLS-MA, [contact us](https://digital.nhs.uk/developer/help-and-support).
+    
+    For Open ID Connect, the Patient Care Aggregator includes an `Authorization` header with each request to the API. This contains an NHS login ID token.
+    You must verify this token with NHS login and confirm the patient is authenticated to level P9. For more details, see [NHS login for partners and developers](https://digital.nhs.uk/services/nhs-login/nhs-login-for-partners-and-developers).
     
     In the future, we're planning to change the security to use OAuth 2.0.
 
@@ -97,39 +102,40 @@ paths:
         Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## Appointment inclusion and exclusion rules
-        SRCBR1a - Excluded patients (Trust): Appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system) must be filtered out from the feed to the Aggregator.
-        SRCBR1b - Excluded patients (PDS): Appointments for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
-        SRCBR2 - Excluded clinics: Appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
-        SRCBR3 - Encounter types: Only outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator i.e. hidden appointments and appointments at ghost clinics are filtered out.
-        SRCBR4 - Excluded specialities: Appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
-        NHS in England only: Appointments for care settings outside of the NHS in England must be flitered out.
+        
+        - NHS in England only: Only include appointments for care settings within the NHS in England.
+        - Acute care settings only: Only include appointments for acute care settings, not any other type.
+        - Outpatient apointments only: Only include outpatient appointments, not any other type.
+        - Information governance: Only include appointments for care settings where you have a legal aghreement in place to handle their data.
+        - Excluded patients (Trust) (SRCBR1a): Exclude appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system).
+        - Excluded patients (PDS) (SRCBR1b): Appointments for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
+        - Excluded clinics (SRCBR2): Appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Encounter types (SRCBR3): Only outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator i.e. hidden appointments and appointments at ghost clinics are filtered out.
+        - Excluded specialities (SRCBR4): Appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Ghost appointments: Exclude appointments that are booked in the system but which the patient is not expected to attend - known as 'ghost' appointments.
+        - Future cancelled appointments: Include appointments that are future-dated and cancelled - this allows the patient to confirm that the appointment has been cancelled and knows not to attend.
 
         ## Patients with no appointments
-        Where a patient has no appointments, including where appointments have been excluded
-        
-        ## Business rules
-        - The endpoint only returns appointments for care settings in the NHS in England, not for any other territories.
-        - The endpoint does not return any information for a patient identified as sensitive in PDS (TBC what does it do?).
-        - The endpoint does not return 'ghost' appointments (TBC what is this?).
-        - The endpoint includes future cancelled appointments, so that the patient can see / confirm that an appointment has been cancelled.
-        - The Patient Care Aggregator will never request information for patients under 16, so the endpoint does not need to filter these out.
-        - If the patient has no appointments, the endpoint returns a response with an HTTP status of 200 and an empty FHIR 'Bundle'.
-        - If the endpoint takes more than 9000ms to process the request, it should time out ans return an HTTP response of 504.
-        - Any data changes made by the patient via the patient portal (such as a status change) should be reflected in the responses from this endpoint within 3 seconds.
+        Where a patient has no appointments, including where appointments have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
+        response with an HTTP status of 200 and a FHIR Bundle with no appointments in it.
         
         ## Non-functional requirements
-        - All requests to the endpoint must be logged for diagnostic purposes
-        - Log records must include the X-Correlation ID
-        - Log records must be identifiable as having come from the Patient Care Aggregator
-        - Persionally identifiable and clinical information must be omitted from logs in production
-        - Log records must be held for a minimum of 90 days
+        - All requests to the endpoint must be logged for diagnostic purposes.
+        - Log records must include the `X-Correlation ID`.
+        - Log records must be identifiable as having come from the Patient Care Aggregator.
+        - Persionally identifiable and clinical information must be omitted from logs in production.
+        - Log records must be held for a minimum of 90 days.
         
       operationId: get-appointments
       parameters:
         - name: Authorization
           in: header
           required: true
-          description: 'Authorization Header. The NHS Login ID Token passed as a Bearer token. This is generated when the user logs into NHS App via NHS Login as passed to this API for validation and signature verification.'
+          description: |
+            An NHS login ID token for the end user patient, passed as a Bearer token.
+            This is generated when the user logs into NHS App via NHS login as passed to this API for validation and signature verification.
+            You must verify this token with NHS login and confirm that it is for the right patient and that the patient is authenticated to level P9.
+            For more details, see [NHS login for partners and developers](https://digital.nhs.uk/services/nhs-login/nhs-login-for-partners-and-developers).
           schema:
             type: string
         - name: x-correlation-id
