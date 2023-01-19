@@ -29,42 +29,38 @@ info:
 
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels). 
 
-    ## Technology 
-
-    This API standard: 
-    - is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest) 
-    - conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange 
-    - specifically conforms to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not include capabilities interaction 
-    - TBC does it use FHIR UK Core?
+    ## Technology
+    This API standard is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+    
+    It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
+    global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/),
+    except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
+    
+    It includes some country-specific FHIR extensions, which have been built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
     
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
     - resource names are capitalised and singular, for example `/CarePlan` not `/care-plans`
     - array names are singular, for example `entry` not `entries` for FHIR bundle entries
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
-
+    
     There are [libraries and SDKs available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
-
+    
     ## Network access 
     Your API must be available on the internet. 
 
     ## Security and authorisation 
-    Your API must use:
-    - TLS-MA to authenticate the Patient Care Aggregator as the calling system
-    - Open ID Connect to authenticate the patient end user
+    Your API must:
+    - use TLS-MA to authenticate the Patient Care Aggregator as the calling system
+    - use Open ID Connect (OIDC) to authenticate the patient end user
     
     For details of how to implement TLS-MA, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
-    For Open ID Connect, the Patient Care Aggregator includes an `Authorization` header with each request to the API. This contains an NHS login ID token.
-    You must verify this token with NHS login and confirm the patient is authenticated to level P9. For more details, see [NHS login for partners and developers](https://digital.nhs.uk/services/nhs-login/nhs-login-for-partners-and-developers).
+    For OIDC, the Patient Care Aggregator includes an `Authorization` header with each request to the API. This contains an NHS login ID token.
+    You must verify this token with NHS login and confirm the patient is authenticated to P9 level. For more details, see [NHS login for partners and developers](https://digital.nhs.uk/services/nhs-login/nhs-login-for-partners-and-developers).
     
     In the future, we're planning to change the security to use OAuth 2.0.
 
-    ## Capacity and response times
-    Your API must be capable:
-    - responding to requests within 400ms (at the 95th percentile)
-    - at a throughput of 100 transactions per second
-    
     ## Environments and testing 
     You'll need to deploy your API into a number test environments.
     
@@ -96,13 +92,12 @@ paths:
       description: |
         ## Overview
         This endpoint returns a list of appointments from a secondary care booking system for a given patient.
-        
         It returns the appointments as a FHIR 'Bundle' containing FHIR 'Appointment' resources.
         
         Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## Appointment inclusion and exclusion rules
-        
+        The endpoint must include / exclude appointments as per the following rules:
         - NHS in England only: Only include appointments for care settings within the NHS in England.
         - Acute care settings only: Only include appointments for acute care settings, not any other type.
         - Outpatient apointments only: Only include outpatient appointments, not any other type.
@@ -118,14 +113,22 @@ paths:
         ## Patients with no appointments
         Where a patient has no appointments, including where appointments have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
         response with an HTTP status of 200 and a FHIR Bundle with no appointments in it.
-        
-        ## Non-functional requirements
+
+        ## Capacity and response times
+        Your endpioint must be capable of:
+        - responding to requests within 400ms (at the 95th percentile)
+        - at a throughput of 100 transactions per second
+
+        ## Diagnostic logging
         - All requests to the endpoint must be logged for diagnostic purposes.
         - Log records must include the `X-Correlation ID`.
         - Log records must be identifiable as having come from the Patient Care Aggregator.
         - Persionally identifiable and clinical information must be omitted from logs in production.
         - Log records must be held for a minimum of 90 days.
-        
+
+    
+
+
       operationId: get-appointments
       parameters:
         - name: Authorization
@@ -147,15 +150,19 @@ paths:
         - name: patient:identifier
           in: query
           required: true
-          description: 'Query parameter. The NHS Number of the patient, passed as a FHIR patient identifier, e.g. patient:identifier=https://fhir.nhs.uk/Id/nhs-number|9726779057. '
+          description: |
+            The patient's NHS number.
           schema:
-            pattern: ^https:\/\/fhir\.nhs\.uk\/Id\/nhs-number\|[1-9][0-9]{9}$
             type: string
+            pattern: ^https:\/\/fhir\.nhs\.uk\/Id\/nhs-number\|[1-9][0-9]{9}$
+            example: "https://fhir.nhs.uk/Id/nhs-number|9000000009"          
       responses:
         200:
-          description: Successful
+          description: A successful request.
           content:
             'application/json':
+              example:
+                $ref: components/examples/GetAppointmentsResponseHappyPath.json
               schema:
                 description: A FHIR bundle containing results of the request.
                 type: object
@@ -619,6 +626,29 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action                                                           
+        '4XX':
+          description: |
+            'An error occurred as follows:'
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | TBC         | `TBC`                      | TBC	|
+            | TBC         | `TBC`                      | TBC  |
+          
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tbc1:
+                    type: string
+                    enum:
+                      - 'tbc'
+                      - 'tbc'
+                  tbc2:
+                    type: string
+                    example: 'tbc'
+              example:
+                $ref: components/examples/GetAppointmentsResponse4xx.json
 components:
   securitySchemes:
     bearerAuth:
