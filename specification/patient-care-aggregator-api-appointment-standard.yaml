@@ -159,6 +159,8 @@ paths:
           description: A successful request.
           content:
             'application/json':
+              example:
+                $ref: components/examples/GetAppointmentsResponseHappyPath.json
               schema:
                 description: A FHIR bundle containing results of the request.
                 type: object
@@ -622,6 +624,29 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action                                                           
+        '4XX':
+          description: |
+            'An error occurred as follows:'
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | TBC         | `TBC`                      | TBC	|
+            | TBC         | `TBC`                      | TBC  |
+          
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tbc:
+                    type: string
+                    enum:
+                      - 'tbc'
+                      - 'tbc'
+                  tbc:
+                    type: string
+                    example: 'tbc'
+              example:
+                $ref: components/examples/GetAppointmentsResponse4xx.json
 components:
   securitySchemes:
     bearerAuth:
