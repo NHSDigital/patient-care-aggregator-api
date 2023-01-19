@@ -97,9 +97,27 @@ paths:
       summary: "Send patient list"
       operationId: post-records
       description: |
+        ## Overview
         Send a list of NHS numbers to the Patient Care Aggregator so it knows which patients you have appointments for.
 
-        This endpoint is idempotent - you may send the same NHS Number multiple times if required.
+        ## Record inclusion and exclusion rules
+        Only send NHS numbers for patients where you have appointments that would be returned by your [Get Appointments API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard),
+        based on the appointment inclusion and exclusion rules for that API.
+        
+        ## Batching and timing rules
+        When your service first goes live, send an initial batch of NHS numbers for all existing appointments.
+        
+        When a new appointment is booked, and if the Patient Care Aggregator doesn't already know about the patient, send the patient's NHS number immediately.
+
+        If a request to this endpoint fails, keep track of which NHS numbers you haven't yet sent, and re-send them, using an appropriate back-off timing scheme.
+
+        This endpoint is idempotent - you may send the same NHS Number multiple times. In general, try to avoid this by keeping track of which NHS numbers you have already sent it.
+        
+        On request, at any time, you must be able to re-send a full list of NHS numbers for all existing appointments.
+        If this takes some time to complete, you must also contime to send NHS numbers for new appointments in real time.
+
+        ## Timeout
+        This endpoint times out after 30s, returning HTTP status 504.
       security:
         - bearerAuth: []
       parameters:
