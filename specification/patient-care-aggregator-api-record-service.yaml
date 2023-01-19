@@ -94,7 +94,7 @@ paths:
           description: Successful
   /records:
     post:
-      summary: 'Send patient list"
+      summary: "Send patient list"
       operationId: post-records
       description: |
         Send a list of NHS numbers to the Patient Care Aggregator so it knows which patients you have appointments for.
