@@ -97,7 +97,7 @@ paths:
         Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## Appointment inclusion and exclusion rules
-        The endpoint mus include and exclude appointments as per the following rules:
+        The endpoint must include / exclude appointments as per the following rules:
         - NHS in England only: Only include appointments for care settings within the NHS in England.
         - Acute care settings only: Only include appointments for acute care settings, not any other type.
         - Outpatient apointments only: Only include outpatient appointments, not any other type.
