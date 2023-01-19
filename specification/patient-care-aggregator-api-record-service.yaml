@@ -22,7 +22,6 @@ info:
     You can only use this API if you are integrating a secondary care booking system with our Patient Care Aggregator. 
 
     ## API status 
-
     This API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is available for use in production but might be subject to breaking changes.
 
@@ -88,7 +87,7 @@ paths:
     get:
       summary: "Check service status"
       operationId: get-status
-      description: Return the current status of the API.
+      description: Get the current status of the API.
       responses:
         default:
           description: Successful
@@ -100,7 +99,7 @@ paths:
         ## Overview
         Send a list of NHS numbers to the Patient Care Aggregator so it knows which patients you have appointments for.
 
-        ## Record inclusion and exclusion rules
+        ## Inclusion and exclusion rules
         Only send NHS numbers for patients where you have appointments that would be returned by your [Get Appointments API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard),
         based on the appointment inclusion and exclusion rules for that API.
         
@@ -138,12 +137,16 @@ paths:
               properties:
                 clientId:
                   type: string
+                  description: 'A unique identifier for the calling system, provided by us.'
                   example: 'pep-01'
                 nhsNumbers:
                   type: array
+                  description: A list of NHS numbers for patients with qualitying appointments.
                   items: 
                     type: string
-                    example: ['9726779057', '9726779391']
+                    example: '9000000009'
+            example:
+              $ref: components/examples/RecordServiceSendPatientListRequest.json
       responses:
         '200':
           description: OK
@@ -156,8 +159,17 @@ paths:
                     type: string
                     enum: 
                       - success
-        '400':
-          description: Bad request due to invalid JSON, invalid NHS Number(s) or Bearer token/API Key not matching Client ID in payload
+              example:
+                $ref: components/examples/RecordServiceSendPatientListResponseHappyPath.json
+        '4XX':
+          description: |
+            'An error occurred as follows:'
+
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | 400         | `error.bad-request`        | Bad request due to invalid JSON, invalid NHS number(s) or bearer token/API key not matching client ID in payload	|
+            | 401         | `error.unauthorized`       | Unauthorized due to unrecognised bearer token/API key |
+          
           content:
             application/json:
               schema:
@@ -167,25 +179,12 @@ paths:
                     type: string
                     enum:
                       - "error.bad-request"
-                  data:
-                    type: string
-                    example: 'clientId mismatch'
-
-        '401':
-          description: Unauthorized due to unrecognised Bearer token/API Key
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    enum: 
                       - 'error.unauthorized'
                   data:
                     type: string
-                    enum:
-                      - 'Bad token'
+                    example: 'clientId mismatch'
+              example:
+                $ref: components/examples/RecordServiceSendPatientListResponseError.json
 components:
   securitySchemes:
     bearerAuth:
