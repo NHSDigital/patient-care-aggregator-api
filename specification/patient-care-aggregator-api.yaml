@@ -36,7 +36,7 @@ info:
     
     This API is only for use in patient-facing applications, not point-of-care applications.
     
-    For more details, see [Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator).
+    For more details, see [Patient access to referrals and bookings via the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator).
     
     ## Who can use this API
     Currently, this API is for internal use only - the only API consumer is the NHS App.
