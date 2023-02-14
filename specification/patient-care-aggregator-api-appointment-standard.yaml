@@ -16,7 +16,7 @@ info:
     - use the [Patient Cate Aggregator Record Service API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api) to let the let the Patient Care Aggregator know which patients you have bookings for 
     - build a ‘patient portal’ web application that the patient can access via a hyperlink from the NHS App 
 
-    For more details, see [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings).
+    For more details, see [Building healthcare software – patient access to referrals and bookings]( https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator).
 
     ## Who can use this API standard 
     You can only use this API standard if you are integrating a secondary care booking system with our Patient Care Aggregator. 
@@ -67,7 +67,7 @@ info:
     For more details, see the 'Testing' section in [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings).
 
     ## Onboarding 
-    To onboard to this API standard, see [Secondary care booking systems (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings#secondary-care-booking-systems).
+    To onboard to this API standard, see [Integrating a secondary care booking system (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#5-complete-onboarding).
   
   contact:
     name: 'patient-care-aggregator-api API Support'
