@@ -44,16 +44,10 @@ info:
     It uses API key authentication, so you'll need to pass an API key with each API request. The API key is unique to your application.
     
     This API doesn't use our standard API platform API keys - you'll have to request an API key from us. You'll need a separate API key per environment.
-
+    
     To see how to include the API key with your API request, see the endpoint description below.
 
-    Each Portal will be provided with a different Client ID to be used for each Resource type they support, e.g.:
-
-    <portal>-appointments
-    <portal>-documents
-    <portal>-questionnaires
-    
-    The same API bearer token will used across all Client IDs.
+    You'll also need a client ID to include with each request. You'll need to request this from us.
 
     ## Environments and testing 
 
@@ -75,6 +69,9 @@ info:
     name: 'patient-care-aggregator-api API Support'
     url: 'https://digital.nhs.uk/developer/help-and-support'
     email: api.management@nhs.net
+x-spec-publication:
+  try-this-api:
+    disabled: true
 servers:
   - url: 'https://integration.servita-demo.co.uk'
     description: Sandbox environment.
@@ -87,7 +84,8 @@ paths:
     get:
       summary: "Check service status"
       operationId: get-status
-      description: Get the current status of the API.
+      description: |
+        Use this endpoint to get the current status of the API.
       responses:
         default:
           description: Successful
@@ -97,7 +95,7 @@ paths:
       operationId: post-records
       description: |
         ## Overview
-        Send a list of NHS numbers to the Patient Care Aggregator so it knows which patients you have appointments for.
+        Use this endpoint to send a list of NHS numbers to the Patient Care Aggregator so it knows which patients you have appointments for.
 
         ## Inclusion and exclusion rules
         Only send NHS numbers for patients where you have appointments that would be returned by your [Get Appointments API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard),
@@ -163,12 +161,12 @@ paths:
                 $ref: components/examples/RecordServiceSendPatientListResponseHappyPath.json
         '4XX':
           description: |
-            'An error occurred as follows:'
+            An error occurred as follows:
 
             | HTTP status | Error code                 | Description |
             | ----------- | -------------------------- | --------------------------------------------- |
-            | 400         | `error.bad-request`        | Bad request due to invalid JSON, invalid NHS number(s) or bearer token/API key not matching client ID in payload	|
-            | 401         | `error.unauthorized`       | Unauthorized due to unrecognised bearer token/API key |
+            | 400         | `error.bad-request`        | Bad request due to invalid JSON, invalid NHS number(s) or bearer token/API key not matching client ID in payload.	|
+            | 401         | `error.unauthorized`       | Unauthorized due to unrecognised bearer token/API key. |
           
           content:
             application/json:
