@@ -125,9 +125,7 @@ paths:
         - Log records must be identifiable as having come from the Patient Care Aggregator.
         - Persionally identifiable and clinical information must be omitted from logs in production.
         - Log records must be held for a minimum of 90 days.
-
-    
-
+        - Alerts with suitable thresholds must be in place to flag error conditions
 
       operationId: get-appointments
       parameters:
@@ -628,7 +626,8 @@ paths:
                                       - needs-action                                                           
         '4XX':
           description: |
-            'An error occurred as follows:'
+            An error occurred as follows:
+            
             | HTTP status | Error code                 | Description |
             | ----------- | -------------------------- | --------------------------------------------- |
             | TBC         | `TBC`                      | TBC	|
