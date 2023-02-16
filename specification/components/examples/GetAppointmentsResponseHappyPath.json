@@ -1,3 +1,143 @@
 {
-  "TBC" : "TBC"
+  "resourceType" : "Bundle",
+  "type" : "search",
+  "entry" : [ {
+    "fullUrl" : "urn:uuid:d11c69d8-7a50-4a54-a848-7648121e995f",
+    "search" : {
+      "mode" : "match"
+    },
+    "resource" : {
+      "resourceType" : "Appointment",
+      "id" : "d9df1326-1008-45df-b9dd-a920b64ec043",
+      "extension" : [
+        {
+          "url" : "https://fhir.nhs.uk/StructureDefinition/Extension-ServiceRequest-Priority",
+          "valueCoding" : {
+            "system" : "https://fhir.nhs.uk/CodeSystem/eRS-Priority",
+            "code" : "{URGENT|ROUTINE|TWO_WEEK_WAIT}"
+          }
+        },
+        {
+          "url" : "https://servita.com/fhir/StructureDefinition/ExtensionAppointmentStatus",
+          "valueCode" : "{Pending Change|Pending Reschedule|Pending Cancellation|Confirmed Attendance}"
+        },
+        {
+          "url" : "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",
+          "valueCode" : "{FACE_TO_FACE | VIRTUAL}"
+        },
+        {
+          "url" : "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link",
+          "valueUrl" : "{deeplinkURL}"
+        }
+      ],
+      "identifier" : [
+        {
+          "system" : "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/Appointment",
+          "value" : "4817508"
+        },
+        {
+          "system" : "https://sandbox.patientsknowbest.com/fhir/Appointment",
+          "value" : "3a146c43-2b21-44e9-95bc-6f4849e504c8"
+        }
+      ],
+      "status" : "booked",
+      "description" : "Dermatology Check-up",
+      "start" : "2021-06-13T12:30:00+00:00",
+      "end" : "2021-06-13T12:45:00+00:00",
+      "slot" : [
+        {
+          "identifier" : {
+            "system" : "https://fhir.nhs.uk/Id/USRN",
+            "value" : "000000000000"
+          }
+        },
+        {
+          "identifier" : {
+            "system" : "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/Slot",
+            "value" : "65468756"
+          }
+        }
+      ],
+      "basedOn" : [
+        {
+          "identifier" : [
+            {
+              "system" : "https://fhir.nhs.uk/Id/UBRN",
+              "value" : "000000000001"
+            },
+            {
+              "system" : "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/ServiceRequest",
+              "value" : "265413"
+            },
+            {
+              "system" : "https://fhir-open.cerner.com/PathwayId",
+              "value" : "RBH5644312231"
+            }
+          ]
+        }
+      ],
+      "participant" : [
+        {
+          "actor" : {
+            "type" : "Patient",
+            "identifier" : {
+              "system" : "https://fhir.nhs.uk/Id/nhs-number",
+              "value" : "0000000001"
+            }
+          },
+          "status" : "accepted"
+        },
+        {
+          "actor" : {
+            "type" : "Practitioner",
+            "identifier" : {
+              "system" : "https://fhir.nhs.uk/Id/sds-user-id",
+              "value" : "999999999"
+            }
+          },
+          "status" : "accepted"
+        },
+        {
+          "actor" : {
+            "type" : "HealthcareService",
+            "identifier" : {
+              "system" : "http://myportal.com/FHIR/HealthcareService",
+              "value" : "123"
+            }
+          },
+          "status" : "accepted"
+        },
+        {
+          "actor" : {
+            "type" : "HealthcareService",
+            "identifier" : {
+              "system" : "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/HealthcareService",
+              "value" : "4817508"
+            }
+          },
+          "status" : "accepted"
+        },
+        {
+          "actor" : {
+            "type" : "HealthcareService",
+            "identifier" : {
+              "system" : "https://fhir.nhs.uk/Id/ers-service",
+              "value" : "103705"
+            }
+          },
+          "status" : "accepted"
+        },
+        {
+          "actor" : {
+            "type" : "HealthcareService",
+            "identifier" : {
+              "system" : "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value" : "RFF"
+            }
+          },
+          "status" : "accepted"
+        }
+      ]
+    }
+  } ]
 }
