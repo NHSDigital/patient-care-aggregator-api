@@ -97,7 +97,7 @@ paths:
         Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## Appointment inclusion and exclusion rules
-        The endpoint must include / exclude appointments as per the following rules:
+        The endpoint includes / excludes appointments as per the following rules:
         - NHS in England only: Only include appointments for care settings within the NHS in England.
         - Acute care settings only: Only include appointments for acute care settings, not any other type.
         - Outpatient apointments only: Only include outpatient appointments, not any other type.
@@ -109,6 +109,7 @@ paths:
         - Excluded specialities (SRCBR4): Appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
         - Ghost appointments: Exclude appointments that are booked in the system but which the patient is not expected to attend - known as 'ghost' appointments.
         - Future cancelled appointments: Include appointments that are future-dated and cancelled - this allows the patient to confirm that the appointment has been cancelled and knows not to attend.
+        - Under 16s: You don't need to exclude appointments for patients under 16 - the Patient Care Aggregator deals with filtering these out.
 
         ## Patients with no appointments
         Where a patient has no appointments, including where appointments have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
