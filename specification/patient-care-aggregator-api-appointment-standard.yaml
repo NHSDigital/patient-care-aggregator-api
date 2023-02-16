@@ -97,7 +97,7 @@ paths:
         Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## Appointment inclusion and exclusion rules
-        The endpoint must include / exclude appointments as per the following rules:
+        The endpoint includes / excludes appointments as per the following rules:
         - NHS in England only: Only include appointments for care settings within the NHS in England.
         - Acute care settings only: Only include appointments for acute care settings, not any other type.
         - Outpatient apointments only: Only include outpatient appointments, not any other type.
@@ -109,6 +109,7 @@ paths:
         - Excluded specialities (SRCBR4): Appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
         - Ghost appointments: Exclude appointments that are booked in the system but which the patient is not expected to attend - known as 'ghost' appointments.
         - Future cancelled appointments: Include appointments that are future-dated and cancelled - this allows the patient to confirm that the appointment has been cancelled and knows not to attend.
+        - Under 16s: You don't need to exclude appointments for patients under 16 - the Patient Care Aggregator deals with filtering these out.
 
         ## Patients with no appointments
         Where a patient has no appointments, including where appointments have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
@@ -409,7 +410,8 @@ paths:
                                       value:
                                         type: string
                                         example: "000000000000"
-                              - description: "Source System Slot ID"
+                              - description: "Source system slot ID"
+# What is a slot ID?                              
                                 type: object
                                 properties:
                                   identifier:
@@ -419,13 +421,16 @@ paths:
                                         type: string
                                         enum:
                                           - "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/Slot"
+# Conforming to a Cerner format - is this really the case? Eek!                                          
                                       value:
                                         type: string
                                         example: "65468756"
                         basedOn:
                           type: array
+# What does this attribute mean?                          
                           items:
                             type: object
+# Which properties are required?                            
                             properties:
                               identifier:
                                 type: array
@@ -461,6 +466,7 @@ paths:
                                           example: "RBH5644312231"               
                         participant:
                           type: array
+                          description: Participants in the appointment, including people and organisations / services.
                           items:
                             anyOf:
                               - description: 'Patient. Only populated if the patient is in attendance, i.e. not for hidden appointments.'
@@ -520,7 +526,8 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action
-                              - description: 'Portal Healthcare Service. [Optional]'
+                              - description: 'Portal healthcare service (optional).'
+# What is this and how does it differ from source system healthcare service?                              
                                 type: object
                                 properties:
                                   actor:
@@ -540,7 +547,7 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action                                    
-                              - description: 'Source System Healthcare Service [Optional]'
+                              - description: 'Source system healthcare service (optional).'
                                 type: object
                                 properties:
                                   actor:
@@ -569,7 +576,8 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action
-                              - description: 'e-RS Service ID [Optional]'
+                              - description: 'e-RS Service ID (optional).'
+# I presume this would be present if the appointment was the result of a referral via e-RS?                              
                                 type: object
                                 properties:
                                   actor:
@@ -600,7 +608,7 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action                                                                   
-                              - description: 'ODS Code [Required]'
+                              - description: 'ODS code for the organisation providing the appointment (required).'
                                 type: object
                                 required: 
                                   - actor
@@ -632,7 +640,7 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action        
-                              - description: 'Appointment Location [Optional]'
+                              - description: 'Appointment location (optional).'
                                 type: object
                                 properties:
                                   actor:
