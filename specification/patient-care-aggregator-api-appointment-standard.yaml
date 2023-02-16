@@ -125,9 +125,7 @@ paths:
         - Log records must be identifiable as having come from the Patient Care Aggregator.
         - Persionally identifiable and clinical information must be omitted from logs in production.
         - Log records must be held for a minimum of 90 days.
-
-    
-
+        - Alerts with suitable thresholds must be in place to flag error conditions
 
       operationId: get-appointments
       parameters:
@@ -164,7 +162,7 @@ paths:
               example:
                 $ref: components/examples/GetAppointmentsResponseHappyPath.json
               schema:
-                description: A FHIR bundle containing results of the request.
+                description: FHIR bundle containing results of the request - a list of matching appointments.
                 type: object
                 required:
                   - resourceType
@@ -172,20 +170,22 @@ paths:
                   - entry
                 properties:
                   resourceType:
-                    description: "FHIR resource type is Bundle"
+                    description: "FHIR resource type."
                     type: string
                     enum:
                       - "Bundle"
                   type:
-                    description: Bundle type is collection
+                    description: Bundle type.
                     type: string
                     enum:
                       - "collection"
+# Schema at https://nhsd-confluence.digital.nhs.uk/display/WAYF/Appointment+API+Producer+Specification#AppointmentAPIProducerSpecification-FHIRBundleSpecification says the value is "search"
                   entry:
+                    description: "List of matching appointments."
                     type: array
                     minItems: 0
                     items:
-                      description: Appointment FHIR resource
+                      description: An individual appointment.
                       type: object
                       required: 
                         - resourceType
@@ -195,42 +195,25 @@ paths:
                         - start
                         - end
                         - participant
+# Should extension be required, given that at least one of the extensions is required?
                       properties:
                         resourceType:
-                          description: "FHIR resource type of Appointment"
+                          description: "FHIR resource type."
                           type: string
                           enum:
                             - Appointment     
                         id:
-                          description: "Portal ID of Appointment"
+                          description: "Identifier for the appointment, unique within the secondary care booking system."
                           type: string
+# This field is optional - do we actually use it, or do we use identifier? If we don't use it, we could remove it from the spec and make life easier for the implementors
+# The example implies it needs to be a GUID, would an integer example be better?
                           example: "b710e648-c12e-4f66-80e2-9957a254900f"
                         extension:
-                          description: "Extensions for Priority [Optional], Request Status [Required], Appointment Status [Required], Consultation Medium [Required] and Deeplink [Required]"
+                          description: "FHIR extensions for appointment priority, appointment status, request status, consultation medium and deep link URL."
                           type: array
                           items:
                             anyOf: 
-                              - description: "NHS Priority"
-                                type: object
-                                properties:
-                                  url:
-                                    type: string
-                                    enum:
-                                      - "https://fhir.nhs.uk/StructureDefinition/Extension-ServiceRequest-Priority"
-                                  valueCoding:
-                                    type: object
-                                    properties:
-                                      system:
-                                        type: string
-                                        enum: 
-                                          - "https://fhir.nhs.uk/CodeSystem/eRS-Priority"
-                                      code:
-                                        type: string
-                                        enum:
-                                          - 'URGENT'
-                                          - 'ROUTINE'
-                                          - 'TWO_WEEK_WAIT'
-                              - description: "The status of the appointments as per the source system"
+                              - description: "Appointment priority (optional)."
                                 type: object
                                 required:
                                   - url
@@ -238,20 +221,50 @@ paths:
                                 properties:
                                   url:
                                     type: string
+                                    description: URI for the type of extension - in this case an appointment priority.
+                                    enum:
+                                      - "https://fhir.nhs.uk/StructureDefinition/Extension-ServiceRequest-Priority"
+                                  valueCoding:
+                                    type: object
+                                    properties:
+                                      system:
+                                        type: string
+                                        description: Coding system used for the appointment priority.
+                                        enum: 
+                                          - "https://fhir.nhs.uk/CodeSystem/eRS-Priority"
+                                      code:
+                                        type: string
+                                        description: The appointment priority code itself.
+                                        enum:
+                                          - 'URGENT'
+                                          - 'ROUTINE'
+                                          - 'TWO_WEEK_WAIT'
+                              - description: "Appointment status as per the source system (required)."
+                                type: object
+                                required:
+                                  - url
+                                  - valueCode
+                                properties:
+                                  url:
+                                    type: string
+                                    description: URI for the type of extension - in this case an appointment status.
                                     enum:
                                       - "https://servita.com/fhir/StructureDefinition/ExtensionAppointmentStatus"
                                   valueCode:
                                     type: string
+                                    description: The appointment status itself.
                                     enum:
                                       - "Pending Change"
                                       - "Pending Reschedule"
                                       - "Pending Cancellation"
                                       - "Pending Attendance"
-                              - description: "Used if 'dumb booking' is supported. E.g. when a patient requests to cancel an appointment but the source system status is still booked."
+                              - description: "Request status - used if 'dumb booking' is supported, for example when a patient requests to cancel an appointment but the source system status is still booked (required)."
+# The description says this is required, but the wording also implies it's optional - which is it?                              
                                 type: object
                                 properties:
                                   url:
                                     type: string
+                                    description: URI for the type of extension - in this case a request status.
                                     enum:
                                       - 	https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-RequestStatus
                                   valueCode:
@@ -261,7 +274,7 @@ paths:
                                       - Pending Reschedule 
                                       - Pending Cancellation 
                                       - Confirmed Attendance                                
-                              - description: "Whether visit is face-to-face or remote"
+                              - description: "Consultation medium - whether visit is face-to-face or remote (required)."
                                 type: object
                                 required:
                                   - url
@@ -269,14 +282,16 @@ paths:
                                 properties:
                                   url:
                                     type: string
+                                    description: URI for the type of extension - in this case a consultation medium.
                                     enum:
                                       - "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium"
                                   valueCode:
                                     type: string
+                                    description: The consultation medium itself.
                                     enum:
                                       - "FACE_TO_FACE"
                                       - "VIRTUAL"
-                              - description: "Deeplink to appointment in portal system"
+                              - description: "Deep link URL to appointment in portal system (required)."
                                 type: object
                                 required:
                                   - url
@@ -284,18 +299,22 @@ paths:
                                 properties:
                                   url:
                                     type: string
+                                    description: URI for the type of extension - in this case a deep link URL.
                                     enum:
                                       - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
                                   valueCode:
                                     type: string
+                                    description: The deep link URL itself.
                                     example: "https://wayfinder.example-pep.com/fhir/Appointment/770DA42C-C8F2-A5F7-6185-40EE9409B494"
                         identifier:
                           type: array
                           items:
                             anyOf:
-                              - description: "Source System ID"
+                              - description: "Source system ID"
+# what is the difference between the source system and the portal system?                              
                                 type: object
                                 properties:
+# If this is an ID, why is it represented as a coded value (system/code)?                                
                                   system:
                                     description: "Source system UUID"
                                     type: string
@@ -307,6 +326,7 @@ paths:
                               - description: "Portal System ID"
                                 type: object
                                 properties:
+# If this is an ID, why is it represented as a coded value (system/code)?                                
                                   system:
                                     description: "Portal system UUID"
                                     type: string
@@ -317,6 +337,8 @@ paths:
                                     example: "3a146c43-2b21-44e9-95bc-6f4849e504c8"
                         specialty:
                           type: array
+# Min / max array items? 
+# description
                           items:
                             oneOf:
                               - type: object
@@ -329,18 +351,20 @@ paths:
                                           properties:
                                             system: 
                                               type: string
+                                              description: Coding system for the specialty code.
                                               enum:
                                                 - "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
                                             code:
-                                              description: "Three-digit NHS Specialty Code. Equivalent to NHS Data Dictionary Treatment Function Code"
+                                              description: "Three-digit NHS specialty code. Equivalent to NHS Data Dictionary Treatment Function Code"
                                               type: string
                                               example: "330"
                                             display:
-                                              description: "NHS Specialty Name"
+                                              description: "NHS specialty name."
                                               type: string
                                               example: "DERMATOLOGY"
                         status:
-                          description: "Booking status of Appointment"
+# How does this differ from the appointment status extension?                        
+                          description: "Appointment booking status"
                           type: string
                           enum:
                             - proposed
@@ -354,19 +378,21 @@ paths:
                             - checked-in
                             - waitlist
                         description:
-                          description: "Portal description of appointment"
+                          description: "Appointment description."
                           type: string
                           example: "Dermatology New"
+# Trying to understand what this field means - the example doesn't give me much of a clue.                          
                         start:
-                          description: "Start date/time of appointment in local time zone"
+                          description: "Start date/time of appointment in local time zone."
                           type: string
                           example: "2021-06-13T12:30:00+00:00"
                         end:
-                          description: "End date/time of appointment in local time zone"
+                          description: "End date/time of appointment in local time zone."
                           type: string
                           example: "2021-06-13T12:45:00+00:00"
                         slot:
                           description: "Slot USRN and internal ID"
+# What does this mean? What is a USRN?                          
                           type: array
                           items: 
                             anyOf:
@@ -437,7 +463,7 @@ paths:
                           type: array
                           items:
                             anyOf:
-                              - description: 'Patient. Only populated if the patient is in attendance, i.e. not for hidden appointments'
+                              - description: 'Patient. Only populated if the patient is in attendance, i.e. not for hidden appointments.'
                                 type: object
                                 properties:
                                   actor:
@@ -456,7 +482,7 @@ paths:
                                               - "https://fhir.nhs.uk/Id/nhs-number"
                                           value:
                                             type: string
-                                            example: "0000000001"
+                                            example: "9000000009"
                                   status:
                                     type: string
                                     enum:
@@ -464,7 +490,7 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action
-                              - description: 'Attending clinican [Optional]'
+                              - description: 'Attending clinician (optional).'
                                 type: object
                                 properties:
                                   actor:
@@ -628,7 +654,8 @@ paths:
                                       - needs-action                                                           
         '4XX':
           description: |
-            'An error occurred as follows:'
+            An error occurred as follows:
+            
             | HTTP status | Error code                 | Description |
             | ----------- | -------------------------- | --------------------------------------------- |
             | TBC         | `TBC`                      | TBC	|
