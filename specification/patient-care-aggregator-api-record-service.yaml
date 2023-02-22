@@ -26,7 +26,7 @@ info:
     meaning it is available for use in production but might be subject to breaking changes.
 
     ## Service level 
-    This API is a gold service, meaning it is operational and supported 24 x 7 x 365. 
+    This API is a silver service, meaning it is operational 24 x 7 x 365 but only supported during working hours.
 
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels). 
 
@@ -97,7 +97,8 @@ paths:
         ## Batching and timing rules
         When your service first goes live, send an initial batch of NHS numbers for all qualifying patients (taking into account the inclusion and exclusion rules).
         
-        When a new appointment is booked, and if the Patient Care Aggregator doesn't already know about the patient, send the patient's NHS number immediately.
+        Ideally, when a new appointment is booked, and if the Patient Care Aggregator doesn't already know about the patient, send the patient's NHS number immediately.
+        Alternatively, send new NHS numbers overnight in a batch, but this is not preferred.
 
         If a request to this endpoint fails, keep track of which NHS numbers you haven't yet sent, and re-send them, using an appropriate back-off timing scheme.
 
@@ -105,7 +106,7 @@ paths:
         but try to avoid this by keeping track of which NHS numbers you have already sent it.
         
         On request, at any time, you must be able to re-send a full list of NHS numbers for all existing appointments.
-        If this takes some time to complete, you must also contime to send NHS numbers for new appointments in real time.
+        If this takes some time to complete, you must also continue to send NHS numbers for new appointments in real time.
         
         In the production environment, the endpoint accepts a maximum of 5,000 NHS numbers per call. In non-productiuon environments, the limit is 200.
         If you need to send more NHS numbers, make multiple calls.

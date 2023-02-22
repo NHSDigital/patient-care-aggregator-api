@@ -49,18 +49,13 @@ info:
     ## Network access 
     Your API must be available on the internet. 
 
-    ## Security and authorisation 
-    Your API must:
-    - use TLS-MA to authenticate the Patient Care Aggregator as the calling system
-    - use Open ID Connect (OIDC) to authenticate the patient end user
+    ## Security and authorisation
+    Your API must use OAuth 2.0 to authenticate and authorise the Patient Care Aggregator as the calling system.
     
-    For details of how to implement TLS-MA, [contact us](https://digital.nhs.uk/developer/help-and-support).
+    This replaces the previous authentication and authorisation method which was a combination of TLS-MA and Open ID Connect.
     
-    For OIDC, the Patient Care Aggregator includes an `Authorization` header with each request to the API. This contains an NHS login ID token.
-    You must verify this token with NHS login and confirm the patient is authenticated to P9 level. For more details, see [NHS login for partners and developers](https://digital.nhs.uk/services/nhs-login/nhs-login-for-partners-and-developers).
+    For more details, see [Authorisation using OAuth 2.0](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/authorisation-using-oauth-2.0).
     
-    In the future, we're planning to change the security to use OAuth 2.0.
-
     ## Environments and testing 
     You'll need to deploy your API into a number test environments.
     
