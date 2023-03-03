@@ -57,9 +57,9 @@ info:
     For more details, see [Authorisation using OAuth 2.0](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/authorisation-using-oauth-2.0).
     
     ## Environments and testing 
-    You'll need to deploy your API into a number test environments.
+    You'll need to deploy your API into a number of test environments.
     
-    For more details, see the 'Testing' section in [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings).
+    For more details, see the 'Testing' section in [Integrating a secondary care booking system with the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#4-test-your-software).
 
     ## Onboarding 
     To onboard to this API standard, see [Integrating a secondary care booking system (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#5-complete-onboarding).
