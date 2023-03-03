@@ -60,7 +60,7 @@ info:
     | Production                          | `https://prod-base.patient-care-aggregator.com`                        |
 
     For more details on how to use these environments,
-    see the 'Testing' section in [Building healthcare software – patient access to referrals and bookings](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-access-to-referrals-and-bookings).
+    see the 'Testing' section in [Integrating a secondary care booking system with the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#4-test-your-software).
 
     ## Onboarding 
     To onboard to this API, see [Integrating a secondary care booking system (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#5-complete-onboarding).
