@@ -2,8 +2,8 @@
 # for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
 openapi: '3.0.0'
 info:
-  title: "Patient Care Aggregator Record Service API"
-  version: "1.0.1"
+  title: "Patient Care Aggregator Appointment Standard"
+  version: "1.0.2"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
@@ -52,7 +52,7 @@ info:
     ## Security and authorisation
     Your API must use OAuth 2.0 to authenticate and authorise the Patient Care Aggregator as the calling system.
     
-    This replaces the previous authentication and authorisation method which was a combination of TLS-MA and Open ID Connect.
+    This replaces the previous authentication and authorisation method which was TLS-MA.
     
     For more details, see [Authorisation using OAuth 2.0](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/authorisation-using-oauth-2.0).
     
@@ -111,7 +111,7 @@ paths:
         response with an HTTP status of 200 and a FHIR Bundle with no appointments in it.
 
         ## Capacity and response times
-        Your endpioint must be capable of:
+        Your endpoint must be capable of:
         - responding to requests within 400ms (at the 95th percentile)
         - at a throughput of 100 transactions per second
 
@@ -122,6 +122,9 @@ paths:
         - Persionally identifiable and clinical information must be omitted from logs in production.
         - Log records must be held for a minimum of 90 days.
         - Alerts with suitable thresholds must be in place to flag error conditions
+
+        ## Error and Fault Responses
+        Your API must return appropriate HTTP error and fault codes. The schema for a 200 success response is detailed in this specification. However, we do not mandate any particular format for 3xx, 4xx or 5xx responses. We do ask that you include an error message in the response payload explaining clearly what went wrong. This helps us to understand and triage the issue faster. It also helps to avoid unnecesary requests to your live support team in the case where the issue is caused by a problem with the Patient Care Aggregator API.
 
       operationId: get-appointments
       parameters:
@@ -174,8 +177,7 @@ paths:
                     description: Bundle type.
                     type: string
                     enum:
-                      - "collection"
-# Schema at https://nhsd-confluence.digital.nhs.uk/display/WAYF/Appointment+API+Producer+Specification#AppointmentAPIProducerSpecification-FHIRBundleSpecification says the value is "search"
+                      - "searchset"
                   entry:
                     description: "List of matching appointments."
                     type: array
@@ -185,13 +187,14 @@ paths:
                       type: object
                       required: 
                         - resourceType
-                        - identifier
+                        - id
                         - status
                         - description
                         - start
                         - end
                         - participant
-# Should extension be required, given that at least one of the extensions is required?
+                        - extension
+                        - specialty
                       properties:
                         resourceType:
                           description: "FHIR resource type."
@@ -199,13 +202,11 @@ paths:
                           enum:
                             - Appointment     
                         id:
-                          description: "Identifier for the appointment, unique within the secondary care booking system."
+                          description: "A GUID identifier for the appointment. It is preferable but not mandatory that this GUID links relationally to other resources in your Portal System database, e.g. Documents and Questionnaires."
                           type: string
-# This field is optional - do we actually use it, or do we use identifier? If we don't use it, we could remove it from the spec and make life easier for the implementors
-# The example implies it needs to be a GUID, would an integer example be better?
                           example: "b710e648-c12e-4f66-80e2-9957a254900f"
                         extension:
-                          description: "FHIR extensions for appointment priority, appointment status, request status, consultation medium and deep link URL."
+                          description: "FHIR extensions for appointment priority, request status, consultation medium and deep link URL."
                           type: array
                           items:
                             anyOf: 
@@ -235,27 +236,7 @@ paths:
                                           - 'URGENT'
                                           - 'ROUTINE'
                                           - 'TWO_WEEK_WAIT'
-                              - description: "Appointment status as per the source system (required)."
-                                type: object
-                                required:
-                                  - url
-                                  - valueCode
-                                properties:
-                                  url:
-                                    type: string
-                                    description: URI for the type of extension - in this case an appointment status.
-                                    enum:
-                                      - "https://servita.com/fhir/StructureDefinition/ExtensionAppointmentStatus"
-                                  valueCode:
-                                    type: string
-                                    description: The appointment status itself.
-                                    enum:
-                                      - "Pending Change"
-                                      - "Pending Reschedule"
-                                      - "Pending Cancellation"
-                                      - "Pending Attendance"
-                              - description: "Request status - used if 'dumb booking' is supported, for example when a patient requests to cancel an appointment but the source system status is still booked (required)."
-# The description says this is required, but the wording also implies it's optional - which is it?                              
+                              - description: "Request Status. Used if 'dumb booking' is supported. For example when a patient requests to cancel an appointment but the source system status is still booked."
                                 type: object
                                 properties:
                                   url:
@@ -306,35 +287,33 @@ paths:
                           type: array
                           items:
                             anyOf:
-                              - description: "Source system ID"
-# what is the difference between the source system and the portal system?                              
+                              - description: "The ID of the Appointment in its source PAS system database (optional)"                        
                                 type: object
-                                properties:
-# If this is an ID, why is it represented as a coded value (system/code)?                                
+                                properties:                               
                                   system:
-                                    description: "Source system UUID"
+                                    description: "A base URI for the specific instance/implementation of the source system the appointment came from. Typically this will be one URI per resource type per NHS Trust."
                                     type: string
                                     example: "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/Appointment"
-                                  code:
-                                    description: "Source Appointment ID"
+                                  value:
+                                    description: "The ID of the Appointment in its source database (e.g. a Trust PAS system)"
                                     type: string
                                     example: "4817508"
-                              - description: "Portal System ID"
+                              - description: "The ID of the Appointment in your Patient Portal database. (optional)"
                                 type: object
-                                properties:
-# If this is an ID, why is it represented as a coded value (system/code)?                                
+                                properties:                       
                                   system:
-                                    description: "Portal system UUID"
+                                    description: "The base URI for Appointments in your Patient Portal"
                                     type: string
                                     example: "https://sandbox.patientsknowbest.com/fhir/Appointment"
-                                  code:
-                                    description: "Portal Appointment ID"
+                                  value:
+                                    description: "The ID of the Appointment in your Patient Portal database"
                                     type: string
-                                    example: "3a146c43-2b21-44e9-95bc-6f4849e504c8"
+                                    example: "893457"
                         specialty:
                           type: array
-# Min / max array items? 
-# description
+                          minItems: 1
+                          maxItems: 1
+                          description: "NHS Specialty (required)"
                           items:
                             oneOf:
                               - type: object
@@ -359,8 +338,7 @@ paths:
                                               type: string
                                               example: "DERMATOLOGY"
                         status:
-# How does this differ from the appointment status extension?                        
-                          description: "Appointment booking status"
+                          description: "The actual appointment booking status as reported by the source Trust PAS system (required)"
                           type: string
                           enum:
                             - proposed
@@ -374,25 +352,23 @@ paths:
                             - checked-in
                             - waitlist
                         description:
-                          description: "Appointment description."
+                          description: "A patient-friendly description of the appointment that would be appropriate to display to patients in your own user interface. This should include a reference to the specialty, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function (required)"
                           type: string
-                          example: "Dermatology New"
-# Trying to understand what this field means - the example doesn't give me much of a clue.                          
+                          example: "Orthopaedics Follow Up"
                         start:
-                          description: "Start date/time of appointment in local time zone."
+                          description: "Start date/time of appointment in local time zone (required)"
                           type: string
                           example: "2021-06-13T12:30:00+00:00"
                         end:
-                          description: "End date/time of appointment in local time zone."
+                          description: "End date/time of appointment in local time zone (required)"
                           type: string
                           example: "2021-06-13T12:45:00+00:00"
                         slot:
-                          description: "Slot USRN and internal ID"
-# What does this mean? What is a USRN?                          
+                          description: "Unique Slot Reference Number and source PAS database slot ID (optional)"
                           type: array
                           items: 
                             anyOf:
-                              - description: "USRN"
+                              - description: "Unique Slot Reference Number, a unique ID for an appointment slot which is allocated by e-RS during slot polling."
                                 type: object
                                 properties:
                                   identifier:
@@ -405,8 +381,7 @@ paths:
                                       value:
                                         type: string
                                         example: "000000000000"
-                              - description: "Source system slot ID"
-# What is a slot ID?                              
+                              - description: "Source PAS database slot ID for the slot into which the appointment was booked."
                                 type: object
                                 properties:
                                   identifier:
@@ -414,18 +389,15 @@ paths:
                                     properties:
                                       system:
                                         type: string
-                                        enum:
-                                          - "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/Slot"
-# Conforming to a Cerner format - is this really the case? Eek!                                          
+                                        example: "https://fhir-open.cerner.com/dstu2/ec2458f2-1e24-41c8-b71b-0e701af7583d/Slot"
                                       value:
                                         type: string
                                         example: "65468756"
                         basedOn:
                           type: array
-# What does this attribute mean?                          
+                          description: "The ReferralID, UBRN or PathwayID to which this appointment is linked (optional)"                    
                           items:
                             type: object
-# Which properties are required?                            
                             properties:
                               identifier:
                                 type: array
@@ -461,7 +433,7 @@ paths:
                                           example: "RBH5644312231"               
                         participant:
                           type: array
-                          description: Participants in the appointment, including people and organisations / services.
+                          description: Participants in the appointment, including people and organisations / services (only ODS Code is required).
                           items:
                             anyOf:
                               - description: 'Patient. Only populated if the patient is in attendance, i.e. not for hidden appointments.'
@@ -521,8 +493,7 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action
-                              - description: 'Portal healthcare service (optional).'
-# What is this and how does it differ from source system healthcare service?                              
+                              - description: 'Portal healthcare service (optional).'       
                                 type: object
                                 properties:
                                   actor:
@@ -571,8 +542,7 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action
-                              - description: 'e-RS Service ID (optional).'
-# I presume this would be present if the appointment was the result of a referral via e-RS?                              
+                              - description: 'e-RS Service ID (optional).'                     
                                 type: object
                                 properties:
                                   actor:
@@ -595,7 +565,6 @@ paths:
                                       display:
                                         type: string
                                         example: "General Dermatology - Main OPD - Barnsley NHS Foundation Trust - RFF"
-
                                   status:
                                     type: string
                                     enum:
@@ -655,30 +624,6 @@ paths:
                                       - declined 
                                       - tentative 
                                       - needs-action                                                           
-        '4XX':
-          description: |
-            An error occurred as follows:
-            
-            | HTTP status | Error code                 | Description |
-            | ----------- | -------------------------- | --------------------------------------------- |
-            | TBC         | `TBC`                      | TBC	|
-            | TBC         | `TBC`                      | TBC  |
-          
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  tbc1:
-                    type: string
-                    enum:
-                      - 'tbc'
-                      - 'tbc'
-                  tbc2:
-                    type: string
-                    example: 'tbc'
-              example:
-                $ref: components/examples/GetAppointmentsResponse4xx.json
 components:
   securitySchemes:
     bearerAuth:
