@@ -139,8 +139,7 @@ paths:
                   example: 'pep-01'
                 nhsNumbers:
                   type: array
-                  minItems: 0
-# Do we accept an empty array?                  
+                  minItems: 1
                   maxItems: 5000
                   description: A list of NHS numbers for patients with qualitying appointments.
                   items: 
