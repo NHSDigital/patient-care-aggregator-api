@@ -2,7 +2,7 @@
 # for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
 openapi: '3.0.0'
 info:
-  title: "Patient Care Aggregator Appointment Standard"
+  title: "Patient Care Aggregator Get Appointments API Standard"
   version: "1.0.2"
   description: |
     ## Overview 
@@ -123,7 +123,7 @@ paths:
         - Log records must be held for a minimum of 90 days.
         - Alerts with suitable thresholds must be in place to flag error conditions
 
-        ## Error and Fault Responses
+        ## Error and fault responses
         Your API must return appropriate HTTP error and fault codes. The schema for a 200 success response is detailed in this specification. However, we do not mandate any particular format for 3xx, 4xx or 5xx responses. We do ask that you include an error message in the response payload explaining clearly what went wrong. This helps us to understand and triage the issue faster. It also helps to avoid unnecesary requests to your live support team in the case where the issue is caused by a problem with the Patient Care Aggregator API.
 
       operationId: get-appointments
