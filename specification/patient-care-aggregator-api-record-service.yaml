@@ -22,7 +22,7 @@ info:
     You can only use this API if you are integrating a secondary care booking system with our Patient Care Aggregator. 
 
     ## API status 
-    This API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
+    This API is [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
     meaning it is available for use in production but might be subject to breaking changes.
 
     ## Service level 
