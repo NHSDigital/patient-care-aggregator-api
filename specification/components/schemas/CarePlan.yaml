@@ -267,7 +267,22 @@ properties:
                             enum:
                               - "FACE_TO_FACE"
                               - "VIRTUAL"
-                              - ""
+                      - description: "Optional element for when an Appointment has an actionable Document or Questionnaire associated."
+                        type: object
+                        required:
+                          - url
+                          - valueCode
+                        properties:
+                          url:
+                            description: "FHIR extension type for the action required code."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Action-Required"
+                          valueCode:
+                            description: "The action required itself. Will be blank (empty string) if no action is required."
+                            type: string
+                            enum:
+                              - "ACTION_REQUIRED"
                 description:
                   description: "Extra information describing the activity to perform."
                   type: string

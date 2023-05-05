@@ -87,6 +87,9 @@
           }, {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",
             "valueCode": "FACE_TO_FACE"
+          }, {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Action-Required",
+            "valueCode": "ACTION_REQUIRED"
           } ],
           "description": "Rheumatology Consulatation - Clinic 5, Main Outpatients Dept, Freeman Hospital",
           "scheduledPeriod": {

@@ -1,0 +1,56 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "entry": [{
+    "fullUrl": "urn:uuid:d11c69d8-7a50-4a54-a848-7648121e995f",
+    "search": {
+      "mode": "match"
+    },
+    "resource": {
+      "resourceType": "DocumentReference",
+      "id": "2f02f7ac-0de5-4271-81ad-92b69ead27e9",
+      "extension": [{
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Document-ReadReceipt",
+        "valueCode": "Read"
+      }],
+      "identifier": [{
+        "system": "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/DocumentReference",
+        "value": "4817508"
+      }, {
+        "system": "https://my.portal.com/fhir/DocumentReference",
+        "value": "3a146c43-2b21-44e9-95bc-6f4849e504c8"
+      }],
+      "status": "current",
+      "docStatus": "final",
+      "subject": {
+        "type": "Patient",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/nhs-number",
+          "value": "9000000001"
+        }
+      },
+      "context": {
+        "related": [{
+          "type": "Appointment",
+          "reference": "https://my.portal.com/fhir/R4/Appointment/0448E4C8-DD12-4BAD-9B59-6091C9484701"
+        }],
+      },
+      "date": "2021-06-13T12:30:00+00:00",
+      "custodian": {
+        "type": "Organization",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "RFF"
+        },
+        "display": "Barnsley Hospital NHS Foundation Trust"
+      },
+      "description": "Dermatology follow-up letter",
+      "content": [{
+        "attachment": {
+          "contentType": "application/pdf",
+          "url": "https://my.portal.com/Document?id=123"
+        }
+      }]
+    }
+  }]
+}

@@ -80,7 +80,7 @@ properties:
                   valueCode:
                     description: "Unique identifier for the back-end application that returned the error."
                     type: "string"
-                    example: "dr-doctor-01"
+                    example: "myportal-02"
             diagnostics:
               description: "Detailed diagnostic information for the issue."
               type: string

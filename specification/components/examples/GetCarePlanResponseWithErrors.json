@@ -87,6 +87,9 @@
           }, {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",
             "valueCode": "FACE_TO_FACE"
+          }, {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Action-Required",
+            "valueCode": "ACTION_REQUIRED"
           } ],
           "description": "Rheumatology Consulatation - Clinic 5, Main Outpatients Dept, Freeman Hospital",
           "scheduledPeriod": {
@@ -108,7 +111,7 @@
         "code": "transient",
         "extension": [ {
           "url": "https://fhir.nhs.uk/StructureDefinition/ExtensionErrorSource",
-          "valueCode": "zesty-01"
+          "valueCode": "myportal-01"
         } ],
         "diagnostics": "http-404"
       }, {
@@ -116,7 +119,7 @@
         "code": "structure",
         "extension": [ {
           "url": "https://fhir.nhs.uk/StructureDefinition/ExtensionErrorSource",
-          "valueCode": "dr-doctor-01"
+          "valueCode": "myportal-02"
         } ],
         "diagnostics": "Response failed FHIR validation"
       } ]

@@ -1,0 +1,56 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "entry": [{
+    "fullUrl": "urn:uuid:d11c69d8-7a50-4a54-a848-7648121e995f",
+    "search": {
+      "mode": "match"
+    },
+    "resource": {
+      "resourceType": "Task",
+      "id": "cdb83383-f17e-4bf7-8f40-342f7f7c7d8d",
+      "basedOn": [{
+        "type": "CarePlan",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/PathwayId",
+          "value": "RBH5644312231"
+        }
+      }],
+      "status": "requested",
+      "intent": "plan",
+      "description": "Pre-consultation Health Survey",
+      "focus": [{
+        "type": "Appointment",
+        "reference": "https://my.portal.com/fhir/R4/Appointment/ec2458f2-1e24-41c8-b71b-0e701af7583d"
+      }],
+      "for": {
+        "type": "Patient",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/nhs-number",
+          "value": "9000000001"
+        }
+      },
+      "authoredOn": "2021-06-13T12:30:00+00:00",
+      "reasonReference": [{
+        "type": "Questionnaire",
+        "reference": "https://my.portal.com/Questionnaire?id=123"
+      }],
+      "owner": {
+        "type": "Organization",
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "RFF"
+        },
+        "display": "Barnsley Hospital NHS Foundation Trust"
+      },
+      "reasonCode": {
+        "coding": [{
+          "system": "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type",
+          "code": "CONS-Survey",
+          "display": "Consultation Survey"
+        }],
+        "text": "Pre-consultation Survey"
+      }
+    }
+  }]
+}
