@@ -92,7 +92,7 @@ class TestEndpoints:
             "sub": "49f470a1-cc52-49b7-beba-0f9cec937c46",
             "aud": "some-client-id",
             "iss": "https://internal-dev.api.service.nhs.uk",
-            "exp": 1683331166,
+            "exp": 4114224185,
             "iat": 1623849271,
             "jti": str(uuid.uuid4()),
         }
@@ -109,7 +109,7 @@ class TestEndpoints:
             "auth_time": 1623849201,
             "vot": "P9.Cp.Cd",
             "identity_proofing_level": "P9",
-            "exp": 1683331166,
+            "exp": 4114224185,
             "iat": 1623849271,
             "family_name": "MILLAR",
             "jti": "8edabe2b-c7ff-40bd-bc7f-0b8dc6a52423",

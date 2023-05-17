@@ -33,7 +33,7 @@
         "related": [{
           "type": "Appointment",
           "reference": "https://my.portal.com/fhir/R4/Appointment/0448E4C8-DD12-4BAD-9B59-6091C9484701"
-        }],
+        }]
       },
       "date": "2021-06-13T12:30:00+00:00",
       "custodian": {

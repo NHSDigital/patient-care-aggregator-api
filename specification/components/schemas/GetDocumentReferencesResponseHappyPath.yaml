@@ -106,7 +106,7 @@ properties:
             oneOf:
               - type: object
                 required:
-                  - system
+                  - type
                   - identifier
                 properties:
                   type:
@@ -115,20 +115,20 @@ properties:
                     enum:
                       - "CarePlan"
                   identifier:
-                    - type: object
-                      required:
-                        - system
-                        - value
-                      properties:
-                        system: 
-                          type: string
-                          description: Identifier system for a Care Pathway
-                          enum:
-                            - "https://fhir.nhs.uk/Id/PathwayId"
-                        value:
-                          type: string
-                          description: "Care pathway Identifier"
-                          example: "RBH5644312231"
+                    type: object
+                    required:
+                      - system
+                      - value
+                    properties:
+                      system: 
+                        type: string
+                        description: Identifier system for a Care Pathway
+                        enum:
+                          - "https://fhir.nhs.uk/Id/PathwayId"
+                      value:
+                        type: string
+                        description: "Care pathway Identifier"
+                        example: "RBH5644312231"
         status:
           description: "The status of the DocumentReferences as per the source system. We would only expect current documents to be returned to the Aggregator."
           type: string

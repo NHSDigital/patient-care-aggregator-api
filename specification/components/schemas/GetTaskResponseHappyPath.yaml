@@ -234,4 +234,4 @@ properties:
             text:
               type: string
               description: Questionnaire type
-              examples: Pre-consultation Survey
+              example: Pre-consultation Survey
