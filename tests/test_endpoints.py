@@ -155,7 +155,7 @@ class TestEndpoints:
         # Given I have a token
         token = get_token
         expected_status_code = 200
-        proxy_url = f"https://internal-dev.api.service.nhs.uk/{config.ENV['base_path']}/aggregator/status"
+        proxy_url = f"https://internal-dev.api.service.nhs.uk/{config.ENV['base_path']}/status"
         # When calling the proxy
         headers = {"Authorization": f"Bearer {token}"}
         resp = SESSION.get(url=proxy_url, headers=headers)
