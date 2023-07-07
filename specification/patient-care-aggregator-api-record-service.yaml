@@ -1,5 +1,6 @@
 # This is an OpenAPI Specification (https://swagger.io/specification/) 
 # for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
+# Update graphic to include Documents and Questionnaires
 openapi: '3.0.0'
 info:
   title: "Patient Care Aggregator Record Service API"
@@ -8,12 +9,12 @@ info:
     ## Overview 
     ![Patient Care Aggregator Get Appointments API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-record-service-api-context-diagram.svg?raw=true)
 
-    Use this API, as a secondary care provider, to let the Patient Care Aggregator know which patients you have bookings for. 
+    Use this API, as a secondary care provider, to let the Patient Care Aggregator know which patients you have bookings, documents and questionnaires for.
 
-    The Patient Care Aggregator needs this information in advance so it knows which secondary care providers to ask for a list of bookings when a patient requests the list using the NHS App. 
+    The Patient Care Aggregator needs this information in advance so it knows which secondary care providers to ask for a list of bookings, documents and questionnaires when a patient requests the list using the NHS App. 
 
     As a secondary care provider, you’ll also need to: 
-    - build an API using the [Patient Care Aggregator Get Applications API standard](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard) that the Patient Care Aggregator can use to get a list of bookings for a patient
+    - build an API using the [Patient Care Aggregator Get Applications API standard](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard) that the Patient Care Aggregator can use to get a list of bookings, documents and questionnaires for a patient
     - build a ‘patient portal’ web application that the patient can access via a hyperlink from the NHS App 
 
     For more details, see [Patient access to referrals and bookings via the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator). 
@@ -47,7 +48,7 @@ info:
     
     To see how to include the API key with your API request, see the endpoint description below.
 
-    You'll also need a client ID to include with each request. You'll need to request this from us.
+    You'll also need a client ID to include with each request. You will be issued a client Id for each resource type you post to the record service. You'll need to request this from us.
 
     ## Environments and testing 
 
@@ -91,6 +92,7 @@ paths:
         ## Inclusion and exclusion rules
         Use the following rules when sending NHS numbers:
         * Do not send NHS numbers for sensitive patients.
+        * Do not send NHS numbers for patient under the age of 16.
         * Other than that, send NHS numbers for all registered patients, regardless of whether they have any appointments that would currently be returned by your
         [Get Appointments API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard).
         
@@ -99,6 +101,8 @@ paths:
         
         Ideally, when a new appointment is booked, and if the Patient Care Aggregator doesn't already know about the patient, send the patient's NHS number immediately.
         Alternatively, send new NHS numbers overnight in a batch, but this is not preferred.
+
+        Note; patients turning 16 who meet the above requirements will also need to be posted to the record service.
 
         If a request to this endpoint fails, keep track of which NHS numbers you haven't yet sent, and re-send them, using an appropriate back-off timing scheme.
 
@@ -110,6 +114,11 @@ paths:
         
         In the production environment, the endpoint accepts a maximum of 5,000 NHS numbers per call. In non-productiuon environments, the limit is 200.
         If you need to send more NHS numbers, make multiple calls.
+
+        ## Resource types
+        The record service accepts NHS Number for patients with the following resources available; Appointments, Documents and Questionnaires. A client ID will be issued for each type to ensure logical separation i.e. each resource type has its own record of NHS Numbers.
+
+        Each API request to the record service will therefore be for a single resource type. The API does not support a mixed economy of resources in a single call.
 
         ## Timeout
         This endpoint times out after 30s, returning HTTP status 504.
@@ -141,9 +150,10 @@ paths:
                   type: array
                   minItems: 1
                   maxItems: 5000
-                  description: A list of NHS numbers for patients with qualitying appointments.
+                  description: A list of NHS numbers for patients with qualifying records.
                   items: 
                     type: string
+                    pattern: '^[1-9][0-9]{9}$'
                     example: '9000000009'
             example:
               $ref: components/examples/RecordServiceSendPatientListRequest.json
