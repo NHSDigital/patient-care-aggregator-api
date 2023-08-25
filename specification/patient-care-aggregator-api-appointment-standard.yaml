@@ -25,7 +25,7 @@ info:
     This API standard is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning it is available for use but might be subject to breaking changes.
 
     ## Service level 
-    Your API must be a gold service, meaning it is operational and supported 24 x 7 x 365. 
+    Your API must be a gold service, meaning it is operational and supported 24 hours a day, 365 days a year. 
 
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels). 
 
