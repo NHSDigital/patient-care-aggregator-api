@@ -204,10 +204,10 @@ properties:
           properties:
             start:
               type: string
-              description: Document effective date
+              description: "Document effective date/time in a UTC format (required)"
               example: "2021-06-13T12:30:00+00:00"
         date:
-          description: "When this document reference was created"
+          description: "When this document reference was created in a UTC format (required)"
           type: string
           example: "2021-06-13T12:30:00+00:00"
         custodian:

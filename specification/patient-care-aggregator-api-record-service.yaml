@@ -15,7 +15,7 @@ info:
 
     As a secondary care provider, you’ll also need to: 
     - build an API using the [Patient Care Aggregator Get Applications API standard](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard) that the Patient Care Aggregator can use to get a list of bookings, documents and questionnaires for a patient
-    - build a ‘patient portal’ web application that the patient can access via a hyperlink from the NHS App 
+    - build a ’patient portal’ web application that the patient can access via a hyperlink from the NHS App 
 
     For more details, see [Patient access to referrals and bookings via the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator). 
 
@@ -54,11 +54,10 @@ info:
 
     | Environment                         | Base URL                                                               |
     | ------------------------------------| ---------------------------------------------------------------------- |
-    | Sandbox                             | `https://servita-sandbox.co.uk`                                        |
-    | Integration test                    | `https://integration.servita-demo.co.uk`                               |
-    | Performance test                    | `https://aos-base.patient-care-aggregator.com`                         |
-    | End-to-end test                     | `https://aos-base.patient-care-aggregator.com`                         |
-    | Production                          | `https://prod-base.patient-care-aggregator.com`                        |
+    | Integration test                    | `https://records.int.ptl.patient-care-aggregator.com/records/`         |
+    | Performance test                    | `https://records.aos.ptl.patient-care-aggregator.com/records/`         |
+    | End-to-end test                     | `https://records.aos.ptl.patient-care-aggregator.com/records/`         |
+    | Production                          | `https://prod-base.patient-care-aggregator.com/records/`               |
 
     For more details on how to use these environments,
     see the 'Testing' section in [Integrating a secondary care booking system with the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#4-test-your-software).
@@ -74,11 +73,11 @@ x-spec-publication:
   try-this-api:
     disabled: true
 servers:
-  - url: 'https://integration.servita-demo.co.uk'
-    description: Sandbox environment.
-  - url: 'https://aos-base.patient-care-aggregator.com'
+  - url: 'https://records.int.ptl.patient-care-aggregator.com/records/'
+    description: Integration environment.
+  - url: 'https://records.aos.ptl.patient-care-aggregator.com/records/'
     description: End-to-end test environment.
-  - url: 'https://prod-base.patient-care-aggregator.com'
+  - url: 'https://prod-base.patient-care-aggregator.com/records/'
     description: Production environment.
 paths:
   /records:
