@@ -155,7 +155,7 @@ properties:
                   example: "9123456789"
         authored:
           type: string
-          description: Date the questionnaire was first made available to a patient. (Required)
+          description: Date the questionnaire was first made available to a patient in a UTC format (required)
           example: "2021-06-13T12:30:00+00:00"
         reasonReference:
           type: object

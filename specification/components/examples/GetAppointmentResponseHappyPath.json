@@ -16,7 +16,7 @@
           "code": "{URGENT|ROUTINE|TWO_WEEK_WAIT}"
         }
       }, {
-        "url": "https://servita.com/fhir/StructureDefinition/ExtensionAppointmentStatus",
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-RequestStatus",
         "valueCode": "{Pending Change|Pending Reschedule|Pending Cancellation|Confirmed Attendance}"
       }, {
         "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",

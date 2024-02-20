@@ -51,7 +51,7 @@ properties:
                 type: object
                 required:
                   - url
-                  - valueCode
+                  - valueCoding
                 properties:
                   url:
                     type: string
@@ -178,26 +178,20 @@ properties:
           description: "The actual appointment booking status as reported by the source Trust PAS system (required)"
           type: string
           enum:
-            - proposed
-            - pending
             - booked
-            - arrived
             - fulfilled
             - cancelled
             - noshow
-            - entered-in-error
-            - checked-in
-            - waitlist
         description:
           description: "A patient-friendly description of the appointment that would be appropriate to display to patients in your own user interface. This should include a reference to the specialty, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function (required)"
           type: string
-          example: "Orthopaedics Follow Up"
+          example: "Orthopaedics Appointment"
         start:
-          description: "Start date/time of appointment in local time zone (required)"
+          description: "Start date/time of appointment in a UTC format (required)"
           type: string
           example: "2021-06-13T12:30:00+00:00"
         end:
-          description: "End date/time of appointment in local time zone (required)"
+          description: "End date/time of appointment in a UTC format (required)"
           type: string
           example: "2021-06-13T12:45:00+00:00"
         slot:
@@ -296,10 +290,7 @@ properties:
                   status:
                     type: string
                     enum:
-                      - accepted 
-                      - declined 
-                      - tentative 
-                      - needs-action
+                      - accepted
               - description: 'Attending clinician (optional).'
                 type: object
                 properties:
@@ -326,10 +317,7 @@ properties:
                   status:
                     type: string
                     enum:
-                      - accepted 
-                      - declined 
-                      - tentative 
-                      - needs-action
+                      - accepted
               - description: 'Portal healthcare service (optional).'       
                 type: object
                 properties:
@@ -346,10 +334,7 @@ properties:
                   status:
                     type: string
                     enum:
-                      - accepted 
-                      - declined 
-                      - tentative 
-                      - needs-action                                    
+                      - accepted                                  
               - description: 'Source system healthcare service (optional).'
                 type: object
                 properties:
@@ -375,10 +360,7 @@ properties:
                   status:
                     type: string
                     enum:
-                      - accepted 
-                      - declined 
-                      - tentative 
-                      - needs-action
+                      - accepted
               - description: 'e-RS Service ID (optional).'                     
                 type: object
                 properties:
@@ -405,10 +387,7 @@ properties:
                   status:
                     type: string
                     enum:
-                      - accepted 
-                      - declined 
-                      - tentative 
-                      - needs-action                                                                   
+                      - accepted                                                                 
               - description: 'ODS code for the organisation providing the appointment (required).'
                 type: object
                 required: 
@@ -437,10 +416,7 @@ properties:
                   status:
                     type: string
                     enum:
-                      - accepted 
-                      - declined 
-                      - tentative 
-                      - needs-action        
+                      - accepted     
               - description: 'Appointment location (optional).'
                 type: object
                 properties:
@@ -457,7 +433,4 @@ properties:
                   status:
                     type: string
                     enum:
-                      - accepted 
-                      - declined 
-                      - tentative 
-                      - needs-action  
+                      - accepted
