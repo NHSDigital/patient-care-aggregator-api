@@ -2,7 +2,7 @@
   "resourceType": "Bundle",
   "type": "collection",
   "entry": [ {
-    "fullUrl": "https://servita-sandbox.co.uk/CarePlan/1",
+    "fullUrl": "https://api.service.nhs.uk/patient-care-aggregator-api/CarePlan/c93e2449-a2ef-4476-ad15-13491036be22",
     "search": {
       "mode": "match"
     },
