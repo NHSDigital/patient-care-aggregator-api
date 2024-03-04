@@ -144,16 +144,6 @@ def do_jwt(environment, client_id, private_key_file):
     client_assertion = jwt.encode(
         claims, private_key, algorithm="RS512", headers=additional_headers
     )
-    # resp = SESSION.post(
-    #     url,
-    #     headers={"foo": "bar"},
-    #     data={
-    #         "grant_type": "client_credentials",
-    #         "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-    #         "client_assertion": client_assertion,
-    #     },
-    # )
-    
 
     id_token_jwt = ''
 
