@@ -22,247 +22,253 @@ properties:
     items:
       description: An individual document reference.
       type: object
-      required: 
-        - resourceType
-        - id
-        - status
-        - subject
-        - period
-        - date
-        - custodian
-        - description
-        - content
+      required:
+        - resource
       properties:
-        resourceType:
-          description: "FHIR resource type."
-          type: string
-          enum:
-            - DocumentReference     
-        id:
-          description: "A GUID identifier for the document reference."
-          type: string
-          example: "b710e648-c12e-4f66-80e2-9957a254900f"
-        extension:
-          description: "FHIR extensions for document read receipts"
-          type: array
-          items:
-            anyOf: 
-              - description: "Document Read Receipt - whether the document has been seen, read or is unread."
-                type: object
-                required:
-                  - url
-                  - valueCode
-                properties:
-                  url:
-                    type: string
-                    description: URI for the type of extension - in this case a document read receipt.
-                    enum:
-                      - "https://fhir.nhs.uk/StructureDefinition/Extension-Document-ReadReceipt"
-                  valueCode:
-                    type: string
-                    description: The document read receipt.
-                    enum:
-                      - "Unread"
-                      - "Seen"
-                      - "Read"
-        identifier:
-          type: array
-          items:
-            anyOf:
-              - description: "The ID of the Document Reference in its source PAS system database"                        
-                type: object
-                required:
-                  - system
-                  - value
-                properties:                               
-                  system:
-                    description: "A base URI for the specific instance/implementation of the source system the document reference came from. Typically this will be one URI per resource type per NHS Trust."
-                    type: string
-                    example: "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/DocumentReference"
-                  value:
-                    description: "The ID of the Document Reference in its source database (e.g. a Trust PAS system)"
-                    type: string
-                    example: "4817508"
-              - description: "The ID of the Document Reference in your Patient Portal database."
-                type: object
-                required:
-                  - system
-                  - value
-                properties:                       
-                  system:
-                    description: "The base URI for Document References in your Patient Portal"
-                    type: string
-                    example: "https://prod.myportal.com/fhir/DocumentReference"
-                  value:
-                    description: "The ID of the Document Reference in your Patient Portal database"
-                    type: string
-                    example: "f92c0f69-ff45-429f-8cec-098a9edfa5d9"
-        basedOn:
-          description: "Care Pathway which the Document Reference relates to"
-          type: array
-          minItems: 0
-          maxItems: 1
-          items:
-            oneOf:
-              - type: object
-                required:
-                  - type
-                  - identifier
-                properties:
-                  type:
-                    description: Resource for which the identifier relates.
-                    type: string
-                    enum:
-                      - "CarePlan"
-                  identifier:
+        resource:
+          description: "FHIR resource for the document"
+          type: object
+          required: 
+            - resourceType
+            - id
+            - status
+            - subject
+            - period
+            - date
+            - custodian
+            - description
+            - content
+          properties:
+            resourceType:
+              description: "FHIR resource type."
+              type: string
+              enum:
+                - DocumentReference     
+            id:
+              description: "A GUID identifier for the document reference."
+              type: string
+              example: "b710e648-c12e-4f66-80e2-9957a254900f"
+            extension:
+              description: "FHIR extensions for document read receipts"
+              type: array
+              items:
+                anyOf: 
+                  - description: "Document Read Receipt - whether the document has been seen, read or is unread."
+                    type: object
+                    required:
+                      - url
+                      - valueCode
+                    properties:
+                      url:
+                        type: string
+                        description: URI for the type of extension - in this case a document read receipt.
+                        enum:
+                          - "https://fhir.nhs.uk/StructureDefinition/Extension-Document-ReadReceipt"
+                      valueCode:
+                        type: string
+                        description: The document read receipt.
+                        enum:
+                          - "Unread"
+                          - "Seen"
+                          - "Read"
+            identifier:
+              type: array
+              items:
+                anyOf:
+                  - description: "The ID of the Document Reference in its source PAS system database"                        
                     type: object
                     required:
                       - system
                       - value
-                    properties:
-                      system: 
+                    properties:                               
+                      system:
+                        description: "A base URI for the specific instance/implementation of the source system the document reference came from. Typically this will be one URI per resource type per NHS Trust."
                         type: string
-                        description: Identifier system for a Care Pathway
-                        enum:
-                          - "https://fhir.nhs.uk/Id/PathwayId"
+                        example: "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/DocumentReference"
                       value:
+                        description: "The ID of the Document Reference in its source database (e.g. a Trust PAS system)"
                         type: string
-                        description: "Care pathway Identifier"
-                        example: "RBH5644312231"
-        status:
-          description: "The status of the DocumentReferences as per the source system. We would only expect current documents to be returned to the Aggregator."
-          type: string
-          enum:
-            - current
-        docStatus:
-          description: "The status of the Document as per the source system."
-          type: string
-          enum:
-            - final
-            - amended
-            - corrected
-            - appended
-        type:
-          description: "Key metadata element describing the document that describes the exact type of document."
-          type: string
-        category:
-          description: "Key metadata element describing the the category or classification of the document"
-          type: array
-          items:
-            type: object
-        subject:
-          description: "Patient whom the document relates to."
-          type: object
-          required:
-            - type
-            - identifier
-          properties:
-            type:
-              description: "Resource for which the identifier relates."
+                        example: "4817508"
+                  - description: "The ID of the Document Reference in your Patient Portal database."
+                    type: object
+                    required:
+                      - system
+                      - value
+                    properties:                       
+                      system:
+                        description: "The base URI for Document References in your Patient Portal"
+                        type: string
+                        example: "https://prod.myportal.com/fhir/DocumentReference"
+                      value:
+                        description: "The ID of the Document Reference in your Patient Portal database"
+                        type: string
+                        example: "f92c0f69-ff45-429f-8cec-098a9edfa5d9"
+            basedOn:
+              description: "Care Pathway which the Document Reference relates to"
+              type: array
+              minItems: 0
+              maxItems: 1
+              items:
+                oneOf:
+                  - type: object
+                    required:
+                      - type
+                      - identifier
+                    properties:
+                      type:
+                        description: Resource for which the identifier relates.
+                        type: string
+                        enum:
+                          - "CarePlan"
+                      identifier:
+                        type: object
+                        required:
+                          - system
+                          - value
+                        properties:
+                          system: 
+                            type: string
+                            description: Identifier system for a Care Pathway
+                            enum:
+                              - "https://fhir.nhs.uk/Id/PathwayId"
+                          value:
+                            type: string
+                            description: "Care pathway Identifier"
+                            example: "RBH5644312231"
+            status:
+              description: "The status of the DocumentReferences as per the source system. We would only expect current documents to be returned to the Aggregator."
               type: string
               enum:
-                - "Patient"
-            identifier:
-              type: object
-              required:
-                - system
-                - value
-              properties:
-                system:
-                  description: Identifier system for a Patient
-                  type: string
-                  example: "https://fhir.nhs.uk/Id/nhs-number"
-                value:
-                  description: "The NHS Number for the Patient"
-                  type: string
-                  example: "9123456789"
-        context:
-          type: array
-          items:
-            type: array
-            description: "Appointment reference to the Appointment(s) this Document relates to."
-            items:
+                - current
+            docStatus:
+              description: "The status of the Document as per the source system."
+              type: string
+              enum:
+                - final
+                - amended
+                - corrected
+                - appended
+            type:
+              description: "Key metadata element describing the document that describes the exact type of document."
+              type: string
+            category:
+              description: "Key metadata element describing the the category or classification of the document"
+              type: array
+              items:
+                type: object
+            subject:
+              description: "Patient whom the document relates to."
               type: object
               required:
                 - type
-                - references
+                - identifier
+              properties:
+                type:
+                  description: "Resource for which the identifier relates."
+                  type: string
+                  enum:
+                    - "Patient"
+                identifier:
+                  type: object
+                  required:
+                    - system
+                    - value
+                  properties:
+                    system:
+                      description: Identifier system for a Patient
+                      type: string
+                      example: "https://fhir.nhs.uk/Id/nhs-number"
+                    value:
+                      description: "The NHS Number for the Patient"
+                      type: string
+                      example: "9123456789"
+            context:
+              type: array
+              items:
+                type: array
+                description: "Appointment reference to the Appointment(s) this Document relates to."
+                items:
+                  type: object
+                  required:
+                    - type
+                    - references
+                  properties:
+                    type:
+                      type: string
+                      description: Resource of the referenced appointment.
+                      enum:
+                        - "Appointment"
+                    references:
+                      type: string
+                      description: Reference to the linked Appointment contained in the Appointment.Id 
+                      example: https://my.portal.com/fhir/R4/Appointment/0448E4C8-DD12-4BAD-9B59-6091C9484701
+            period:
+              description: "The time period over which the service that is described by the document was provided."
+              type: object
+              required:
+                - start
+              properties:
+                start:
+                  type: string
+                  description: "Document effective date/time in a UTC format (required)"
+                  example: "2021-06-13T12:30:00+00:00"
+            date:
+              description: "When this document reference was created in a UTC format (required)"
+              type: string
+              example: "2021-06-13T12:30:00+00:00"
+            custodian:
+              description: "Organization which maintains the document"
+              type: object
+              required:
+                - type
+                - identifier
+                - display
               properties:
                 type:
                   type: string
-                  description: Resource of the referenced appointment.
                   enum:
-                    - "Appointment"
-                references:
+                    - "Organization"
+                identifier:
+                  type: object
+                  required:
+                    - system
+                    - value
+                  properties:
+                    system:
+                      type: string
+                      enum:
+                        - "https://fhir.nhs.uk/Id/ods-organization-code"
+                    value:
+                      type: string
+                      example: "RFF"
+                display:
                   type: string
-                  description: Reference to the linked Appointment contained in the Appointment.Id 
-                  example: https://my.portal.com/fhir/R4/Appointment/0448E4C8-DD12-4BAD-9B59-6091C9484701
-        period:
-          description: "The time period over which the service that is described by the document was provided."
-          type: object
-          required:
-            - start
-          properties:
-            start:
+                  example: Barnsley Hospital NHS Foundation Trust
+            description:
+              description: "Local description of DocumentReference"
               type: string
-              description: "Document effective date/time in a UTC format (required)"
-              example: "2021-06-13T12:30:00+00:00"
-        date:
-          description: "When this document reference was created in a UTC format (required)"
-          type: string
-          example: "2021-06-13T12:30:00+00:00"
-        custodian:
-          description: "Organization which maintains the document"
-          type: object
-          required:
-            - type
-            - identifier
-            - display
-          properties:
-            type:
-              type: string
-              enum:
-                - "Organization"
-            identifier:
-              type: object
-              required:
-                - system
-                - value
-              properties:
-                system:
-                  type: string
-                  enum:
-                    - "https://fhir.nhs.uk/Id/ods-organization-code"
-                value:
-                  type: string
-                  example: "RFF"
-            display:
-              type: string
-              example: Barnsley Hospital NHS Foundation Trust
-        description:
-          description: "Local description of DocumentReference"
-          type: string
-          example: Dermatology follow-up letter
-        content:
-          description: "Document referenced"
-          type: array
-          items:
-            type: object
-            required:
-              - attachment
-            properties:
-              attachment:
+              example: Dermatology follow-up letter
+            content:
+              description: "Document referenced"
+              type: array
+              items:
                 type: object
                 required:
-                  - contentType
-                  - url
-                description: Where to access the document
+                  - attachment
                 properties:
-                  contentType:
-                    type: string
-                    description: Mime type of the content, with charset etc.
-                    enum:
-                      - "application/pdf"
-                  url:
-                    type: string
-                    description: Portal provider deeplink URL
-                    example: "https://my.portal.com/Document?id=123"
+                  attachment:
+                    type: object
+                    required:
+                      - contentType
+                      - url
+                    description: Where to access the document
+                    properties:
+                      contentType:
+                        type: string
+                        description: Mime type of the content, with charset etc.
+                        enum:
+                          - "application/pdf"
+                      url:
+                        type: string
+                        description: Portal provider deeplink URL
+                        example: "https://my.portal.com/Document?id=123"
