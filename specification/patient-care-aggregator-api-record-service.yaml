@@ -73,11 +73,11 @@ x-spec-publication:
   try-this-api:
     disabled: true
 servers:
-  - url: 'https://records.int.ptl.patient-care-aggregator.com/records/'
+  - url: 'https://records.int.ptl.patient-care-aggregator.com/records'
     description: Integration environment.
-  - url: 'https://records.aos.ptl.patient-care-aggregator.com/records/'
+  - url: 'https://records.aos.ptl.patient-care-aggregator.com/records'
     description: End-to-end test environment.
-  - url: 'https://prod-base.patient-care-aggregator.com/records/'
+  - url: 'https://prod-base.patient-care-aggregator.com/records'
     description: Production environment.
 paths:
   /records:
