@@ -16,14 +16,12 @@ import docopt
 import json
 import sys
 import requests
-from lxml import html
-from urllib.parse import urlparse, parse_qs
-from ast import literal_eval
 import uuid
 from time import time
 import jwt  # https://github.com/jpadilla/pyjwt
 
 SESSION = requests.Session()
+
 
 def identity_service_url(environment, mock_username=None):
 
@@ -56,7 +54,7 @@ def do_jwt(environment, client_id, private_key_file):
     }
 
     additional_headers = {"kid": "test-1"}
-    
+ 
     client_assertion = jwt.encode(
         claims, private_key, algorithm="RS512", headers=additional_headers
     )
@@ -91,6 +89,7 @@ def do_jwt(environment, client_id, private_key_file):
         )
 
     return resp.json()
+
 
 if __name__ == "__main__":
 
