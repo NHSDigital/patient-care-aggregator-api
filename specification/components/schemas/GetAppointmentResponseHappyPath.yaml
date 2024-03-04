@@ -109,14 +109,14 @@ properties:
                 type: object
                 required:
                   - url
-                  - valueCode
+                  - valueUrl
                 properties:
                   url:
                     type: string
                     description: URI for the type of extension - in this case a deep link URL.
                     enum:
                       - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
-                  valueCode:
+                  valueUrl:
                     type: string
                     description: The deep link URL itself.
                     example: "https://wayfinder.example-pep.com/fhir/Appointment/770DA42C-C8F2-A5F7-6185-40EE9409B494"
