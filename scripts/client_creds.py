@@ -54,7 +54,7 @@ def do_jwt(environment, client_id, private_key_file):
     }
 
     additional_headers = {"kid": "test-1"}
- 
+
     client_assertion = jwt.encode(
         claims, private_key, algorithm="RS512", headers=additional_headers
     )

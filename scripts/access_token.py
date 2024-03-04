@@ -161,6 +161,7 @@ def do_jwt(environment, client_id, private_key_file):
 
     return resp.json()
 
+
 if __name__ == "__main__":
 
     args = docopt.docopt(__doc__)
