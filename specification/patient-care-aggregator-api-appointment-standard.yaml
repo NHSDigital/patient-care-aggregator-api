@@ -83,7 +83,7 @@ paths:
     get:
       security:
         - bearerAuth: []
-      summary: "Get appointments"
+      summary: "Returns FHIR Appointment resources"
       description: |
         ## Overview
         This endpoint returns a list of appointments from a secondary care booking system for a given patient.
@@ -103,7 +103,8 @@ paths:
         - Encounter types (SRCBR3): Only outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator i.e. hidden appointments and appointments at ghost clinics are filtered out.
         - Excluded specialities (SRCBR4): Appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
         - Ghost appointments: Exclude appointments that are booked in the system but which the patient is not expected to attend - known as 'ghost' appointments.
-        - Future cancelled appointments: Include appointments that are future-dated and cancelled - this allows the patient to confirm that the appointment has been cancelled and knows not to attend.
+        - Include all future dates and historic appointments in scope of the programme requirements.
+        - Include future dated appointments in a cancalled state appointments - this allows the patient to confirm that the appointment has been cancelled and knows not to attend.
         - Under 16s: Exclude patients under 16.
 
         ## Patients with no appointments
@@ -167,7 +168,7 @@ paths:
     get:
       security:
         - bearerAuth: []
-      summary: "Get DocumentReferences"
+      summary: "Returns FHIR DocumentReferences resources"
       description: |
         ## Overview
         This endpoint returns a list of documents from a secondary care booking system for a given patient.
@@ -186,6 +187,9 @@ paths:
         - Excluded clinics (SRCBR2): Documents related to appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
         - Encounter types (SRCBR3): Only documents related to outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator i.e. hidden appointments and appointments at ghost clinics are filtered out.
         - Excluded specialities (SRCBR4): Documents related to appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Include patient corrospondence (letters)
+        - Exclude non-patient facing corrospondence (letters) e.g. GP Letters or corrospondence to parents or guardians
+        - Exclude assets/attachments
         - Under 16s: Exclude patients under 16.
 
         ## Patients with no document references
@@ -249,7 +253,7 @@ paths:
     get:
       security:
         - bearerAuth: []
-      summary: "Get tasks"
+      summary: "Returns FHIR Task resources"
       description: |
         ## Overview
         This endpoint returns a list of tasks for for completion of questionnaires from a secondary care booking system for a given patient.
