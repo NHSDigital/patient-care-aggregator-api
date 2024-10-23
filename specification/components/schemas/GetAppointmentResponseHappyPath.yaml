@@ -34,7 +34,6 @@ properties:
             - status
             - description
             - start
-            - end
             - participant
             - extension
             - specialty
@@ -197,7 +196,7 @@ properties:
               type: string
               example: "2021-06-13T12:30:00+00:00"
             end:
-              description: "End date/time of appointment in a UTC format (required)"
+              description: "End date/time of appointment in a UTC format"
               type: string
               example: "2021-06-13T12:45:00+00:00"
             slot:
@@ -262,12 +261,15 @@ properties:
                         - description: "Pathway ID"
                           type: object
                           properties:
-                            system:
+                            system: 
                               type: string
-                              example: "https://fhir.myclinicalsystem.com/PathwayId"
+                              description: Identifier system for a Care Pathway
+                              enum:
+                                - "https://fhir.nhs.uk/Id/PathwayId"
                             value:
                               type: string
-                              example: "RBH5644312231"               
+                              description: "Care pathway Identifier"
+                              example: "RBH5644312231"
             participant:
               type: array
               description: Participants in the appointment, including people and organisations / services (only ODS Code is required).
@@ -434,8 +436,9 @@ properties:
                             enum:
                               - "Location"
                           display:
+                            description: "The patient-friendly standardised location of the appointment that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface and is only required for physical appointment and not included for virtual appointments. Note the values presented within this field are required to be be provided for Data Quality Assurance. (required for physical appointments only)"
                             type: string
-                            example: "Main Outpatients Department"
+                            example: "Grantham Hospital Outpatients"
                       status:
                         type: string
                         enum:
