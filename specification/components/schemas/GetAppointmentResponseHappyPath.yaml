@@ -189,7 +189,7 @@ properties:
                 - cancelled
                 - noshow
             description:
-              description: "A patient-friendly description of the appointment that would be appropriate to display to patients in your own user interface. This should include a reference to the specialty, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function (required)"
+              description: "The patient-friendly standardised description/title of the appointment that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface. This should be structured {Specialty name}, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function.  Note the values presented within this field are required to be be provided for Data Quality Assurance. (required)"
               type: string
               example: "Orthopaedics Appointment"
             start:
