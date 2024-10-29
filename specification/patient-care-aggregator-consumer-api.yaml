@@ -1367,7 +1367,6 @@ components:
               $ref: "#/components/examples/upstreamUnexpected"
             upstreamMultipleErrors:
               $ref: "#/components/examples/upstreamMultipleErrors"
-            
             # FRAGMENTS
             # Referrals
             referralActiveBookable:
@@ -1389,6 +1388,8 @@ components:
               $ref: "#/components/examples/appointmentFutureErsVirtual"
             appointmentFutureErs2WW:
               $ref: "#/components/examples/appointmentFutureErs2WW"
+            appointmentFutureErsIndirectBooking:
+              $ref: "#/components/examples/appointmentFutureErsIndirectBooking"
             appointmentFuturePepBooked:
               $ref: "#/components/examples/appointmentFuturePepBooked"
             appointmentHistoricPepAttended:
@@ -2637,6 +2638,28 @@ components:
           location:
             type: Location
             display: "Florence Portal House, Winchester Hospital"
+    appointmentFutureErsIndirectBooking:
+      summary: Fragment - Indirectly bookable Appointment from eReferral Service (eRS)
+      value:
+        detail:
+          id: 68f134d3-f4cf-488a-a6ee-5109d8ef99ff
+          kind: Appointment
+          status: in-progress
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://refer.nhs.uk/nhslogin?ubrn=808993698039
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: ers-01
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
+              valueCoding:
+                system: http://hl7.org/fhir/appointmentstatus
+                code: booked
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
+              valueCode: outpatient
+          description: GI and Liver (Medicine and Surgery)
+          location:
+            type: Location
+            display: "General Hepatology A&G Service-University Hospitals Sussex-E0A3H"
     appointmentFuturePepBooked:
       summary: Fragment - Future booked Appointment from a PEP
       value:
@@ -3159,7 +3182,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: bookedPendingCancellation
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: inpatient
           description: Cardiology Service
@@ -3184,7 +3207,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: bookedPendingReschedule
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: inpatient
           description: Audiology
@@ -3209,7 +3232,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: bookedPendingChange
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: inpatient
           description: Nephrology
@@ -3234,7 +3257,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: cancelled
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: inpatient
           description: Audiology
@@ -3259,7 +3282,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: cancelledPendingReschedule
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: inpatient
           description: Cardiology Service
@@ -3309,7 +3332,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: bookedPendingCancellation
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: daycase
           description: Gastroenterology
@@ -3334,7 +3357,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: bookedPendingReschedule
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: daycase
           description: Colorectal Surgery
@@ -3359,7 +3382,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: bookedPendingChange
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: daycase
           description: Oral Maxillo-Facial Surgery
@@ -3384,7 +3407,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: cancelled
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: daycase
           description: Rheumatology Service
@@ -3409,7 +3432,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: cancelledPendingReschedule
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: daycase
           description: Dermatology
@@ -3434,7 +3457,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: fulfilled
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: inpatient
           description: Rheumatology Service
@@ -3459,7 +3482,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: cancelled
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: inpatient
           description: Colorectal Surgery
@@ -3484,7 +3507,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: cancelledPendingReschedule
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: inpatient
           description: Colorectal Surgery
@@ -3509,7 +3532,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: fulfilled
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: daycase
           description: Colorectal Surgery
@@ -3534,7 +3557,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: cancelled
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: daycase
           description: Ear Nose and Throat
@@ -3559,7 +3582,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
-                code: booked
+                code: cancelledPendingReschedule
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: daycase
           description: Colorectal Surgery
