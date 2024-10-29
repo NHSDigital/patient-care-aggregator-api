@@ -45,7 +45,7 @@
           "system": "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/ServiceRequest",
           "value": "265413"
         }, {
-          "system": "https://fhir.myclinicalsystem.com/PathwayId",
+          "system": "https://fhir.nhs.uk/Id/PathwayId",
           "value": "RBH5644312231"
         }]
       }],
