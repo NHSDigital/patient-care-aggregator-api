@@ -34,7 +34,7 @@ info:
     ## Technology 
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
 
-    You must adhere to the following requirements when sending events to the Wayfinder Reporting Service.
+    You must adhere to the following requirements when integrating to the Wayfinder Patient Care Aggregator.
 
       | Requirement Reference | Quality attribute(s)       | Requirement                                                                                                                                                                                                                                                                                     | MoSCoW |
       | ----------------------|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|

@@ -64,7 +64,7 @@ info:
 
     There are [libraries and SDKs available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
 
-    You must adhere to the following requirements when sending events to the Wayfinder Reporting Service.
+    You must adhere to the following requirements when integrating to the Wayfinder Patient Care Aggregator.
 
     | Requirement Reference | Quality attribute(s)                                 | Requirement                           | MoSCoW  |
     |-----------------------|------------------------------------------------------|---------------------------------------|---------|
