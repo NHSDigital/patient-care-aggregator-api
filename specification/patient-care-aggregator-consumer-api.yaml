@@ -183,66 +183,6 @@ paths:
           $ref: "#/components/responses/4XX"
         5XX:
           $ref: "#/components/responses/5XX"
-  /aggregator/waitingLists:
-    get:
-      summary: Get patients elective waiting lists
-      # operationId: get-waiting-lists
-      description: tbc
-      tags:
-        - Patient Care Aggregator
-      parameters:
-        - $ref: "#/components/parameters/nhsNumber"
-        # - $ref: "#/components/parameters/xRequestId"
-        - $ref: "#/components/parameters/xCorrelationId"
-        - $ref: "#/components/parameters/nhsdIdToken"
-        # - $ref: "#/components/parameters/nhsdTargetIdentifier"
-      responses:
-        2XX:
-          $ref: "#/components/responses/2XX"
-        4XX:
-          $ref: "#/components/responses/4XX"
-        5XX:
-          $ref: "#/components/responses/5XX"
-  /test-results/events:
-    get:
-      summary: Get patients test results
-      # operationId: get-test-results
-      description: tbc
-      tags:
-        - Test Results Aggregator
-      parameters:
-        - $ref: "#/components/parameters/nhsNumber"
-        # - $ref: "#/components/parameters/xRequestId"
-        - $ref: "#/components/parameters/xCorrelationId"
-        - $ref: "#/components/parameters/nhsdIdToken"
-        # - $ref: "#/components/parameters/nhsdTargetIdentifier"
-      responses:
-        2XX:
-          $ref: "#/components/responses/2XX"
-        4XX:
-          $ref: "#/components/responses/4XX"
-        5XX:
-          $ref: "#/components/responses/5XX"
-  /screening/events:
-    get:
-      summary: Get patients screenings
-      # operationId: get-screenings
-      description: tbc
-      tags:
-        - Screening Aggregator
-      parameters:
-        - $ref: "#/components/parameters/nhsNumber"
-        # - $ref: "#/components/parameters/xRequestId"
-        - $ref: "#/components/parameters/xCorrelationId"
-        - $ref: "#/components/parameters/nhsdIdToken"
-        # - $ref: "#/components/parameters/nhsdTargetIdentifier"
-      responses:
-        2XX:
-          $ref: "#/components/responses/2XX"
-        4XX:
-          $ref: "#/components/responses/4XX"
-        5XX:
-          $ref: "#/components/responses/5XX"
 components:
   schemas:
     Bundle:
@@ -665,9 +605,6 @@ components:
                     description: ODS Organisation name (NHS Trust)
                     type: string
                     example: THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST
-      #externalDocs:
-      #  description: FHIR UK Core ServiceRequest (R4) Resource Profile
-      #  url: https://hl7.org/fhir/R4/servicerequest.html
     Appointment:
       description: A summary of the booking for the patient.
       type: object
@@ -837,30 +774,6 @@ components:
                   description: Plain text location of the entity.
                   type: string
                   example: St Stephen's Hospital
-            #performer: # TODO: May not be included
-            #  description: The organisation responsible for the Appointment.
-            #  type: array
-            #  minItems: 1
-            #  maxItems: 1
-            #  items:
-            #    description: The organisation responsible for the Appointment.
-            #    type: object
-            #    required:
-            #      - type
-            #      - display
-            #    properties:
-            #      type:
-            #        description: Type of entity.
-            #        type: string
-            #        enum:
-            #          - Organization
-            #      display:
-            #        description: ODS Organisation name (NHS Trust)
-            #        type: string
-            #        example: THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST
-      #externalDocs:
-      #  description: FHIR UK Core Appointment (R4) Resource Profile
-      #  url: https://hl7.org/fhir/R4/appointment.html
     Document:
       description: A summary of the document for the patient.
       type: object
@@ -981,30 +894,6 @@ components:
                   description: The effective date of the Document i.e. the date the document was created/first available to the patient. This should match the date contained within the document.
                   type: string
                   example: '2022-06-02T09:25:13.000Z'
-            #performer: # TODO: May not be included
-            #  description: The organisation responsible for the Document.
-            #  type: array
-            #  minItems: 1
-            #  maxItems: 1
-            #  items:
-            #    description: The organisation the document weas created by.
-            #    type: object
-            #    required:
-            #      - type
-            #      - display
-            #    properties:
-            #      type:
-            #        description: Type of entity.
-            #        type: string
-            #        enum:
-            #          - Organization
-            #      display:
-            #        description: ODS Organisation name (NHS Trust)
-            #        type: string
-            #        example: THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST
-      #externalDocs:
-      #  description: FHIR UK Core DocumentReference (R4) Resource Profile
-      #  url: https://hl7.org/fhir/R4/documentreference.html
     Questionnaire:
       description: A summary of the questionnaire for the patient.
       type: object
@@ -1032,15 +921,10 @@ components:
               description: The status of the questionnaire, if it has been started or completed by the patient.
               type: string
               enum:
-                - not-started # incomplete
-                #- scheduled
-                - in-progress # partial
-                #- on-hold
-                - completed # complete
-                - cancelled # cancelled
-                #- stopped
-                #- unknown
-                #- entered-in-error
+                - not-started
+                - in-progress
+                - completed
+                - cancelled
             extension:
               description: FHIR extension wrapper for various country-specific data items.
               type: array
@@ -1114,30 +998,6 @@ components:
                   description: The effective date of the questionnaire i.e. the date the questionnaire was first available to the patient to complete.
                   type: string
                   example: '2022-06-02T18:00:00.000Z'
-            #performer: # TODO: May not be included
-            #  description: The organisation responsible for the Questionnaire.
-            #  type: array
-            #  minItems: 1
-            #  maxItems: 1
-            #  items:
-            #    description: The organisation the questionnaire was created by.
-            #    type: object
-            #    required:
-            #      - type
-            #      - display
-            #    properties:
-            #      type:
-            #        description: Type of entity.
-            #        type: string
-            #        enum:
-            #          - Organization
-            #      display:
-            #        description: ODS Organisation name (NHS Trust)
-            #        type: string
-            #        example: THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST
-      #externalDocs:
-      #  description: FHIR UK Core Task (R4) Resource Profile
-      #  url: https://hl7.org/fhir/R4/task.html
     OperationOutcome:
       description: A FHIR `OperationOutcome` resource containing details of the issues that have occurred.
       type: object
@@ -1698,22 +1558,22 @@ components:
                 - $ref: "#/components/examples/appointmentFutureErsVirtual"
                 - $ref: "#/components/examples/appointmentFutureErs2WW"
                 - $ref: "#/components/examples/appointmentFuturePepBooked"
-                - $ref: "#/components/examples/correspondenceUnreadLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceUnreadLinked"
                 - $ref: "#/components/examples/appointmentHistoricPepAttended"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/appointmentHistoricPepCancelled"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/appointmentFuturePepCancelled"
                 - $ref: "#/components/examples/appointmentHistoricPepDNA"
                 - $ref: "#/components/examples/appointmentFuturePepBookedPendingCancellation"
                 - $ref: "#/components/examples/appointmentFuturePepBookedPendingReschedule"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/appointmentFuturePepBookedPendingChange"
                 - $ref: "#/components/examples/appointmentHistoricPepCancelledPendingReschedule"
                 - $ref: "#/components/examples/appointmentFuturePepCancelledPendingReschedule"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/appointmentFuturePepFaceToFace"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/appointmentFuturePepVirtual"
                 - $ref: "#/components/examples/appointmentHistoricPepFaceToFace"
                 - $ref: "#/components/examples/appointmentHistoricPepVirtual"
@@ -1723,13 +1583,13 @@ components:
                 # - $ref: "#/components/examples/diagnosticFuturePepBooked"
                 # - $ref: "#/components/examples/diagnosticHistoricPepAttended"
                 - $ref: "#/components/examples/inpatientFuturePepBooked"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/inpatientFuturePepBookedPendingCancellation"
                 - $ref: "#/components/examples/inpatientFuturePepBookedPendingReschedule"
                 - $ref: "#/components/examples/inpatientFuturePepBookedPendingChange"
                 - $ref: "#/components/examples/inpatientFuturePepCancelled"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO: Link
-                - $ref: "#/components/examples/correspondenceUnreadLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceReadLinked"
+                - $ref: "#/components/examples/correspondenceUnreadLinked"
                 - $ref: "#/components/examples/inpatientFuturePepCancelledPendingReschedule"
                 - $ref: "#/components/examples/daycaseFuturePepBooked"
                 - $ref: "#/components/examples/daycaseFuturePepBookedPendingCancellation"
@@ -1741,7 +1601,7 @@ components:
                 - $ref: "#/components/examples/inpatientHistoricPepCancelled"
                 - $ref: "#/components/examples/inpatientHistoricPepCancelledPendingReschedule"
                 - $ref: "#/components/examples/daycaseHistoricPepAttended"
-                - $ref: "#/components/examples/correspondenceSeenLinked" # TODO: Link
+                - $ref: "#/components/examples/correspondenceSeenLinked"
                 - $ref: "#/components/examples/daycaseHistoricPepCancelled"
                 - $ref: "#/components/examples/daycaseHistoricPepCancelledPendingReschedule"
     allDocumentStates:
@@ -2007,14 +1867,14 @@ components:
                   value: '9000000009'
               activity:
                 - $ref: "#/components/examples/appointmentHistoricPepDNA"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO link
-                - $ref: "#/components/examples/correspondenceSeenLinked" # TODO link
+                - $ref: "#/components/examples/correspondenceReadLinked"
+                - $ref: "#/components/examples/correspondenceSeenLinked"
                 - $ref: "#/components/examples/appointmentHistoricSusAttended"
-                - $ref: "#/components/examples/correspondenceSeenLinked" # TODO link
-                - $ref: "#/components/examples/correspondenceUnreadLinked" # TODO link
-                - $ref: "#/components/examples/questionnaireCompleteLinked" # TODO link
+                - $ref: "#/components/examples/correspondenceSeenLinked"
+                - $ref: "#/components/examples/correspondenceUnreadLinked"
+                - $ref: "#/components/examples/questionnaireCompleteLinked"
                 - $ref: "#/components/examples/appointmentFuturePepBookedPendingReschedule"
-                - $ref: "#/components/examples/correspondenceUnreadLinked" # TODO link
+                - $ref: "#/components/examples/correspondenceUnreadLinked"
     incompleteWaitingListUnattachedMultipleAppointmentsInpatients:
       summary: 200 Incomplete waiting lists with one unlinked Appointment with correspondence and questionnaires
       description: |
@@ -2050,15 +1910,15 @@ components:
                   value: '9000000009'
               activity:
                 - $ref: "#/components/examples/appointmentHistoricPepDNA"
-                - $ref: "#/components/examples/correspondenceReadLinked" # TODO link
-                - $ref: "#/components/examples/correspondenceSeenLinked" # TODO link
+                - $ref: "#/components/examples/correspondenceReadLinked"
+                - $ref: "#/components/examples/correspondenceSeenLinked"
                 - $ref: "#/components/examples/appointmentHistoricSusAttended"
-                - $ref: "#/components/examples/correspondenceSeenLinked" # TODO link
-                - $ref: "#/components/examples/correspondenceUnreadLinked" # TODO link
+                - $ref: "#/components/examples/correspondenceSeenLinked"
+                - $ref: "#/components/examples/correspondenceUnreadLinked"
                 - $ref: "#/components/examples/inpatientHistoricPepCancelled"
-                - $ref: "#/components/examples/questionnaireCompleteLinked" # TODO link
+                - $ref: "#/components/examples/questionnaireCompleteLinked"
                 - $ref: "#/components/examples/daycaseFuturePepBookedPendingReschedule"
-                - $ref: "#/components/examples/correspondenceUnreadLinked" # TODO link
+                - $ref: "#/components/examples/correspondenceUnreadLinked"
     oneOrMoreErrors:
       summary: 207 One referral, one booking and one upstream system error
       description: |
@@ -2099,7 +1959,7 @@ components:
                   value: '9000000009'
               activity:
                 - $ref: "#/components/examples/appointmentFuturePepFaceToFace"
-                - $ref: "#/components/examples/correspondenceUnreadLinked"  # TODO: link
+                - $ref: "#/components/examples/correspondenceUnreadLinked"
           - fullUrl: https://api.service.nhs.uk/patient-care-aggregator-api/OperationOutcome/2dda10de-2472-4f3f-ab13-480557d63d93
             search:
               mode: include
@@ -3913,9 +3773,9 @@ components:
           activity:
             - $ref: "#/components/examples/correspondenceReadUnlinked"
             - $ref: "#/components/examples/appointmentHistoricPepCancelled"
-            - $ref: "#/components/examples/correspondenceReadLinked" # TODO: link
+            - $ref: "#/components/examples/correspondenceReadLinked"
             - $ref: "#/components/examples/appointmentFuturePepBooked"
-            - $ref: "#/components/examples/correspondenceUnreadLinked" # TODO: link
+            - $ref: "#/components/examples/correspondenceUnreadLinked"
     pathwayActivePendingReferral:
       summary: Fragment - Active Waiting List (Pathway) with an estimated wait time and pending referral
       value:
@@ -4326,7 +4186,3 @@ tags:
     description: Wayfinder Patient Care Aggregator
     externalDocs:
       url: https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-fhir
-  - name: Test Results Aggregator
-    description: Test Results Aggregator
-  - name: Screening Aggregator
-    description: Screening Aggregator
