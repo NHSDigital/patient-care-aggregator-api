@@ -2654,6 +2654,8 @@ components:
               valueCoding:
                 system: http://hl7.org/fhir/appointmentstatus
                 code: booked
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium
+              valueCode: FACE_TO_FACE
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: outpatient
           description: GI and Liver (Medicine and Surgery)
