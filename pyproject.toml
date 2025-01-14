@@ -16,10 +16,12 @@ keywords = ["healthcare", "uk", "nhs"] #TODO add additional keywords
 
 
 [tool.poetry.dependencies]
+name = "patient-care-aggregator-api dependencies"
 python = "^3.8"
 requests = "^2.31.0"
 
 [tool.poetry.dev-dependencies]
+name = "patient-care-aggregator-api dev dependencies"
 flake8 = "^3.7.9"
 black = "^20.8b1"
 pip-licenses = "^2.0.1"
