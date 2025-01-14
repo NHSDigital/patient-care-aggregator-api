@@ -64,7 +64,7 @@ version = "1.0.92a0"
 description = ""
 category = "dev"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.9,<4.0"
 files = []
 
 [package.dependencies]
