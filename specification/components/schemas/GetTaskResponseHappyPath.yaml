@@ -111,9 +111,9 @@ properties:
               enum:
                 - plan
             description:
-              description: "The patient-friendly standardised description/title of the questionnaire that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface. This should be structured {Specialty name} {Questionnaire type}, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function. Note the values presented within this field are required to be provided for Data Quality Assurance. (required)"
+              description: "The standardised title of the questionnaire to display to a patient."
               type: string
-              example: Dermatology pre-assessment questionnaire
+              example: Preassessment questionnaire
             focus:
               type: array
               description: Appointment reference to the appointments this questionnaire relates to. (Optional)

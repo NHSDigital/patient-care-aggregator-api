@@ -1,9 +1,8 @@
 {
   "resourceType": "Bundle",
   "type": "searchset",
-  "total": 1,
   "entry": [{
-    "fullUrl": "https://my.patientportal.co.uk/DocumentReference/d9df1326-1008-45df-b9dd-a920b64ec043",
+    "fullUrl": "urn:uuid:d11c69d8-7a50-4a54-a848-7648121e995f",
     "search": {
       "mode": "match"
     },
@@ -45,7 +44,7 @@
         },
         "display": "Barnsley Hospital NHS Foundation Trust"
       },
-      "description": "Dermatology cancellation letter",
+      "description": "Dermatology follow-up letter",
       "content": [{
         "attachment": {
           "contentType": "application/pdf",

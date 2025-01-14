@@ -1,0 +1,29 @@
+description: A FHIR bundle containing results of the request.
+type: object
+required:
+  - resourceType
+  - type
+  - entry
+properties:
+  resourceType:
+    description: FHIR resource type.
+    type: string
+    enum:
+      - "Bundle"
+  type:
+    description: The type of FHIR bundle.
+    type: string
+    enum:
+      - "collection"
+  entry:
+    description: |
+      The FHIR resources within the bundle.
+      Includes zero or one `CarePlan` resources (containing the referral and booking information, if any found)
+      and zero or one `OperationOutcome` resources (if any back-end system errors occurred).
+    type: array
+    minItems: 0
+    maxItems: 2
+    items:
+      oneOf:
+        - $ref: CarePlan.yaml
+        - $ref: OperationOutcome.yaml
