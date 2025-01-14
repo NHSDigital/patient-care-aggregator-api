@@ -19,7 +19,7 @@ package-mode = false
 [tool.poetry.dependencies]
 name = "patient-care-aggregator-api dependencies"
 python = "^3.8"
-requests = "^2.31.0"
+requests = "^2.32.2"
 
 [tool.poetry.dev-dependencies]
 name = "patient-care-aggregator-api dev dependencies"
