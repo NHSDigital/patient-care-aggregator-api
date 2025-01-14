@@ -34,6 +34,7 @@ properties:
             - status
             - description
             - start
+            - end
             - participant
             - extension
             - specialty
@@ -188,7 +189,7 @@ properties:
                 - cancelled
                 - noshow
             description:
-              description: "The patient-friendly standardised description/title of the appointment that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface. This should be structured {Specialty name}, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function.  Note the values presented within this field are required to be be provided for Data Quality Assurance. (required)"
+              description: "A patient-friendly description of the appointment that would be appropriate to display to patients in your own user interface. This should include a reference to the specialty, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function (required)"
               type: string
               example: "Orthopaedics Appointment"
             start:
@@ -196,7 +197,7 @@ properties:
               type: string
               example: "2021-06-13T12:30:00+00:00"
             end:
-              description: "End date/time of appointment in a UTC format"
+              description: "End date/time of appointment in a UTC format (required)"
               type: string
               example: "2021-06-13T12:45:00+00:00"
             slot:
@@ -261,15 +262,12 @@ properties:
                         - description: "Pathway ID"
                           type: object
                           properties:
-                            system: 
+                            system:
                               type: string
-                              description: Identifier system for a Care Pathway
-                              enum:
-                                - "https://fhir.nhs.uk/Id/PathwayId"
+                              example: "https://fhir.myclinicalsystem.com/PathwayId"
                             value:
                               type: string
-                              description: "Care pathway Identifier"
-                              example: "RBH5644312231"
+                              example: "RBH5644312231"               
             participant:
               type: array
               description: Participants in the appointment, including people and organisations / services (only ODS Code is required).
@@ -436,9 +434,8 @@ properties:
                             enum:
                               - "Location"
                           display:
-                            description: "The patient-friendly standardised location of the appointment that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface and is only required for physical appointment and not included for virtual appointments. Note the values presented within this field are required to be be provided for Data Quality Assurance. (required for physical appointments only)"
                             type: string
-                            example: "Grantham Hospital Outpatients"
+                            example: "Main Outpatients Department"
                       status:
                         type: string
                         enum:

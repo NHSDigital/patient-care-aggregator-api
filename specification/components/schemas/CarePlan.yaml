@@ -1,0 +1,338 @@
+description: "Details of the referrals and bookings found for the patient, expressed as a FHIR `CarePlan` resource."
+type: object
+required:
+  - fullUrl
+  - resource
+  - search
+properties:
+  fullUrl:
+    description: "URI for the `CarePlan` resource."
+    type: string
+    example: "https://servita-sandbox.co.uk/CarePlan/1"
+# TBC in other APIs these are usually GUIDs formatted as URIs
+  search:
+    description: "Search-related information for the `CarePlan` resource."
+    type: object
+    required:
+      - mode
+    properties:
+      mode:
+        description: "Indicates why this resource is in the result set - in this case because it includes infomation that matched the requested patient."
+        enum:
+          - match
+  resource:
+    description: "The `CarePlan` resource itself."
+    type: object
+    required:
+      - resourceType
+      - status
+      - intent
+      - subject
+      - activity
+    properties:
+      resourceType:
+        description: "FHIR resource type."
+        type: string
+        enum:
+          - "CarePlan"
+      status:
+        description: "Status of the care plan."
+        type: string
+        enum:
+          - "active"
+      intent:
+        description: "Level of authority / intentionality associated with the care plan and where the care plan fits into the workflow chain."
+        type: string
+        enum:
+          - "order"
+      subject:
+        description: "Patient or group whose intended care is described by the plan."
+        type: object
+        required:
+          - identifier
+        properties:
+          identifier:
+            description: "Unique identifier for the patient - specifically, their NHS number."
+            type: object
+            required:
+              - system
+              - value
+            properties:
+              system:
+                description: "Type of identifier."
+                type: string
+                enum:
+                  - "https://fhir.nhs.uk/Id/nhs-number"
+              value:
+                description: "The NHS number itself."
+                type: string
+                example: "9000000009"
+      activity:
+        description: "List of referrals and bookings found for the patient."
+        type: array
+        items:
+          description: "A single referral or booking for the patient."
+          type: object
+          required:
+            - detail
+          properties:
+            reference:
+              description: "e-RS Unique Booking Reference Number (UBRN) for the referral, if this activity is an e-RS referral, expressed as a reference to a FHIR `ServiceRequest` resource."
+              type: object
+              required:
+                - type
+                - identifier
+              properties:
+                type:
+                  description: "FHIR resource type for the reference."
+                  type: string
+                  enum:
+                    - "ServiceRequest"
+                identifier:
+                  description: "Unique identifier for the e-RS referral - specifically an e-RS Unique Booking Reference Number (UBRN)."
+                  type: array
+                  minItems: 1
+                  maxItems: 1
+                  items:
+                    type: object
+                    required:
+                      - system
+                      - value
+                    properties:
+                      system:
+                        description: "Code system used for the identifier."
+                        type: string
+                        example: "https://fhir.nhs.uk/Id/UBRN"
+                      value:
+                        description: "The e-RS Unique Booking Reference Number (UBRN) itself."
+                        type: string
+                        example: "808993698030"
+            detail:
+              description: "Details of the referral or booking."
+              type: object
+              required:
+                - kind
+                - description
+              properties:
+                kind:
+                  description: "Type of activity - referral (`ServiceRequest`) or booking (`Appointment`)."
+                  type: string
+                  enum:
+                    - "ServiceRequest"
+                    - "Appointment"
+                extension:
+                  description: "FHIR extension wrapper for various country-specific data items."                  
+                  type: array
+                  items:
+                    oneOf:
+                      - description: "URL for a patient-facing web application for the referral or booking. Always present."
+                        type: object
+                        required:
+                          - url
+                          - valueUrl
+                          - extension
+                        properties:
+                          url:
+                            description: "FHIR extension type."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
+                          valueUrl:
+                            description: "The URL itself."
+                            type: string
+                            example: "https://refer.nhs.uk/nhslogin?ubrn=808993698030"
+                          extension:
+                            description: "FHIR extension wrapper for the details of which back-end application the referral or booking came from."
+                            type: array
+                            items:
+                              description: "Unique identifier for the back-end application the referral or booking came from."
+                              type: object
+                              required:
+                                - url
+                                - valueCode
+                              properties:
+                                url:
+                                  description: "FHIR extension type for the identifier."
+                                  type: string
+                                  enum:
+                                    - "client-id"
+                                valueCode:
+                                  description: "The identifier itself."
+                                  type: string
+                                  example: "ers-01"
+                      - description: "Status of the activity, if it is an e-RS referral. Always present for an e-RS referral."
+                        type: object
+                        required:
+                          - url
+                          - valueCoding
+                        properties:
+                          url:
+                            description: "FHIR extension type for the e-RS referral status."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ServiceRequest-State"
+                          valueCoding:
+                            description: "Wrapper for the e-RS referral status."
+                            type: object
+                            required:
+                              - system
+                              - code
+                            properties:
+                              system:
+                                description: "Code system used for the e-RS referral status."
+                                type: string
+                                enum:
+                                  - "https://fhir.nhs.uk/CodeSystem/eRS-ReferralState"
+                              code:
+                                description: "The e-RS request status itself."
+                                type: string
+                                enum:
+                                  - bookable
+                                  - bookableWasCancelled
+                                  - inReview
+                      - description: "Status of the activity, if it is a booking. Always present for a booking."
+                        type: object
+                        required:
+                          - url
+                          - valueCoding
+                        properties:
+                          url:
+                            description: "FHIR extension type for the booking status."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-Status"
+                          valueCoding:
+                            description: "Wrapper for the booking status."
+                            type: object
+                            required:
+                              - system
+                              - code
+                            properties:
+                              system:
+                                description: "Code system used for the booking status."
+                                type: string
+                                enum:
+                                  - "http://hl7.org/fhir/appointmentstatus"
+                              code:
+                                description: "The e-RS request status itself."
+                                type: string
+                                enum:
+                                  - booked
+                                  - cancelled
+                                  - bookedPendingCancellation
+                                  - bookedPendingReschedule
+                                  - bookedPendingChange
+                                  - cancelledPendingReschedule
+                      - description: "The specialty of the service to which the referral or booking applies. Always present for a booking; only present for a referral if the referral has been booked."
+                        type: object
+                        required:
+                          - url
+                          - valueCoding
+                        properties:
+                          url:
+                            description: "FHIR extension type for the specialty."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Specialty"
+                          valueCoding:
+                            description: "Wrapper for the specialty."
+                            type: object
+                            required:
+                              - system
+                              - display
+                            properties:
+                              system:
+                                description: "Code system used for the specialty."
+                                type: string
+                                enum:
+                                  - "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
+                              display:
+                                description: "The specialty itself, in plain text."
+                                type: string
+                                example: "TRAUMA & ORTHOPAEDICS"
+                      - description: "The consultation medium for the booking (face-to-face or virtual), if the activity is a booking. Always present if the activity is a booking, but might be blank if the underlying consultation type is not recognised."
+                        type: object
+                        required:
+                          - url
+                          - valueCode
+                        properties:
+                          url:
+                            description: "FHIR extension type for the consultation medium code."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium"
+                          valueCode:
+                            description: "The consultation code medium itself. Will be blank (empty string) if the underlying consultation type is not recognised."
+                            type: string
+                            enum:
+                              - "FACE_TO_FACE"
+                              - "VIRTUAL"
+                      - description: "Optional element for when an Appointment has an actionable Document or Questionnaire associated."
+                        type: object
+                        required:
+                          - url
+                          - valueCode
+                        properties:
+                          url:
+                            description: "FHIR extension type for the action required code."
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/StructureDefinition/Extension-Action-Required"
+                          valueCode:
+                            description: "The action required itself. Will be blank (empty string) if no action is required."
+                            type: string
+                            enum:
+                              - "ACTION_REQUIRED"
+                description:
+                  description: "Extra information describing the activity to perform."
+                  type: string
+                  example: "Rheumatology - Metabolic Bone (inc Complex and Non-Complex cases) - Freeman - Newcastle FT - RTD"
+                scheduledPeriod:
+                  description: "The period over which the activity is to occur."
+                  type: object
+                  properties:
+                    start:
+                      description: "The date and time at which the activity is scheduled to start, if known."
+                      type: string
+                      example: "2021-05-23T10:02:15.960"
+                    extension:
+                      description: "FHIR extension wrapper for various properties of the scheduled period, if there are any."
+                      type: array
+                      items:
+                        oneOf:
+                          - description: "The date on which the activity is to be reviewed, if it is a referral. Not always present, even for referrals."
+                            type: object
+                            required:
+                              - url
+                              - valueDate
+                            properties:
+                              url:
+                                description: "FHIR extension type."
+                                type: string
+                                enum:
+                                  - "https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ReviewDueDate"
+                              valueDate:
+                                description: "The review due date itself."
+                                type: string
+                                example: "2020-11-19"
+                performer:
+                  description: "Details of the entities responsible for performing the activity, if known."
+                  type: array
+                  minItems: 1
+                  maxItems: 1
+                  items:
+                    description: "Details of one of the entities responsible for performing the activity."
+                    type: object
+                    required:
+                      - type
+                      - display
+                    properties:
+                      type:
+                        description: "Type of entity."
+                        type: string
+                        enum:
+                          - "Organization"
+                      display:
+                        description: "Plain text description of the entity."
+                        type: string
+                        example: "THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST"
