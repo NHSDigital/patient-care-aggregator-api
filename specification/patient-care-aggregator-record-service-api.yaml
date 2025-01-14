@@ -1,0 +1,215 @@
+# This is an OpenAPI Specification (https://swagger.io/specification/) 
+# for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
+# Update graphic to include Documents and Questionnaires
+openapi: '3.0.0'
+info:
+  title: "Patient Care Aggregator Record Service API"
+  version: "1.0.1"
+  description: |
+    ## Overview 
+    ![Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-record-service-api-context-diagram.svg?raw=true)
+
+    Use this API, as a secondary care provider, to let the Patient Care Aggregator know which patients you have bookings, documents and questionnaires for.
+
+    The Patient Care Aggregator needs this information in advance so it knows which secondary care providers to ask for a list of bookings, documents and questionnaires when a patient requests the list using the NHS App. 
+
+    As a secondary care provider, you’ll also need to: 
+    - build an API using the [Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard) that the Patient Care Aggregator can use to get a list of bookings, documents and questionnaires for a patient
+    - build a ’patient portal’ web application that the patient can access via a hyperlink from the NHS App 
+
+    For more details, see [Patient access to referrals and bookings via the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator). 
+
+    ## Who can use this API 
+    You can only use this API if you are integrating a secondary care booking system with our Patient Care Aggregator. 
+
+    ## API status 
+    This API is [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses),
+    meaning it is available for use in production but might be subject to breaking changes.
+
+    ## Service level 
+    This API is a silver service, meaning it is operational 24 x 7 x 365 but only supported during working hours.
+
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels). 
+
+    ## Technology 
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
+
+    You must adhere to the following requirements when integrating to the Wayfinder Patient Care Aggregator.
+
+      | Requirement Reference | Quality attribute(s)       | Requirement                                                                                                                                                                                                                                                                                     | MoSCoW |
+      | ----------------------|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
+      | WF-NFR-RS-01          | Reliability                |**Single Record Upload**<br>Portal systems must send a patient record to the Record Service if they receive a new appointment, document and questionnaire for that patient.<br>On receipt of a HTTP 200 'OK' status code from the Aggregator, Portal systems must mark the record as successfully uploaded and not try to upload it again.| M      |
+      | WF-NFR-RS-02          | Reliability                |**Single record Upload - Error Handling**<br>Portal systems must log events for transactions with the Record Service that have failed and track which patient records have not been uploaded successfully to the Aggregator.<br>Patient systems must have the ability to replay (reupload) those patient records that have not been uploaded successfully via an automated or manual mechanism, after any issues have been resolved.| M      |
+      | WF-NFR-RS-03          | Reliability                |**Batch Upload**<br>Portal systems must batch no more than 5,000 records per transaction, when required (e.g. to improve system performance)<br>On receipt of a HTTP 200 'OK' status code from the Aggregator, Portal systems must mark all the records sent in the batch as successfully uploaded and not try to upload them again.| M      |
+      | WF-NFR-RS-04          | Reliability                |**Batch Upload - Error Handling**<br>Portal systems must log an event when a batch transaction fails where such event must contain the received index to help with understanding which records could not be stored<br>Those specific records that have failed must be identified and be ready to be replayed (reuploaded) via an automated or manual mechanism, after any issues have been resolved.| M      |
+      | WF-NFR-RS-05          | Reliability                |**Bulk Load**<br>Portal systems must have the ability to upload all relevant records for all patients with historic and/or future appointments, documents and questionnaires prior to going live.<br>Portal systems must have the ability to handle transactional volumes required to upload all the relevant patient records, as well as the ability to track these transactions.| M      |
+      | WF-NFR-RS-06          | Reliability                |**Corrupted or Missing Data**<br>Portal systems must be able to replay (reupload) all patient records previously uploaded to the Aggregator if so requested.<br>Portal systems must continue to upload new patient records to the Record Service whilst the replay operation is in progress.<br>Portal systems must be able to provide the total count of records representing distinct NHS Numbers successfully uploaded to the Record Service, up to the requested point in time, for reconciliation purposes if so requested.<br>(NB: the requested point in time will be set in the immediate future)|
+      | WF-NFR-RS-07          | Availability<br>Resilience |**Unavailable**<br>In case of Record Service becoming unavailable, Portal systems must be able to log and replay all records that they were not able to upload.| M      |
+      | WF-NFR-RS-08          | Performance                |**Performance**<br>N/A| M      |
+      | WF-NFR-RS-09          | Reliability                |**Trust onboarding, record reconciliation**<br>To onboard a new Trust, the Portal system must seed the Record Service by uploading all NHS Numbers for that Trust. The seeding phase may include multiple bulk and/or single uploads. Prior to the start of the onboarding, the Portal system must provide the total count of records that they intend to upload.<br>Portal systems must be able to provide the total count of records representing distinct NHS Numbers successfully uploaded to the Record Service, up to the requested point in time, for reconciliation purposes if so requested.<br>(NB: the requested point in time will be set in the immediate future)| M      |
+
+    ## Network access
+    This API is available on the internet and, indirectly, on the Health and Social Care Network (HSCN). 
+
+    For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis). 
+
+    ## Security and authorisation 
+    This API is [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis).
+    
+    It uses API key authentication, so you'll need to pass an API key with each API request. The API key is unique to your application.
+    
+    This API doesn't use our standard API platform API keys - you'll have to request an API key from us. You'll need a separate API key per environment.
+    
+    To see how to include the API key with your API request, see the endpoint description below.
+
+    You'll also need a client ID to include with each request. You will be issued a client Id for each resource type you post to the record service. You'll need to request this from us.
+
+    ## Environments and testing 
+
+    | Environment                         | Base URL                                                               |
+    | ------------------------------------| ---------------------------------------------------------------------- |
+    | Integration test                    | `https://records.int.ptl.patient-care-aggregator.com/records/`         |
+    | Performance test                    | `https://records.aos.ptl.patient-care-aggregator.com/records/`         |
+    | End-to-end test                     | `https://records.aos.ptl.patient-care-aggregator.com/records/`         |
+    | Production                          | `https://prod-base.patient-care-aggregator.com/records/`               |
+
+    For more details on how to use these environments,
+    see the 'Testing' section in [Integrating a secondary care booking system with the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#4-test-your-software).
+
+    ## Onboarding 
+    To onboard to this API, see [Integrating a secondary care booking system (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#5-complete-onboarding).
+
+  contact:
+    name: 'patient-care-aggregator-api API Support'
+    url: 'https://digital.nhs.uk/developer/help-and-support'
+    email: api.management@nhs.net
+x-spec-publication:
+  try-this-api:
+    disabled: true
+servers:
+  - url: 'https://records.int.ptl.patient-care-aggregator.com/records'
+    description: Integration environment.
+  - url: 'https://records.aos.ptl.patient-care-aggregator.com/records'
+    description: End-to-end test environment.
+  - url: 'https://prod-base.patient-care-aggregator.com/records'
+    description: Production environment.
+paths:
+  /records:
+    post:
+      summary: "Send patient list"
+      operationId: post-records
+      description: |
+        ## Overview
+        Use this endpoint to send a list of NHS numbers to the Patient Care Aggregator so it knows which patients you have appointments, documents and questionnaires for.
+
+        ## Inclusion and exclusion rules
+        Use the following rules when sending NHS numbers:
+        * Do not send NHS numbers for sensitive patients.
+        * Do not send NHS numbers for patient under the age of 16.
+        * Other than that, send NHS numbers for all registered patients, regardless of whether they have any appointments, documents and questionnaires that would currently be returned by your
+        [Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard).
+        
+        ## Batching and timing rules
+        When your service first goes live, send an initial batch of NHS numbers for all qualifying patients (taking into account the inclusion and exclusion rules).
+        
+        Ideally, when a new appointments, documents and questionnaires is created, and if the Patient Care Aggregator doesn't already know about the patient, send the patient's NHS number immediately.
+        Alternatively, send new NHS numbers overnight in a batch, but this is not preferred.
+
+        Note; patients turning 16 who meet the above requirements will also need to be posted to the record service.
+
+        If a request to this endpoint fails, keep track of which NHS numbers you haven't yet sent, and re-send them, using an appropriate back-off timing scheme.
+
+        This endpoint is idempotent - you may send the same NHS Number multiple times -
+        but try to avoid this by keeping track of which NHS numbers you have already sent it.
+        
+        On request, at any time, you must be able to re-send a full list of NHS numbers for all existing appointments, documents and questionnaires.
+        If this takes some time to complete, you must also continue to send NHS numbers for new appointments, documents and questionnaires in real time.
+        
+        In the production environment, the endpoint accepts a maximum of 5,000 NHS numbers per call. In non-productiuon environments, the limit is 200.
+        If you need to send more NHS numbers, make multiple calls.
+
+        ## Resource types
+        The record service accepts NHS Number for patients with the following resources available; Appointments, Documents and Questionnaires. A client ID will be issued for each type to ensure logical separation i.e. each resource type has its own record of NHS Numbers.
+
+        Each API request to the record service will therefore be for a single resource type. The API does not support a mixed economy of resources in a single call.
+
+        ## Timeout
+        This endpoint times out after 30s, returning HTTP status 504.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Bearer token/API Key allocated by us
+          schema:
+            type: string
+            example: Bearer 6b882ddf-82f5-4611-9390-71ca6a045a60
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - clientId
+                - nhsNumbers
+              properties:
+                clientId:
+                  type: string
+                  description: 'A unique identifier for the calling system, provided by us.'
+                  example: 'pep-01'
+                nhsNumbers:
+                  type: array
+                  minItems: 1
+                  maxItems: 5000
+                  description: A list of NHS numbers for patients with qualifying records.
+                  items: 
+                    type: string
+                    pattern: '^[1-9][0-9]{9}$'
+                    example: '9000000009'
+            example:
+              $ref: components/examples/RecordServiceSendPatientListRequest.json
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    enum: 
+                      - success
+              example:
+                $ref: components/examples/RecordServiceSendPatientListResponseHappyPath.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code                 | Description |
+            | ----------- | -------------------------- | --------------------------------------------- |
+            | 400         | `error.bad-request`        | Bad request due to invalid JSON, invalid NHS number(s) or bearer token/API key not matching client ID in payload.	|
+            | 401         | `error.unauthorized`       | Unauthorized due to unrecognised bearer token/API key. |
+          
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    enum:
+                      - "error.bad-request"
+                      - 'error.unauthorized'
+                  data:
+                    type: string
+                    example: 'clientId mismatch'
+              example:
+                $ref: components/examples/RecordServiceSendPatientListResponseError.json
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

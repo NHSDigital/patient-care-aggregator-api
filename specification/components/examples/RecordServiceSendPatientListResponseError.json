@@ -1,4 +1,4 @@
 {
-  "code" : "error.bad-request",
-  "data" : "clientId mismatch"
+  "code": "error.bad-request",
+  "data": "\"nhsNumbers[1]\" with value \"abc\" fails to match the required pattern: /^[1-9][0-9]{9}$/. \"nhsNumbers[2]\" with value \"0123456789\" fails to match the required pattern: /^[1-9][0-9]{9}$/. \"nhsNumbers[3]\" with value \"012345678a\" fails to match the required pattern: /^[1-9][0-9]{9}$/. \"nhsNumbers[4]\" with value \"0123456789\" fails to match the required pattern: /^[1-9][0-9]{9}$/"
 }

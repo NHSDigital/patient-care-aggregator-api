@@ -34,6 +34,8 @@ def identity_service_url(environment, mock_username=None):
         base_path = "oauth2-mock"
     elif environment == "int":
         base_path = "oauth2-no-smartcard"
+    elif environment == 'prod':
+        return "https://api.service.nhs.uk/oauth2"
     else:
         base_path = "oauth2"
 
@@ -138,18 +140,25 @@ def do_jwt(environment, client_id, private_key_file):
     }
 
     additional_headers = {"kid": "test-1"}
+    # additional_headers = {"kid": "prod-1"}
     client_assertion = jwt.encode(
         claims, private_key, algorithm="RS512", headers=additional_headers
     )
+
+    id_token_jwt = ''
+
     resp = SESSION.post(
         url,
         headers={"foo": "bar"},
         data={
-            "grant_type": "client_credentials",
+            "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+            "subject_token_type": "urn:ietf:params:oauth:token-type:id_token",
             "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            "subject_token": id_token_jwt,
             "client_assertion": client_assertion,
         },
     )
+
     return resp.json()
 
 
