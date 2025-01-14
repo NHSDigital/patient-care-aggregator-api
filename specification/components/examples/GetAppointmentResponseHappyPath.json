@@ -3,7 +3,7 @@
   "type": "searchset",
   "total": 1,
   "entry": [{
-    "fullUrl": "https://my.patientportal.co.uk/Appointment/d9df1326-1008-45df-b9dd-a920b64ec043",
+    "fullUrl": "https://fhir.patientportal.co.uk/Appointment/d9df1326-1008-45df-b9dd-a920b64ec043",
     "search": {
       "mode": "match"
     },
@@ -14,17 +14,17 @@
         "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ServiceRequest-Priority",
         "valueCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/eRS-Priority",
-          "code": "{URGENT|ROUTINE|TWO_WEEK_WAIT}"
+          "code": "ROUTINE"
         }
       }, {
         "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-RequestStatus",
-        "valueCode": "{Pending Change|Pending Reschedule|Pending Cancellation|Confirmed Attendance}"
+        "valueCode": "Pending Reschedule"
       }, {
         "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",
-        "valueCode": "{FACE_TO_FACE | VIRTUAL}"
+        "valueCode": "VIRTUAL"
       }, {
         "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link",
-        "valueUrl": "{deeplinkURL}"
+        "valueUrl": "https://my.patientportal.co.uk/Appointment/d9df1326-1008-45df-b9dd-a920b64ec043"
       }],
       "identifier": [{
         "system": "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Appointment",
@@ -34,7 +34,7 @@
         "value": "3a146c43-2b21-44e9-95bc-6f4849e504c8"
       }],
       "status": "booked",
-      "description": "Dermatology Appointment",
+      "description": "Dermatology",
       "start": "2021-06-13T12:30:00+00:00",
       "end": "2021-06-13T12:45:00+00:00",
       "basedOn": [{
@@ -54,7 +54,7 @@
           "type": "Patient",
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "0000000001"
+            "value": "9000000009"
           }
         },
         "status": "accepted"

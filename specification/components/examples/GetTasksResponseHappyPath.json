@@ -20,10 +20,10 @@
       "status": "requested",
       "intent": "plan",
       "description": "Dermatology Pre-consultation Health Survey",
-      "focus": [{
+      "focus": {
         "type": "Appointment",
         "reference": "https://my.portal.com/fhir/R4/Appointment/ec2458f2-1e24-41c8-b71b-0e701af7583d"
-      }],
+      },
       "for": {
         "type": "Patient",
         "identifier": {
@@ -32,10 +32,10 @@
         }
       },
       "authoredOn": "2021-06-13T12:30:00+00:00",
-      "reasonReference": [{
+      "reasonReference": {
         "type": "Questionnaire",
-        "reference": "https://my.portal.com/Questionnaire?id=123"
-      }],
+        "reference": "https://my.portal.com/Questionnaire/cdb83383-f17e-4bf7-8f40-342f7f7c7d8d"
+      },
       "owner": {
         "type": "Organization",
         "identifier": {
