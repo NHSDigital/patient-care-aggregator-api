@@ -64,7 +64,7 @@ version = "1.0.92a0"
 description = ""
 category = "dev"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.9,<4.0"
 files = []
 
 [package.dependencies]
@@ -1233,5 +1233,5 @@ multidict = ">=4.0"
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.8"
+python-versions = "^3.9"
 content-hash = "df96fa3f0a35c44ae520d09db78594efe711194d996600935c08107498102e0a"
