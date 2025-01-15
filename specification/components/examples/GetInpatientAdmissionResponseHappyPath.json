@@ -1,0 +1,139 @@
+{
+    "resourceType": "Bundle",
+    "type": "searchset",
+    "total": 2,
+    "entry": [{
+      "fullUrl": "https://fhir.patientportal.co.uk/Appointment/06844193-7064-4d98-86c2-442d0209ca60",
+      "search": {
+        "mode": "match"
+      },
+      "resource": {
+        "resourceType": "Appointment",
+        "id": "06844193-7064-4d98-86c2-442d0209ca60",
+        "extension": [{
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ServiceRequest-Priority",
+          "valueCoding": {
+            "system": "https://fhir.nhs.uk/CodeSystem/eRS-Priority",
+            "code": "ROUTINE"
+          }
+        }, {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",
+          "valueCode": "FACE_TO_FACE"
+        }, {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link",
+          "valueUrl": "https://my.patientportal.co.uk/Appointment/06844193-7064-4d98-86c2-442d0209ca60"
+        }],
+        "identifier": [{
+          "system": "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Appointment",
+          "value": "4817501"
+        }, {
+          "system": "https://prod.myportal.com/fhir/Appointment",
+          "value": "06844193-7064-4d98-86c2-442d0209ca60"
+        }],
+        "status": "booked",
+        "description": "Pre-assessment appointment",
+        "start": "2025-05-20T12:30:00+00:00",
+        "end": "2025-05-20T12:45:00+00:00",
+        "basedOn": [{
+          "identifier": [{
+            "system": "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/ServiceRequest",
+            "value": "265413"
+          }, {
+            "system": "https://fhir.nhs.uk/Id/PathwayId",
+            "value": "RBH5644312231"
+          }]
+        }],
+        "participant": [{
+          "actor": {
+            "type": "Patient",
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/nhs-number",
+              "value": "9000000009"
+            }
+          },
+          "status": "accepted"
+        }, {
+          "actor": {
+            "type": "Location",
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "RFF"
+            }
+          },
+          "status": "accepted"
+        }, {
+          "actor": {
+            "type": "Location",
+            "display": "Chapel Allerton Hospital, Dentistry Dept, 2nd Floor"
+          },
+          "status": "accepted"
+        }]
+      }
+    }, {
+      "fullUrl": "https://fhir.patientportal.co.uk/Appointment/cf3686d3-dda5-4e61-9245-6220da02eaf6",
+      "search": {
+        "mode": "match"
+      },
+      "resource": {
+        "resourceType": "Appointment",
+        "id": "cf3686d3-dda5-4e61-9245-6220da02eaf6",
+        "extension": [{
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link",
+          "valueUrl": "https://my.patientportal.co.uk/Appointment/cf3686d3-dda5-4e61-9245-6220da02eaf6"
+        }],
+        "identifier": [{
+          "system": "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Appointment",
+          "value": "4817509"
+        }, {
+          "system": "https://prod.myportal.com/fhir/Appointment",
+          "value": "6a79f7d4-6c92-4b41-9020-349fab9a52da"
+        }],
+        "appointmentType": {
+          "coding": [{
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            "code": "IMP",
+            "display": "inpatient encounter"
+          }]
+        },
+        "status": "booked",
+        "description": "Dermatology Procedure",
+        "start": "2025-06-13T08:00:00+00:00",
+        "end": "2025-06-16T17:00:00+00:00",
+        "basedOn": [{
+          "identifier": [{
+            "system": "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/ServiceRequest",
+            "value": "265414"
+          }, {
+            "system": "https://fhir.nhs.uk/Id/PathwayId",
+            "value": "RBH5644312231"
+          }]
+        }],
+        "participant": [{
+          "actor": {
+            "type": "Patient",
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/nhs-number",
+              "value": "9000000009"
+            }
+          },
+          "status": "accepted"
+        }, {
+          "actor": {
+            "type": "Location",
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "RFF"
+            }
+          },
+          "status": "accepted"
+        }, {
+          "actor": {
+            "type": "Location",
+            "display": "Chapel Allerton Hospital, Dentistry Dept, 2nd Floor"
+          },
+          "status": "accepted"
+        }]
+      }
+    }]
+  }
+  

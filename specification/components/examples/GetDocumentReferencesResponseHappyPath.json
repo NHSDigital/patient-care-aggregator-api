@@ -49,7 +49,7 @@
       "content": [{
         "attachment": {
           "contentType": "application/pdf",
-          "url": "https://my.portal.com/Document?id=123"
+          "url": "https://my.portal.com/Document/2f02f7ac-0de5-4271-81ad-92b69ead27e9"
         }
       }]
     }
