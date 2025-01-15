@@ -737,7 +737,7 @@ components:
                         enum:
                           - https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
                       valueCode:
-                        description: The encounter class required itself.
+                        description: "The encounter class required itself."
                         type: string
                         enum:
                           - outpatient

@@ -3,7 +3,7 @@ cffi==1.15.0
 charset-normalizer==2.0.12
 cryptography==43.0.1
 docopt==0.6.2
-idna==3.3
+idna==3.7
 lxml==4.9.1
 pycparser==2.21
 PyJWT==2.4.0
