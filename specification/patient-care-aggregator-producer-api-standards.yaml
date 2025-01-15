@@ -744,7 +744,6 @@ components:
                 type: object
                 required:
                   - status
-                required: 
                   - actor
                 properties:
                   actor:
