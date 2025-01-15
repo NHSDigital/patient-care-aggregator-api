@@ -73,7 +73,7 @@ apigee:
         path: {{ SERVICE_NAME }}-consumer-api.json
       - name: {{ NAME }}-producer-api-standards
         path: {{ SERVICE_NAME }}-producer-api-standards.json
-      - name: {{ NAME }}-record-service=api
+      - name: {{ NAME }}-record-service-api
         path: {{ SERVICE_NAME }}-record-service-api.json
     api_catalog:
       - edgeAPIProductName: {{ NAME }}
