@@ -1,25 +1,22 @@
 {
-  "name": "patient-care-aggregator-api",
+  "name": "patient-care-aggregator",
   "version": "0.0.1",
   "description": "OAS (Swagger v3) API Definition for Template API",
   "scripts": {
-    "lint": "node_modules/.bin/speccy lint -s openapi-tags -s operation-tags specification/patient-care-aggregator-api-consumer-api.yaml --skip default-and-example-are-redundant && node_modules/.bin/speccy lint -s openapi-tags -s operation-tags specification/patient-care-aggregator-api-producer-api-standards.yaml --skip default-and-example-are-redundant && node_modules/.bin/speccy lint -s openapi-tags -s operation-tags specification/patient-care-aggregator-api-record-service-api.yaml --skip default-and-example-are-redundant",
-    "publish": "mkdir -p build && node_modules/.bin/speccy resolve specification/patient-care-aggregator-api-consumer-api.yaml -i | poetry run python scripts/yaml2json.py | poetry run python scripts/set_version.py > build/patient-care-aggregator-api-consumer-api.json && node_modules/.bin/speccy resolve specification/patient-care-aggregator-api-producer-api-standards.yaml -i | poetry run python scripts/yaml2json.py | poetry run python scripts/set_version.py > build/patient-care-aggregator-api-producer-api-standards.json && node_modules/.bin/speccy resolve specification/patient-care-aggregator-api-record-service-api.yaml -i | poetry run python scripts/yaml2json.py | poetry run python scripts/set_version.py > build/patient-care-aggregator-api-record-service-api.json",
-    "serve": "node_modules/.bin/speccy serve build/patient-care-aggregator-api.json",
+    "lint": "node_modules/.bin/openapi-generator-cli validate -i specification/patient-care-aggregator-api-consumer-api.yaml && node_modules/.bin/openapi-generator-cli validate -i specification/patient-care-aggregator-api-producer-api-standards.yaml && node_modules/.bin/openapi-generator-cli validate -i specification/patient-care-aggregator-api-record-service-api.yaml",
+    "publish": "./node_modules/.bin/openapi-generator-cli generate -i specification/patient-care-aggregator-api-consumer-api.yaml --generator-key v3.0  -g openapi -o build && rm openapitools.json && mv build/openapi.json build/patient-care-aggregator-api-consumer-api.json && ./node_modules/.bin/openapi-generator-cli generate -i specification/patient-care-aggregator-api-producer-api-standards.yaml --generator-key v3.0  -g openapi -o build && rm openapitools.json && mv build/openapi.json build/patient-care-aggregator-api-producer-api-standards.json && ./node_modules/.bin/openapi-generator-cli generate -i specification/patient-care-aggregator-api-record-service-api.yaml --generator-key v3.0  -g openapi -o build && rm openapitools.json && mv build/openapi.json build/patient-care-aggregator-api-record-service-api.json",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",
-  "homepage": "https://github.com/NHSDigital/patient-care-aggregator-api",
-  "dependencies": {
-    "newman-reporter-htmlextra": "^1.20.1",
-    "speccy": "^0.11.0"
-  },
+  "homepage": "https://github.com/NHSDigital/patient-care-aggregator-reporting",
   "devDependencies": {
-    "apigeetool": "^0.16.1",
+    "@openapitools/openapi-generator-cli": "^2.5.1",
+    "apigeetool": "^0.5.4",
     "license-checker": "^25.0.1",
-    "minimist": "^1.2.6",
-    "newman": "^5.3.0",
-    "newman-reporter-html": "^1.0.5"
+    "minimist": "^1.2.2"
+  },
+  "dependencies": {
+    "newman": "^5.3.2"
   }
 }

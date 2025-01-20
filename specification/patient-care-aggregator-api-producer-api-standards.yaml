@@ -384,7 +384,7 @@ components:
                     type: string
                     description: URI for the type of extension - in this case a request status.
                     enum:
-                      - 	https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-RequestStatus
+                      - https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-RequestStatus
                   valueCode:
                     type: string
                     enum:
@@ -1487,11 +1487,15 @@ components:
   headers:
     xRequestId:
       schema:
-        $ref: "#/components/parameters/xRequestId/schema"
+        type: string
+        format: uuid
+        example: 8b16ccfa-8e46-4ba5-bd04-ba9371c69db9
       description: Request parameter value echoed back (when provided)
     xCorrelationId:
       schema:
-        $ref: "#/components/parameters/xCorrelationId/schema"
+        type: string
+        format: uuid
+        example: c93e2449-a2ef-4476-ad15-13491036be22
       description: Request parameter value echoed back (when provided)
   examples:
     emptyBundle:
