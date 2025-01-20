@@ -1,5 +1,5 @@
 {
-  "name": "patient-care-aggregator-reporting",
+  "name": "patient-care-aggregator",
   "version": "0.0.1",
   "description": "OAS (Swagger v3) API Definition for Template API",
   "scripts": {
