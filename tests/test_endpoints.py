@@ -150,7 +150,7 @@ class TestEndpoints:
         )
 
         print('Auth server response:')
-        print(resp.json)
+        print(resp.json())
 
         return resp.json()["access_token"]
 
