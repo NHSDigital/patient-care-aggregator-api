@@ -1,0 +1,1613 @@
+# This is an OpenAPI Specification (https://swagger.io/specification/) 
+# for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
+openapi: '3.0.3'
+info:
+  title: "Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard"
+  version: "1.0.3"
+  description: |
+    ## Overview 
+    ![Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
+
+    Use this API standard, as a secondary care provider, to build an API that the Patient Care Aggregator can use to get a list of bookings for a patient. 
+
+    The Patient Care Aggregator aggregates this information with similar information from other providers before returning them to the NHS App for the patient to see. 
+
+    As a secondary care provider, you'll also need to: 
+    - use the [Patient Cate Aggregator Record Service API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api) to let the let the Patient Care Aggregator know which patients you have bookings for 
+    - build a 'patient engagement portal' web application that the patient can access via a hyperlink from the NHS App 
+
+    For more details, see [Patient access to referrals and bookings via the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator).
+
+    ## Who can use this API standard 
+    You can only use this API standard if you are integrating a secondary care booking system with our Patient Care Aggregator. 
+
+    ## Status 
+    This API standard is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning it is available for use but might be subject to breaking changes.
+
+    ## Service level 
+    Your API must be a gold service, meaning it is operational and supported 24 hours a day, 365 days a year. 
+
+    For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels). 
+
+    ## Technology
+    This API standard is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+    
+    It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
+    global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/),
+    except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
+    
+    It includes some country-specific FHIR extensions, which have been built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
+    
+    You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
+    In particular:
+    - resource names are capitalised and singular, for example `/CarePlan` not `/care-plans`
+    - array names are singular, for example `entry` not `entries` for FHIR bundle entries
+    - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
+    
+    There are [libraries and SDKs available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
+    
+    You must adhere to the following requirements when integrating to the Wayfinder Patient Care Aggregator.
+
+    | Requirement Reference | Quality attribute(s)                                 | Requirement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | MoSCoW  |
+    |-----------------------|------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+    | WF-NFR-01             | Performance                                          | **Response times**<br>Each API (including Appointment, Document, and Questionnaire) must respond with patient data within 400ms  95th percentile (P95).<br>Page load times during the deeplink jump-off and after the blue screen hand-off between the NHS App and a Portal system, should not exceed 3 seconds, as perceived by the end-user. The hand-off involves multiple message exchanges between NHS App, NHS login and the Portal system. The aggregate NHS App and NHS login response time is 1 second (at 95th percentile) in the production environment. This means that the aggregate Portal systems' response time must be 2 seconds or less (as measured in the Portal system's volume & performance test environment, at 95th percentile). The measurements must be carried out from a browser with a strong and stable network connection. | M/S     |
+    | WF-NFR-02             | Performance                                          | **Timeouts**<br>Each API (including Appointment, Document, and Questionnaire) must respond with a HTTP 504 'Gateway Timeout' after 9,000 ms have expired<br>Calls to the Record Service time out after 30,000ms.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | M       |
+    | WF-NFR-03             | Availability                                         | **Throttling**<br>Each API must limit requests and respond with a HTTP 429 'Too Many Requests' response at 25 TPS (transactions per second)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | M       |
+    | WF-NFR-04             | Reliability                                          | **Data timeliness**<br>Any changes made by patients within a PEP must be reflected in any subsequent request by the Patient Care Aggregator within 3 seconds (e.g. the requested appointment status if a request for a cancellation or amendment has been is made).<br>Any changes made at source (e.g. within the providers PAS) must be reflected in any subsequent request by the Patient Care Aggregator within 3 minutes. This should be sent prior to any notification regarding the update (e.g. a cancellation notification following a clinic cancellation).                                                                                                                                                                                                                                                                                                                                                                                                                                                 | M       |
+    | WF-NFR-05             | Availability                                         | **Service availability**<br>Portal systems will provide Silver (99.5%) availability under NHS guidelines<br>See [Cloud security - good practice guide](https://digital.nhs.uk/services/cloud-centre-of-excellence/cloud-security-good-practice-guide/9.-appendix-b-service-classifications)                                                                                                                                                                                                                                                                                                                                                                                                                                             | M       |
+    | WF-NFR-06             | Availability<br>Reliability<br>Evolvability          | **Releases & Maintenance**<br>Sprint cadence of 2 weeks with at least one release by the end of each sprint<br>During maintenance windows (max 2hrs) API must respond with HTTP 503 Service Unavailable                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | M       |
+    | WF-NFR-07             | Usability                                            | **No content for user**<br>If no data is available for the patient, respond with HTTP 200 'OK' and a FHIR Bundle resource in the payload where Bundle.total set to 0 will indicate '*no matches*'.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | M       |
+    | WF-NFR-08             | Usability                                            | **Partial response**<br>N/A                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | M       |
+    | WF-NFR-09             | Observability<br>Security<br>Information governance  | **Logging and alerting**<br>All Aggregator requests to Portal systems must be included into existing logging and monitoring solutions.<br>Requests from Portal systems to the Aggregator must be distinct from other log events<br>Errors must generate alarms against existing Portal system thresholds.<br>Clinical and personal identifiable data must be omitted from production logs.<br>All transactional log events that contain X-Correlation-ID must be retained for 90 days                                                                                                                                                                                                                                                   | M       |
+    | WF-NFR-10             | Testability                                          | **Contract testing**<br>Contract tests for endpoints used by the Aggregator must be included in the build pipeline to prevent any changes made by the Portal system that would prevent the Aggregator from functioning correctly<br>Contract tests for endpoints provided by the Aggregator must be included in the build pipeline to prevent any changes made by the Aggregator that would prevent the Portal systems from functioning correctly<br>Contract tests for endpoints provided by the NHS App's Notifications & Messaging (N&M) must be included in the build pipeline to prevent any changes made by N&M that would prevent the Portal system from functioning correctly                                                   | M       |
+    | WF-NFR-11             | Performance                                          | **Volumetrics**<br>Close tracking of the following is required for BETA period:<br>- New user sign-ups via NHS Login<br>- Number of deeplink interactions (launches from NHS App directly into appointment page)<br>- Errors (by type)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | M       |
+    | WF-NFR-12             | Cost<br>Security<br>Interoperability                 | **Hosting**<br>Portals must continue to be hosted independently. <br><br>Access to patient data must be over secure Internet using FHIR-based APIs.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | M       |
+    | WF-NFR-13             | Serviceability                                       | **Operations**<br>Commitment of operational response against Silver+ (99.5%) availability under NHS guidelines.<br>See [Cloud security - good practice guide](https://digital.nhs.uk/services/cloud-centre-of-excellence/cloud-security-good-practice-guide/9.-appendix-b-service-classifications)<br>This will require on-call DevOps escalation for outages                                                                                                                                                                                                                                                                                                                                                                          | M       |
+    | WF-NFR-14             | Security                                             | **Authentication**<br>**Patient authentication**<br>- Portal systems must be certified to use NHS login<br>- Portal systems will carry out a demographic cross-check between the NHS number passed in the API request and 'Date of Birth' from the ID token, at a minimum, before returning patient data.<br><br>**System authentication**<br>- All incoming/outgoing API calls into/from Portal systems must utilise OAuth 2.0 Client Credentials Flow pattern for system-to-system authentication.<br>- All API keys used by Portal systems must be rotated at regular intervals no more than 90 days apart, and also rotated immediately whenever there is suspicion that a key may have been compromised                             | M       |
+    | WF-NFR-15             | Information governance                               | **User data revocation or request**<br>Use existing mechanisms<br>*Note:* it is expected that trusts will limit data coming from Patient Administration Systems in response to a request to data controller. Account deletion within Portals is likely to cover revocation of Portal processing.                                                                                                                                                                                                                                                                                                                                                                                                                                        | M       |
+    | WF-NFR-16             | Information governance<br>Clinical safety            | **Age restriction**<br>Portals will not receive requests (from the Aggregator) for patient data for these under the age of 16 (due to an Aggregator business logic which checks the date of birth before making requests to Portals)<br><br>Portal systems must not send NHS numbers to the Aggregator's Record Service for patients who are under 16 and who have appointments, as well as documents or questionnaires related to those appointments <br><br>Portal systems must be able to resend, on request, all the relevant records to all 3 Record Services (Appointments, Documents, and Questionnaires) that exclude data related to anyone who is under the age of 16                                                         | M       |
+    | WF-NFR-17             | Security<br>Information governance                   | **Access to personal identifiable data**<br>Must use existing controls<br><br>More specifically, Portal systems must not send data with document or questionnaire names that contain personal identifiable data (such as person's name(s), date of birth, post code, etc.)                                                                                                                                                                                                                                                                                                                                                                                                                                                              | M       |
+    | WF-NFR-18             | Security<br>Clinical safety                          | **Inactivity timeouts**<br>Portal systems must configure inactivity timeout for both front end and back-end services to be equal or less than the NHS App inactivity timeout value (currently 10 minutes). At 9 minutes of inactivity the supplier service must warn the user of 1 minute remaining in the session before they will be logged out for inactivity.<br><br>When the session timeout occurs in the mobile version of the App, the user must be automatically directed back to the main NHS App login screen so they can re-login again if needed.<br><br>When the session timeout occurs in a web browser, a timeout message, which has an instruction to close the window or tab, must be displayed. The user must be forced out of the service automatically when the session expires on both the mobile app or in the web browser. The inactivity popup warning and design must be triggered in the browser as per the prototypes provided.<br><br>Portal systems must handle cookies so that sessions are cleaned after the inactivity timeout expiry. For the front end, this includes the auto logout controls that protect the personal data persisting on the inactive page. | M       |
+
+    ## Network access 
+    Your API must be available on the internet. 
+
+    ## Security and authorisation
+    Your API must use OAuth 2.0 to authenticate and authorise the Patient Care Aggregator as the calling system.
+    
+    This replaces the previous authentication and authorisation method which was TLS-MA.
+    
+    For more details, see [Authorisation using OAuth 2.0](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/authorisation-using-oauth-2.0).
+    
+    ## Environments and testing 
+    You'll need to deploy your API into a number of test environments.
+    
+    For more details, see the 'Testing' section in [Integrating a secondary care booking system with the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#4-test-your-software).
+
+    ## Onboarding 
+    To onboard to this API standard, see [Integrating a secondary care booking system (onboarding section)](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator/integrating-a-secondary-care-booking-system#5-complete-onboarding).
+  contact:
+    name: 'patient-care-aggregator-api API Support'
+    url: 'https://digital.nhs.uk/developer/help-and-support'
+    email: api.management@nhs.net
+x-spec-publication:
+  try-this-api:
+    disabled: true
+servers:
+  - url: 'https://integration.servita-demo.co.uk'
+    description: Sandbox environment.
+  - url: 'https://aos.patient-care-aggregator.com'
+    description: End-to-end test environment.
+  - url: 'https://prod.patient-care-aggregator.com'
+    description: Production environment.
+paths:
+  /Appointment:
+    get:
+      summary: "Returns FHIR Appointment resources"
+      operationId: get-appointments
+      description: |
+        ## Overview
+        This endpoint returns a list of appointments from a secondary care booking system for a given patient.
+        It returns the appointments as a FHIR 'Bundle' containing FHIR 'Appointment' resources.
+        
+        Note that the above URL path is an example — you can use a different URL path if you prefer.
+        
+        ## Appointment inclusion and exclusion rules
+        The endpoint includes / excludes appointments as per the following rules:
+        - NHS in England only: Only include appointments for care settings within the NHS in England.
+        - NHS Trusts only: Only include appointments for acute, mental health or community care settings — not any other type.
+        - Elective care appointments only. Only include elective outpatient or inpatient — not any other type.
+        - Information governance: Only include appointments for care settings where you have a legal agreement in place to handle their data.
+        - Excluded patients (Trust) (SRCBR1a): Exclude appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system).
+        - Excluded patients (PDS) (SRCBR1b): Appointments for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
+        - Excluded clinics (SRCBR2): Appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Encounter types (SRCBR3): Only outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator — i.e. filter hidden appointments and appointments at ghost clinics.
+        - Excluded specialities (SRCBR4): Appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Ghost appointments: Exclude appointments that are booked in the system but which the patient is not expected to attend - known as 'ghost' appointments.
+        - Include all appointments, future dated and historic, in scope of the programme requirements. This includes cancelled appointments.
+        - Under 16s: Exclude patients under 16.
+
+        ## Patients with no appointments
+        Where a patient has no appointments, including where appointments have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
+        response with an HTTP status of 200 and a FHIR Bundle with no appointments in it.
+
+        ## Capacity and response times
+        Your endpoint must be capable of:
+        - responding to requests within 400ms (at the 95th percentile)
+        - at a throughput of 25 transactions per second
+
+        ## Diagnostic logging
+        - All requests to the endpoint must be logged for diagnostic purposes.
+        - Log records must include the `X-Correlation ID`.
+        - Log records must be identifiable as having come from the Patient Care Aggregator.
+        - Personally identifiable and clinical information must be omitted from logs in production.
+        - Log records must be held for a minimum of 90 days.
+        - Alerts with suitable thresholds must be in place to flag error conditions
+
+        ## Error and fault responses
+        Your API must return appropriate HTTP error and fault codes. The schema for a 200 success response is detailed in this specification. However, we do not mandate any particular format for 3xx, 4xx or 5xx responses. We do ask that you include an error message in the response payload explaining clearly what went wrong. This helps us to understand and triage the issue faster. It also helps to avoid unnecesary requests to your live support team in the case where the issue is caused by a problem with the Patient Care Aggregator API.
+      tags:
+        - /FHIR/R4
+      parameters:
+        - $ref: "#/components/parameters/nhsNumber"
+        # - $ref: "#/components/parameters/xRequestId"
+        - $ref: "#/components/parameters/xCorrelationId"
+        - $ref: "#/components/parameters/nhsdIdToken"
+        # - $ref: "#/components/parameters/nhsdTargetIdentifier"
+      responses:
+        2XX:
+          $ref: "#/components/responses/appointmentsHappyPath"
+        4XX:
+          $ref: "#/components/responses/4XX"
+  /DocumentReference:
+    get:
+      summary: "Returns FHIR DocumentReferences resources"
+      operationId: get-document-references
+      description: |
+        ## Overview
+        This endpoint returns a list of documents from a secondary care booking system for a given patient.
+        It returns the document references as a FHIR 'Bundle' containing FHIR 'DocumentReference' resources.
+        
+        Note that the above URL path is an example — you can use a different URL path if you prefer.
+        
+        ## DocumentReference inclusion and exclusion rules
+        The endpoint includes / excludes documents as per the following rules:
+        - NHS in England only: Only include documents related to appointments for care settings within the NHS in England.
+        - NHS Trusts only: Only include documents related to appointments for acute, mental health or community care settings — not any other type.
+        - Elective care apointments only: Only include documents related to elective outpatient or inpatient appointments — not any other type.
+        - Information governance: Only include documents related to appointments for care settings where you have a legal agreement in place to handle their data.
+        - Excluded patients (Trust) (SRCBR1a): Exclude documents related to appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system).
+        - Excluded patients (PDS) (SRCBR1b): Documents for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
+        - Excluded clinics (SRCBR2): Documents related to appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Encounter types (SRCBR3): Only documents related to outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator — i.e. filter hidden appointments and appointments at ghost clinics.
+        - Excluded specialities (SRCBR4): Documents related to appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Include patient correspondence (letters)
+        - Exclude non-patient facing corrospondence (letters) e.g. GP Letters or corrospondence to parents or guardians
+        - Exclude assets/attachments
+        - Under 16s: Exclude patients under 16.
+
+        ## Patients with no document references
+        Where a patient has no document references, including where document references have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
+        response with an HTTP status of 200 and a FHIR Bundle with no document references in it.
+
+        ## Capacity and response times
+        Your endpoint must be capable of:
+        - responding to requests within 400ms (at the 95th percentile)
+        - at a throughput of 25 transactions per second
+
+        ## Diagnostic logging
+        - All requests to the endpoint must be logged for diagnostic purposes.
+        - Log records must include the `X-Correlation ID`.
+        - Log records must be identifiable as having come from the Patient Care Aggregator.
+        - Personally identifiable and clinical information must be omitted from logs in production.
+        - Log records must be held for a minimum of 90 days.
+        - Alerts with suitable thresholds must be in place to flag error conditions
+
+        ## Error and fault responses
+        Your API must return appropriate HTTP error and fault codes. The schema for a 200 success response is detailed in this specification. However, we do not mandate any particular format for 3xx, 4xx or 5xx responses. We do ask that you include an error message in the response payload explaining clearly what went wrong. This helps us to understand and triage the issue faster. It also helps to avoid unnecessary requests to your live support team in the case where the issue is caused by a problem with the Patient Care Aggregator API.
+      tags:
+        - /FHIR/R4
+      parameters:
+        - $ref: "#/components/parameters/nhsNumber"
+        # - $ref: "#/components/parameters/xRequestId"
+        - $ref: "#/components/parameters/xCorrelationId"
+        - $ref: "#/components/parameters/nhsdIdToken"
+        # - $ref: "#/components/parameters/nhsdTargetIdentifier"
+      responses:
+        2XX:
+          $ref: "#/components/responses/documentsHappyPath"
+        4XX:
+          $ref: "#/components/responses/4XX"
+  /Task:
+    get:
+      summary: "Returns FHIR Task resources"
+      operationId: get-tasks
+      description: |
+        ## Overview
+        This endpoint returns a list of tasks for completion of questionnaires from a secondary care booking system for a given patient.
+        It returns the tasks as a FHIR 'Bundle' containing FHIR 'Task' resources.
+        
+        Note that the above URL path is an example — you can use a different URL path if you prefer.
+        
+        ## Questionnaires inclusion and exclusion rules
+        The endpoint includes / excludes tasks as per the following rules:
+        - NHS in England only: Only include tasks related to appointments for care settings within the NHS in England.
+        - NHS Trusts only: Only include tasks related to appointments for acute, mental health or community care settings — not any other type.
+        - Elective care appointments only: Only include tasks related to outpatient appointments — not any other type.
+        - Information governance: Only include tasks related to appointments for care settings where you have a legal agreement in place to handle their data.
+        - Excluded patients (Trust) (SRCBR1a): Exclude tasks related to appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system).
+        - Excluded patients (PDS) (SRCBR1b): Tasks for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
+        - Excluded clinics (SRCBR2): Tasks related to appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Encounter types (SRCBR3): Only tasks related to outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator — i.e. filter hidden appointments and appointments at ghost clinics.
+        - Excluded specialities (SRCBR4): Tasks related to appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
+        - Under 16s: Exclude patients under 16.
+
+        ## Patients with no tasks
+        Where a patient has no tasks, including where tasks have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
+        response with an HTTP status of 200 and a FHIR Bundle with no tasks in it.
+
+        ## Capacity and response times
+        Your endpoint must be capable of:
+        - responding to requests within 400ms (at the 95th percentile)
+        - at a throughput of 25 transactions per second
+
+        ## Diagnostic logging
+        - All requests to the endpoint must be logged for diagnostic purposes.
+        - Log records must include the `X-Correlation ID`.
+        - Log records must be identifiable as having come from the Patient Care Aggregator.
+        - Personally identifiable and clinical information must be omitted from logs in production.
+        - Log records must be held for a minimum of 90 days.
+        - Alerts with suitable thresholds must be in place to flag error conditions
+
+        ## Error and fault responses
+        Your API must return appropriate HTTP error and fault codes. The schema for a 200 success response is detailed in this specification. However, we do not mandate any particular format for 3xx, 4xx or 5xx responses. We do ask that you include an error message in the response payload explaining clearly what went wrong. This helps us to understand and triage the issue faster. It also helps to avoid unnecessary requests to your live support team in the case where the issue is caused by a problem with the Patient Care Aggregator API.
+      tags:
+        - /FHIR/R4
+      parameters:
+        - $ref: "#/components/parameters/nhsNumber"
+        # - $ref: "#/components/parameters/xRequestId"
+        - $ref: "#/components/parameters/xCorrelationId"
+        - $ref: "#/components/parameters/nhsdIdToken"
+        # - $ref: "#/components/parameters/nhsdTargetIdentifier"       
+      responses:
+        2XX:
+          $ref: "#/components/responses/questionnaireHappyPath"
+        4XX:
+          $ref: "#/components/responses/4XX"
+components:
+  schemas:
+    Bundle:
+      description: FHIR bundle resource containing results of the request - a list of matching resources.
+      type: object
+      required:
+        - resourceType
+        - type
+        - entry
+      properties:
+        resourceType:
+          description: "FHIR resource type."
+          type: string
+          enum:
+            - "Bundle"
+        type:
+          description: Bundle type.
+          type: string
+          enum:
+            - "searchset"
+        entry:
+          description: "List of matching FHIR resources."
+          type: array
+          minItems: 0
+          items:
+            anyOf:
+              - description: An individual FHIR Appointment resource.
+                type: object
+                required:
+                  - resource
+                properties:
+                  resource:
+                    $ref: '#/components/schemas/Appointment'
+              - description: An individual FHIR DocumentReference resource.
+                type: object
+                required:
+                  - resource
+                properties:
+                  resource:
+                    $ref: '#/components/schemas/DocumentReference'
+              - description: An individual FHIR Task resource.
+                type: object
+                required:
+                  - resource
+                properties:
+                  resource:
+                    $ref: '#/components/schemas/Task'
+    Appointment:
+      description: "FHIR Appointment resource for the appointment"
+      type: object
+      required:
+        - resourceType
+        - id
+        - status
+        - description
+        - start
+        - participant
+        - extension
+        - specialty
+      properties:
+        resourceType:
+          description: "FHIR resource type."
+          type: string
+          enum:
+            - Appointment     
+        id:
+          description: "A GUID identifier for the appointment. It is preferable but not mandatory that this GUID links relationally to other resources in your Portal System database, e.g. Documents and Questionnaires."
+          type: string
+          example: "b710e648-c12e-4f66-80e2-9957a254900f"
+        extension:
+          description: "FHIR extensions for appointment priority, request status, consultation medium and deep link URL."
+          type: array
+          items:
+            anyOf: 
+              - description: "Appointment priority (optional)."
+                type: object
+                required:
+                  - url
+                  - valueCoding
+                properties:
+                  url:
+                    type: string
+                    description: URI for the type of extension - in this case an appointment priority.
+                    enum:
+                      - "https://fhir.nhs.uk/StructureDefinition/Extension-ServiceRequest-Priority"
+                  valueCoding:
+                    type: object
+                    properties:
+                      system:
+                        type: string
+                        description: Coding system used for the appointment priority.
+                        enum: 
+                          - "https://fhir.nhs.uk/CodeSystem/eRS-Priority"
+                      code:
+                        type: string
+                        description: The appointment priority code itself.
+                        enum:
+                          - 'URGENT'
+                          - 'ROUTINE'
+                          - 'TWO_WEEK_WAIT'
+              - description: "Request Status. Used if 'dumb booking' is supported. For example when a patient requests to cancel an appointment but the source system status is still booked."
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: URI for the type of extension - in this case a request status.
+                    enum:
+                      - https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-RequestStatus
+                  valueCode:
+                    type: string
+                    enum:
+                      - Pending Change 
+                      - Pending Reschedule 
+                      - Pending Cancellation 
+                      - Confirmed Attendance                                
+              - description: "Consultation medium - whether visit is face-to-face or remote (required)."
+                type: object
+                required:
+                  - url
+                  - valueCode
+                properties:
+                  url:
+                    type: string
+                    description: URI for the type of extension - in this case a consultation medium.
+                    enum:
+                      - "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium"
+                  valueCode:
+                    type: string
+                    description: The consultation medium itself.
+                    enum:
+                      - "FACE_TO_FACE"
+                      - "VIRTUAL"
+              - description: "Deep link URL to appointment in portal system (required)."
+                type: object
+                required:
+                  - url
+                  - valueUrl
+                properties:
+                  url:
+                    type: string
+                    description: URI for the type of extension - in this case a deep link URL.
+                    enum:
+                      - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
+                  valueUrl:
+                    type: string
+                    description: The deep link URL itself.
+                    example: "https://wayfinder.example-pep.com/fhir/Appointment/770DA42C-C8F2-A5F7-6185-40EE9409B494"
+        identifier:
+          type: array
+          items:
+            anyOf:
+              - description: "The ID of the Appointment in its source PAS system database (optional)"                        
+                type: object
+                properties:                               
+                  system:
+                    description: "A base URI for the specific instance/implementation of the source system the appointment came from. Typically this will be one URI per resource type per NHS Trust."
+                    type: string
+                    example: "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Appointment"
+                  value:
+                    description: "The ID of the Appointment in its source database (e.g. a Trust PAS system)"
+                    type: string
+                    example: "4817508"
+              - description: "The ID of the Appointment in your Patient Portal database. (optional)"
+                type: object
+                properties:                       
+                  system:
+                    description: "The base URI for Appointments in your Patient Portal"
+                    type: string
+                    example: "https://prod.myportal.com/fhir/Appointment"
+                  value:
+                    description: "The ID of the Appointment in your Patient Portal database"
+                    type: string
+                    example: "893457"
+        specialty:
+          type: array
+          minItems: 1
+          maxItems: 1
+          description: "NHS Specialty (required)"
+          items:
+            oneOf:
+              - type: object
+                properties:
+                  coding:
+                    type: array
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            system: 
+                              type: string
+                              description: Coding system for the specialty code.
+                              enum:
+                                - "https://fhir.nhs.uk/STU3/CodeSystem/Specialty-1"
+                            code:
+                              description: "Three-digit NHS specialty code. Equivalent to NHS Data Dictionary Treatment Function Code"
+                              type: string
+                              example: "330"
+                            display:
+                              description: "NHS specialty name."
+                              type: string
+                              example: "DERMATOLOGY"
+        status:
+          description: "The actual appointment booking status as reported by the source Trust PAS system (required)"
+          type: string
+          enum:
+            - booked
+            - fulfilled
+            - cancelled
+            - noshow
+        description:
+          description: "The patient-friendly standardised description/title of the appointment that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface. This should be structured {Specialty name}, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function.  Note the values presented within this field are required to be be provided for Data Quality Assurance. (required) (warning) For pre-assessments, this should be explicitly 'Pre-assessment appointment'"
+          type: string
+          example: "Orthopaedics Appointment"
+        appointmentType:
+          description: "Only to be provided for planned inpatient attendances and community appointments e.g. a Day Case procedure. (warning) If an EncounterClass is not provided it is assumed to be a Outpatient appointment."
+          type: object
+          properties:
+            valueCoding:
+              description: "An EncounterClass coding"
+              type: array
+              items:
+                anyOf:
+                  - description: "Values as defined in https://terminology.hl7.org/ValueSet-encounter-class.html Please note: ambulatory (AMB) is optional. If an Encounter Class is not provided then ambulatory is assumed. - observation encounter (OBSENC)  is out of scope of the programme. - emergency (EMER)  is out of scope of the programme. - virtual (VR), the Consultation Medium extension is expected to be populated instead."
+                    type: object
+                    properties:
+                      system:
+                        type: string
+                        enum:
+                          - "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+                      value:
+                        type: string
+                        enum:
+                          - "IMP"
+                          - "AMB"
+                          - "HH"
+                      display:
+                        type: string
+                        enum:
+                          - "inpatient encounter"
+                          - "ambulatory"
+                          - "home health"
+        start:
+          description: "Start date/time of appointment in a UTC format (required)"
+          type: string
+          example: "2021-06-13T12:30:00+00:00"
+        end:
+          description: "End date/time of appointment in a UTC format. Required for inpatient appointment, see EncounterClass in reasonCode above. This should be derived from the TCI date/time and the expected length of stay. The Intended Management could also be used. (warning)  Where an end date extends beyond the start date it will be assumed to be a inpatient. when the end date is the same date as the start date it will be assumed to be a day case."
+          type: string
+          example: "2021-06-13T12:45:00+00:00"
+        slot:
+          description: "Unique Slot Reference Number and source PAS database slot ID (optional)"
+          type: array
+          items: 
+            anyOf:
+              - description: "Unique Slot Reference Number, a unique ID for an appointment slot which is allocated by e-RS during slot polling."
+                type: object
+                properties:
+                  identifier:
+                    type: object
+                    properties:
+                      system:
+                        type: string
+                        enum:
+                          - "https://fhir.nhs.uk/Id/USRN"
+                      value:
+                        type: string
+                        example: "000000000000"
+              - description: "Source PAS database slot ID for the slot into which the appointment was booked."
+                type: object
+                properties:
+                  identifier:
+                    type: object
+                    properties:
+                      system:
+                        type: string
+                        example: "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/Slot"
+                      value:
+                        type: string
+                        example: "65468756"
+        basedOn:
+          type: array
+          description: "The ReferralID, UBRN or PathwayID to which this appointment is linked (optional)"                    
+          items:
+            type: object
+            properties:
+              identifier:
+                type: array
+                items: 
+                  anyOf:
+                    - description: "UBRN"
+                      type: object
+                      properties:
+                        system:
+                          type: string
+                          enum:
+                            - "https://fhir.nhs.uk/Id/UBRN"
+                        value:
+                          type: string
+                          example: "000000000001"
+                    - description: "Referral ID"
+                      type: object
+                      properties:
+                        system:
+                          type: string
+                          example: "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/ServiceRequest"
+                        value:
+                          type: string
+                          example: "265413"
+                    - description: "Pathway ID"
+                      type: object
+                      properties:
+                        system: 
+                          type: string
+                          description: Identifier system for a Care Pathway
+                          enum:
+                            - "https://fhir.nhs.uk/Id/PathwayId"
+                        value:
+                          type: string
+                          description: "Care pathway Identifier"
+                          example: "RBH5644312231"
+        participant:
+          type: array
+          description: Participants in the appointment, including people and organisations / services (only ODS Code is required).
+          items:
+            anyOf:
+              - description: 'Patient. Only populated if the patient is in attendance, i.e. not for hidden appointments.'
+                type: object
+                required:
+                  - actor
+                  - status
+                properties:
+                  actor:
+                    type: object
+                    required:
+                      - type
+                      - identifier
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - "Patient"
+                      identifier:
+                        type: object
+                        required:
+                          - system
+                          - value
+                        properties:
+                          system:
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/Id/nhs-number"
+                          value:
+                            type: string
+                            example: "9000000009"
+                  status:
+                    type: string
+                    enum:
+                      - accepted
+              - description: 'Attending clinician (optional).'
+                type: object
+                required:
+                  - status
+                properties:
+                  actor:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - "Practitioner"
+                      display:
+                        type: string
+                        example: "Dr. John Doe"
+                      identifier:
+                        type: object
+                        properties:
+                          system:
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/Id/sds-user-id"
+                          value:
+                            type: string
+                            example: "999999999"
+                  status:
+                    type: string
+                    enum:
+                      - accepted
+              - description: 'Portal healthcare service (optional).'       
+                type: object
+                required:
+                  - status
+                properties:
+                  actor:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - "HealthcareService"
+                      display:
+                        type: string
+                        example: "Dermatology Check-up"
+                  status:
+                    type: string
+                    enum:
+                      - accepted                                  
+              - description: 'Source system healthcare service (optional).'
+                type: object
+                required:
+                  - status
+                properties:
+                  actor:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - "HealthcareService"
+                      display:
+                        type: string
+                        example: "Dematology New Appointment"
+                      identifier:
+                        type: object
+                        properties:
+                          system:
+                            type: string
+                            example: "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/HealthcareService"
+                          value:
+                            type: string
+                            example: "4817508"
+                  status:
+                    type: string
+                    enum:
+                      - accepted
+              - description: 'e-RS Service ID (optional).'                     
+                type: object
+                required:
+                  - status
+                properties:
+                  actor:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - "HealthcareService"
+                      identifier:
+                        type: object
+                        properties:
+                          system:
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/Id/ers-service"
+                          value:
+                            type: string
+                            example: "4817508"
+                      display:
+                        type: string
+                        example: "General Dermatology - Main OPD - Barnsley NHS Foundation Trust - RFF"
+                  status:
+                    type: string
+                    enum:
+                      - accepted                                                                 
+              - description: 'ODS code for the organisation providing the appointment (required).'
+                type: object
+                required:
+                  - status
+                  - actor
+                properties:
+                  actor:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - "Location"
+                      identifier:
+                        type: object
+                        properties:
+                          system:
+                            type: string
+                            enum:
+                              - "https://fhir.nhs.uk/Id/ods-organization-code"
+                          value:
+                            type: string
+                            example: "RFF"
+                      display:
+                        type: string
+                        example: "Barnsley Hospital NHS Foundation Trust"
+                  status:
+                    type: string
+                    enum:
+                      - accepted     
+              - description: 'Appointment location (optional).'
+                type: object
+                required:
+                  - status
+                properties:
+                  actor:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - "Location"
+                      display:
+                        description: "The patient-friendly standardised location of the appointment that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface and is only required for physical appointment and not included for virtual appointments. Note the values presented within this field are required to be be provided for Data Quality Assurance. (required for physical appointments only)"
+                        type: string
+                        example: "Grantham Hospital Outpatients"
+                  status:
+                    type: string
+                    enum:
+                      - accepted
+    DocumentReference:
+      description: "FHIR DocumentReference resource for the document"
+      type: object
+      required: 
+        - resourceType
+        - id
+        - status
+        - subject
+        - period
+        - date
+        - custodian
+        - description
+        - content
+      properties:
+        resourceType:
+          description: "FHIR resource type."
+          type: string
+          enum:
+            - DocumentReference     
+        id:
+          description: "A GUID identifier for the document reference."
+          type: string
+          example: "b710e648-c12e-4f66-80e2-9957a254900f"
+        extension:
+          description: "FHIR extensions for document read receipts"
+          type: array
+          items:
+            anyOf: 
+              - description: "Document Read Receipt - whether the document has been seen, read or is unread."
+                type: object
+                required:
+                  - url
+                  - valueCode
+                properties:
+                  url:
+                    type: string
+                    description: URI for the type of extension - in this case a document read receipt.
+                    enum:
+                      - "https://fhir.nhs.uk/StructureDefinition/Extension-Document-ReadReceipt"
+                  valueCode:
+                    type: string
+                    description: The document read receipt.
+                    enum:
+                      - "Unread"
+                      - "Seen"
+                      - "Read"
+        identifier:
+          type: array
+          items:
+            anyOf:
+              - description: "The ID of the Document Reference in its source PAS system database"                        
+                type: object
+                required:
+                  - system
+                  - value
+                properties:                               
+                  system:
+                    description: "A base URI for the specific instance/implementation of the source system the document reference came from. Typically this will be one URI per resource type per NHS Trust."
+                    type: string
+                    example: "https://fhir.myclinicalsystem.com/r4/ec2458f2-1e24-41c8-b71b-0e701af7583d/DocumentReference"
+                  value:
+                    description: "The ID of the Document Reference in its source database (e.g. a Trust PAS system)"
+                    type: string
+                    example: "4817508"
+              - description: "The ID of the Document Reference in your Patient Portal database."
+                type: object
+                required:
+                  - system
+                  - value
+                properties:                       
+                  system:
+                    description: "The base URI for Document References in your Patient Portal"
+                    type: string
+                    example: "https://prod.myportal.com/fhir/DocumentReference"
+                  value:
+                    description: "The ID of the Document Reference in your Patient Portal database"
+                    type: string
+                    example: "f92c0f69-ff45-429f-8cec-098a9edfa5d9"
+        basedOn:
+          description: "Care Pathway which the Document Reference relates to"
+          type: array
+          minItems: 0
+          maxItems: 1
+          items:
+            oneOf:
+              - type: object
+                required:
+                  - type
+                  - identifier
+                properties:
+                  type:
+                    description: Resource for which the identifier relates.
+                    type: string
+                    enum:
+                      - "CarePlan"
+                  identifier:
+                    type: object
+                    required:
+                      - system
+                      - value
+                    properties:
+                      system: 
+                        type: string
+                        description: Identifier system for a Care Pathway
+                        enum:
+                          - "https://fhir.nhs.uk/Id/PathwayId"
+                      value:
+                        type: string
+                        description: "Care pathway Identifier"
+                        example: "RBH5644312231"
+        status:
+          description: "The status of the DocumentReferences as per the source system. We would only expect current documents to be returned to the Aggregator."
+          type: string
+          enum:
+            - current
+        docStatus:
+          description: "The status of the Document as per the source system."
+          type: string
+          enum:
+            - final
+            - amended
+            - corrected
+            - appended
+        type:
+          description: "Key metadata element describing the document that describes the exact type of document."
+          type: string
+        category:
+          description: "Key metadata element describing the the category or classification of the document"
+          type: array
+          items:
+            type: object
+        subject:
+          description: "Patient whom the document relates to."
+          type: object
+          required:
+            - type
+            - identifier
+          properties:
+            type:
+              description: "Resource for which the identifier relates."
+              type: string
+              enum:
+                - "Patient"
+            identifier:
+              type: object
+              required:
+                - system
+                - value
+              properties:
+                system:
+                  description: Identifier system for a Patient
+                  type: string
+                  example: "https://fhir.nhs.uk/Id/nhs-number"
+                value:
+                  description: "The NHS Number for the Patient"
+                  type: string
+                  example: "9123456789"
+        context:
+          type: object
+          required:
+            - related
+          properties:
+            related:
+              type: array
+              description: "Appointment reference to the Appointment(s) this Document relates to."
+              items:
+                type: object
+                required:
+                  - type
+                  - references
+                properties:
+                  type:
+                    type: string
+                    description: Resource of the referenced appointment.
+                    enum:
+                      - "Appointment"
+                  references:
+                    type: string
+                    description: Reference to the linked Appointment contained in the Appointment.Id 
+                    example: https://my.portal.com/fhir/R4/Appointment/0448E4C8-DD12-4BAD-9B59-6091C9484701
+        period:
+          description: "The time period over which the service that is described by the document was provided."
+          type: object
+          required:
+            - start
+          properties:
+            start:
+              type: string
+              description: "Document effective date/time in a UTC format (required)"
+              example: "2021-06-13T12:30:00+00:00"
+        date:
+          description: "When this document reference was created in a UTC format (required)"
+          type: string
+          example: "2021-06-13T12:30:00+00:00"
+        custodian:
+          description: "Organization which maintains the document"
+          type: object
+          required:
+            - type
+            - identifier
+            - display
+          properties:
+            type:
+              type: string
+              enum:
+                - "Organization"
+            identifier:
+              type: object
+              required:
+                - system
+                - value
+              properties:
+                system:
+                  type: string
+                  enum:
+                    - "https://fhir.nhs.uk/Id/ods-organization-code"
+                value:
+                  type: string
+                  example: "RFF"
+            display:
+              type: string
+              example: Barnsley Hospital NHS Foundation Trust
+        description:
+          description: "The patient-friendly standardised description/title of the document that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface. This should be structured {Specialty name} {Document type}, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function. Note the values presented within this field are required to be provided for Data Quality Assurance. (required)"
+          type: string
+          example: Dermatology cancellation letter
+        content:
+          description: "Document referenced"
+          type: array
+          items:
+            type: object
+            required:
+              - attachment
+            properties:
+              attachment:
+                type: object
+                required:
+                  - contentType
+                  - url
+                description: Where to access the document
+                properties:
+                  contentType:
+                    type: string
+                    description: Mime type of the content, with charset etc.
+                    enum:
+                      - "application/pdf"
+                  url:
+                    type: string
+                    description: Portal provider deeplink URL
+                    example: "https://my.portal.com/Document/b710e648-c12e-4f66-80e2-9957a254900f"
+    Task:
+      description: "FHIR TASK resource for the questionnaire"
+      type: object
+      required: 
+        - resourceType
+        - id
+        - status
+        - intent
+        - description
+        - for
+        - authored
+        - reasonReference
+        - owner
+        - reasonCode
+      properties:
+        resourceType:
+          description: "FHIR resource type."
+          type: string
+          enum:
+            - Task     
+        id:
+          description: "Globally unique identifier for the Task. To be persisted over time."
+          type: string
+          example: "3a146c43-2b21-44e9-95bc-6f4849e504c8"
+        identifier:
+          type: object
+          description: "The ID of the task in your Patient Portal database. (optional)"
+          required:
+            - system
+            - value
+          properties:                      
+            system:
+              description: "Local (portal) system"
+              type: string
+              example: "https://my.portal.com/fhir/Questionnaire?Id={system|value}"
+            value:
+              description: "Local (portal) system identifier"
+              type: string
+              example: "3a146c43-2b21-44e9-95bc-6f4849e504c8"
+        basedOn:
+          description: "CarePlan reference to the Pathway this questionnaire relates to. (optional)"
+          type: array
+          minItems: 0
+          maxItems: 1
+          items:
+            oneOf:
+              - type: object
+                required:
+                  - type
+                  - identifier
+                properties:
+                  type:
+                    description: Resource for which the identifier relates.
+                    type: string
+                    enum:
+                      - "CarePlan"
+                  identifier:
+                    type: object
+                    description: An identifier
+                    required:
+                      - system
+                      - value
+                    properties:
+                      system: 
+                        type: string
+                        description: Identifier system for a Care Pathway
+                        enum:
+                          - "https://fhir.nhs.uk/Id/PathwayId"
+                      value:
+                        type: string
+                        description: "Care pathway Identifier"
+                        example: "RBH5644312231"
+        status:
+          description: "Status of the Task for the completion of the Questionnaire. See: https://build.fhir.org/valueset-task-status.html"
+          type: string
+          enum:
+            - requested
+            - cancelled
+            - in-progress
+            - completed
+        intent: 
+          description: "Hardcoded to plan. See: https://build.fhir.org/valueset-task-intent.html"
+          type: string
+          enum:
+            - plan
+        description:
+          description: "The patient-friendly standardised description/title of the questionnaire that would be appropriate to display to a patient. Note, this value should match that displayed in your own user interface. This should be structured {Specialty name} {Questionnaire type}, but does not have to adhere strictly to the NHS Data Dictionary lists for Specialty/Treatment Function. Note the values presented within this field are required to be provided for Data Quality Assurance. (required)"
+          type: string
+          example: Dermatology pre-assessment questionnaire
+        focus:
+          type: object
+          description: Appointment reference to the appointments this questionnaire relates to. (Optional)
+          required:
+            - type
+            - reference
+          properties:
+            type:
+              type: string
+              description: Appointment FHIR Resource
+              enum:
+                - "Appointment"
+            reference:
+              type: string
+              description: absolute URL to Appointments
+              example: https://my.portal.com/fhir/R4/Appointment/ec2458f2-1e24-41c8-b71b-0e701af7583d
+        for:
+          type: object
+          description: Patient whom the questionnaire relates to.
+          required:
+            - type
+            - identifier
+          properties:
+            type:
+              type: string
+              description: Patient FHIR resource
+              enum:
+                - "Patient"
+            identifier:
+              type: object
+              required:
+                - system
+                - value
+              properties:                      
+                system:
+                  description: "URI to identifier NHS Numbers"
+                  type: string
+                  enum: 
+                    - "https://fhir.nhs.uk/Id/nhs-number"
+                value:
+                  description: "The patients NHS Number which the Task to complete a questionnaire is for."
+                  type: string
+                  example: "9123456789"
+        authored:
+          type: string
+          description: Date the questionnaire was first made available to a patient in a UTC format (required)
+          example: "2021-06-13T12:30:00+00:00"
+        reasonReference:
+          type: object
+          description: Reference to the Questionnaire being requested.
+          required:
+            - type
+            - reference
+          properties:
+            type: 
+              type: string
+              description: Questionnaire  FHIR Resource
+              enum:
+                - "Questionnaire"
+            reference: 
+              type: string
+              description: Portal provider URL of the Questionnaire being answered
+              example: https://my.portal.com/Questionnaire/3a146c43-2b21-44e9-95bc-6f4849e504c8
+        owner:
+          type: object
+          description: Organization responsible for the patients care
+          required:
+            - type
+            - identifier
+          properties:
+            type:
+              type: string
+              description: Organization FHIR resource
+              enum:
+                - "Organization"
+            identifier:
+              type: object
+              required:
+                - system
+                - value
+              properties:
+                system: 
+                  type: string
+                  description: URI to identifier NHS Trust Organisations
+                  enum:
+                    - "https://fhir.nhs.uk/Id/ods-organization-code"
+                value:
+                  type: string
+                  description: "NHS Trust Organisation (ODS) code"
+                  example: "RFF"
+            display:
+              type: string
+              example: Barnsley Hospital NHS Foundation Trust
+        reasonCode:
+          type: object
+          description: Reason for the Task, the request for a patient to complete a Questionnaire.]
+          required:
+            - coding
+            - text
+          properties:
+            coding:
+              type: object
+              description: Array of Coding for the type of questionnaire to be completed.
+              required:
+                - system
+                - code
+                - display
+              properties:
+                system:
+                  type: string
+                  description: URI to identifier Questionnaire types
+                  enum:
+                    - https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
+                code:
+                  type: string
+                  description: Questionnaire type code
+                  example: CONS-Survey
+                display:
+                  type: string
+                  description: Questionnaire type
+                  example: Consultation Survey
+            text:
+              type: string
+              description: Questionnaire type
+              example: Pre-consultation Survey
+    OperationOutcome:
+      description: A FHIR `OperationOutcome` resource containing details of the issues that have occurred.
+      type: object
+      required:
+        - resourceType
+        - issue
+      properties:
+        resourceType:
+          description: FHIR resource type.
+          type: string
+          minLength: 1
+          enum:
+            - OperationOutcome
+        id:
+          type: string
+        issue:
+          description: An array of issues that occurred in processing the request.
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            description: An issue that occurred.
+            type: object
+            required:
+              - severity
+              - code
+            properties:
+              severity:
+                description: Severity of the issue.
+                type: string
+                minLength: 1
+                enum:
+                  - fatal
+                  - error
+                  - warning
+                  - information
+              code:
+                description: Error code for the issue. See [http://hl7.org/fhir/issue-type](http://hl7.org/fhir/issue-type)
+                type: string
+                minLength: 1
+              diagnostics:
+                description: Detailed diagnostic information for the issue.
+                type: string
+                minLength: 1
+                example: Missing or invalid OAuth 2.0 bearer token in request
+      externalDocs:
+        description: FHIR UK Core OperationOutcome (R4) Resource Profile
+        url: https://hl7.org/fhir/R4/operationoutcome.html
+  parameters:
+    xRequestId:
+      name: X-Request-ID
+      in: header
+      required: false
+      description: |
+        A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+
+        Must be a universally unique identifier (UUID) (ideally version 4).
+
+        Not mirrored back in a response header (we might change this).
+
+        If you re-send a failed request, use the same value in this header.
+      schema:
+        type: string
+        format: uuid
+        example: 8b16ccfa-8e46-4ba5-bd04-ba9371c69db9
+    xCorrelationId:
+      name: X-Correlation-ID
+      in: header
+      required: true
+      description: An identifier which is used to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
+      schema:
+        type: string
+        format: uuid
+        example: c93e2449-a2ef-4476-ad15-13491036be22
+    nhsNumber:
+      name: patient:identifier
+      in: query
+      description: |
+        The patient's NHS number.
+        Expressed as `<type>|<value>` where `<type>` must be `https://fhir.nhs.uk/Id/nhs-number` and `<value>` must be a [valid NHS number](https://www.datadictionary.nhs.uk/attributes/nhs_number.html).
+      required: true
+      schema:
+        type: string
+        pattern: ^https:\/\/fhir\.nhs\.uk\/Id\/nhs-number\|[1-9][0-9]{9}$
+        example: https://fhir.nhs.uk/Id/nhs-number|9000000009
+    nhsdIdToken:
+      name: NHSD-ID-Token
+      in: header
+      required: true
+      description: |
+            An NHS login ID token for the end user patient, passed as a header called NHSD-ID-Token token.
+            This is generated when the user logs into NHS App via NHS login as passed to this API for validation and signature verification.
+            You must verify this token with NHS login and confirm that it is for the right patient and that the patient is authenticated to level P9.
+            For more details, see [NHS login for partners and developers](https://digital.nhs.uk/services/nhs-login/nhs-login-for-partners-and-developers).
+      schema:
+        type: string
+        format: byte
+        example: eyJzdWIiOiI4MmEyOTZkMC03NTJjLTRjZjEtOWEwMC03MzgwNmJiMWY4MzMiLCJhdWQiOiJuaHMtb25saW5lIiwia2lkIjoiZjYwZWI0NmZmOGFiZjBiZjllOTE3ZWVlNjA4NmM1ZmE0YTE2MmE1ZCIsImlzcyI6Imh0dHBzOi8vYXV0aC5hb3Muc2lnbmluLm5ocy51ayIsInR5cCI6IkpXVCIsImV4cCI6MTY1NzEwMTY4OCwiaWF0IjoxNjU3MDk4MDg4LCJhbGciOiJSUzUxMiIsImp0aSI6ImZjMzYyZGY0LWRlOWMtNDY1OS1hM2RmLWVmMDEwMDAwZjQ0MCJ9.eyJzdWIiOiI4MmEyOTZkMC03NTJjLTRjZjEtOWEwMC03MzgwNmJiMWY4MzMiLCJiaXJ0aGRhdGUiOiIxOTg1LTA5LTA3IiwibmhzX251bWJlciI6Ijk3MjY3NzkwNTciLCJpc3MiOiJodHRwczovL2F1dGguYW9zLnNpZ25pbi5uaHMudWsiLCJ2dG0iOiJodHRwczovL2F1dGguYW9zLnNpZ25pbi5uaHMudWsvdHJ1c3RtYXJrL2F1dGguYW9zLnNpZ25pbi5uaHMudWsiLCJhdWQiOiJuaHMtb25saW5lIiwiaWRfc3RhdHVzIjoidmVyaWZpZWQiLCJ0b2tlbl91c2UiOiJpZCIsInN1cm5hbWUiOiJDSE9OIiwiYXV0aF90aW1lIjoxNjU3MDk4MDgxLCJ2b3QiOiJQOS5DcC5DZCIsImlkZW50aXR5X3Byb29maW5nX2xldmVsIjoiUDkiLCJleHAiOjE2NTcxMDE2ODgsImlhdCI6MTY1NzA5ODA4OCwiZmFtaWx5X25hbWUiOiJDSE9OIiwianRpIjoiZmMzNjJkZjQtZGU5Yy00NjU5LWEzZGYtZWYwMTAwMDBmNDQwIn0.fEar_s6EaRWj1oWW1Kb_ekYFH2zPOjH4GdixoXKxvc7H7BEAnBt3k9FUMVIg9UD5i-4iu7hUy5p_0BbFZL5mPFFAnW67lAZV2D8FOcHDNunDU64ov5nNsBubHGOotRpExgHBxCF31eHonzzE8g2A7j4mmZJxlJ0MX-qCuF3CRiAc1apI_2ugPEDTFkX53YBNtDg2kDUVDTthCDdg1ylOiHunCurCXMaJSPmOGsac_ltRgYM_fs64MXoLmSNXUvxWa18N4689vipQ9hG4VASQQvPYMkgiynv6oX8ME9RPbBdmlTceeuEXiwLrvXtrU4xZkU3Js1x9DNTkZ96Fg9-yOQ
+    nhsdTargetIdentifier:
+      name: NHSD-Target-Identifier
+      in: header
+      required: true
+      description: |
+        A unique identifier for this API, as required by the Booking and Referral Standard (BaRS). Specifically, it is a Base64 encoding of:
+
+        `{ "system": "urn:ietf:rfc:3986", "value": "db71698b-cd7c-4dd5-95c4-0aa9776595f5" }`
+
+        (where the GUID `db71698b-cd7c-4dd5-95c4-0aa9776595f5` is the unique identifier for this API)
+      schema:
+        type: string
+        format: byte
+        example: ewrCoCDCoCAic3lzdGVtIjogInVybjppZXRmOnJmYzozOTg2IiwKwqAgwqAgInZhbHVlIjogImRiNzE2OThiLWNkN2MtNGRkNS05NWM0LTBhYTk3NzY1OTVmNSIKfQ==
+  securitySchemes:
+    oAuth2ClientCredentials:
+      type: "oauth2"
+      description: "See https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis"
+      flows:
+        clientCredentials:
+          tokenUrl: "https://int.api.service.nhs.uk/oauth2/token"
+          scopes: {}
+  responses:
+    appointmentsHappyPath:
+      description: A successful request.
+      headers:
+        #X-Request-ID:
+        #  $ref: "#/components/headers/xRequestId"
+        X-Correlation-ID:
+          $ref: "#/components/headers/xCorrelationId"
+      content:
+        application/fhir+json:
+          schema:
+            $ref: "#/components/schemas/Appointment"
+          examples:
+            emptyBundle:
+              $ref: "#/components/examples/emptyBundle"
+            outpatientAppointment:
+              $ref: "#/components/examples/outpatientAppointment"
+            inpatientAdmission:
+              $ref: "#/components/examples/inpatientAdmission"
+    documentsHappyPath:
+      description: A successful request.
+      headers:
+        #X-Request-ID:
+        #  $ref: "#/components/headers/xRequestId"
+        X-Correlation-ID:
+          $ref: "#/components/headers/xCorrelationId"
+      content:
+        application/fhir+json:
+          schema:
+            $ref: "#/components/schemas/DocumentReference"
+          examples:
+            emptyBundle:
+              $ref: "#/components/examples/emptyBundle"
+            document:
+              $ref: "#/components/examples/document"
+    questionnaireHappyPath:
+      description: A successful request.
+      headers:
+        #X-Request-ID:
+        #  $ref: "#/components/headers/xRequestId"
+        X-Correlation-ID:
+          $ref: "#/components/headers/xCorrelationId"
+      content:
+        application/fhir+json:
+          schema:
+            $ref: "#/components/schemas/Task"
+          examples:
+            emptyBundle:
+              $ref: "#/components/examples/emptyBundle"
+            questionnaire:
+              $ref: "#/components/examples/questionnaire"
+    4XX:
+      description: |
+        When the service is unable to serve a successful response a FHIR `OperationOutcome` resource should be returned with the relevant HTTP status code defined as follows:
+  
+        | HTTP status | Error code          | Description                                                         |
+        | ----------- | ------------------- | ------------------------------------------------------------------- |
+        | 400         | `exception`         | Missing or invalid NHS number in request                            |
+        | 401         | `processing`        | Missing or invalid OAuth 2.0 bearer token in request                |
+        | 401         | `processing`        | NHS number in request doesn't match NHS number in NHS login account |
+        | 403         | `forbidden`         | Patient is under 16 years of age                                    |
+        | 404         | `not-found`         | Invalid value in `NHSD-Target-Identifier` header                    |
+        | 429         | `TOO_MANY_REQUESTS` | You have exceeded your application's [rate limit](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits). |
+  
+        For details see the `diagnostics` field.
+      headers:
+        #X-Request-ID:
+        #  $ref: "#/components/headers/xRequestId"
+        X-Correlation-ID:
+          $ref: "#/components/headers/xCorrelationId"
+      content:
+        application/fhir+json:
+          schema:
+            $ref: "#/components/schemas/OperationOutcome"
+          examples:
+            missingNhsNumber:
+              $ref: "#/components/examples/missingNhsNumber"
+            invalidNhsNumber:
+              $ref: "#/components/examples/invalidNhsNumber"
+            invalidAuthToken:
+              $ref: "#/components/examples/invalidAuthToken"
+            mismatchNhsNumber:
+              $ref: "#/components/examples/mismatchNhsNumber"
+            under16:
+              $ref: "#/components/examples/under16"
+            #missingNhsdTargetIdentifier:
+            #  $ref: "#/components/examples/missingNhsdTargetIdentifier"
+            rateLimit:
+              $ref: "#/components/examples/rateLimit"
+    5XX:
+      description: |
+        When the service is unable to serve a successful response a FHIR `OperationOutcome` resource should be returned with the relevant HTTP status code defined as follows:
+  
+        | HTTP status | Error code          | Description                                                         |
+        | ----------- | ------------------- | ------------------------------------------------------------------- |
+        | 504         | `exception`         | Gateway Timeout                                                     |
+        
+        For details see the `diagnostics` field.
+      headers:
+        #X-Request-ID:
+        #  $ref: "#/components/headers/xRequestId"
+        X-Correlation-ID:
+          $ref: "#/components/headers/xCorrelationId"
+      content:
+        application/fhir+json:
+          schema:
+            $ref: "#/components/schemas/OperationOutcome"
+          examples:
+            gatewayTimeout:
+              $ref: "#/components/examples/gatewayTimeout"
+  headers:
+    xRequestId:
+      schema:
+        type: string
+        format: uuid
+        example: 8b16ccfa-8e46-4ba5-bd04-ba9371c69db9
+      description: Request parameter value echoed back (when provided)
+    xCorrelationId:
+      schema:
+        type: string
+        format: uuid
+        example: c93e2449-a2ef-4476-ad15-13491036be22
+      description: Request parameter value echoed back (when provided)
+  examples:
+    emptyBundle:
+      summary: 200 Empty bundle / no activity
+      description: A response where no matching resources where found for the provided search parameters.
+      value:
+        resourceType: Bundle
+        id: c93e2449-a2ef-4476-ad15-13491036be22
+        type: searchset
+        total: 0
+    outpatientAppointment:
+      summary: 200 Example Patient with a Outpatient Appointment
+      value:
+        $ref: "components/examples/GetAppointmentResponseHappyPath.json"
+    inpatientAdmission:
+      summary: 200 Example Patient with a Inpatient Admission and a pre assessment appointment
+      value:
+        $ref: "components/examples/GetInpatientAdmissionResponseHappyPath.json"
+    document:
+      summary: 200 Example Patient with a Document
+      value:
+        $ref: "components/examples/GetDocumentReferencesResponseHappyPath.json"
+    questionnaire:
+      summary: 200 Example Patient with a Questionnaire
+      value:
+        $ref: "components/examples/GetTasksResponseHappyPath.json"
+    missingNhsNumber:
+      summary: 400 Missing patient:identifier search parameter
+      description: No patient:identifier as a search parameter.
+      value:
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: exception
+            diagnostics: '"patient:identifier" is required'
+    invalidNhsNumber:
+      summary: 400 Invalid patient:identifier search parameter
+      description: "The patient:identifier is required to match the following regex pattern: /^https://fhir.nhs.uk/Id/nhs-number|[0-9]*$/"
+      value:
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: exception
+            diagnostics: '"patient:identifier" with value "https://fhir.nhs.uk/Id/nhs-number" fails to match the required pattern: /^https://fhir.nhs.uk/Id/nhs-number|[0-9]*$/'
+    mismatchNhsNumber:
+      summary: 401 NHS number in request doesn't match NHS number in NHS login token
+      value: 
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: exception
+            diagnostics: '"patient:identifier" with value "https://fhir.nhs.uk/Id/nhs-number|9000000001" fails to match the required NHS login token subject 9000000009'
+    invalidAuthToken:
+      summary: 401 Missing or invalid OAuth 2.0 bearer token in request
+      description: Failed to complate verification of the authentication. 
+      value:
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: forbidden
+            details:
+              coding:
+                - system: https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode
+                  version: "1"
+                  code: ACCESS_DENIED
+                  display: Invalid access token
+    under16:
+      summary: 403 Patient is under 16 years of age
+      description: The NHS Login token containing the patients birthdate is compared to the system date/time. When the patient is under 16 years old the following error should be returned
+      value:
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: forbidden
+            diagnostics: UNDER_16_DENIED
+    missingNhsdTargetIdentifier:
+      summary: 404 Invalid value in NHSD-Target-Identifier header
+      description: |
+        The NHSD-Target-Identifier request header should contain a base64 encoded identifier of the Target system plus a fixed value i.e.:
+        ```json
+        {
+          "system": "urn:ietf:rfc:3986"
+          "value": "db71698b-cd7c-4dd5-95c4-0aa9776595f5"
+        }
+        ```
+        
+        Which encodes to: `ewoKwqAgwqAgInN5c3RlbSI6ICJ1cm46aWV0ZjpyZmM6Mzk4NiIKCsKgIMKgICJ2YWx1ZSI6ICJkYjcxNjk4Yi1jZDdjLTRkZDUtOTVjNC0wYWE5Nzc2NTk1ZjUiCgp9`
+
+        If the NHSD-Target-Identifier does not equal the above then a HTTP 404 error should be returned. The OperationOutcome returned will include an issue.
+      value:
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: not-found
+            diagnostics: NOT_FOUND
+    rateLimit:
+      summary: 429 Too Many Requests
+      description: HTTP Status 429 'Too Many Requests' response at 25 TPS (transactions per second).
+      value:
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: exception
+            diagnostics: 'Too Many Requests'
+    gatewayTimeout:
+      summary: HTTP Status 504 - Gateway Timeout
+      description: HTTP Status 504 'Gateway Timeout' response after 9,000 ms have expired.
+      value:
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: exception
+            diagnostics: 'Gateway Timeout'
+security:
+  - oAuth2ClientCredentials: []
+tags:
+  - name: /FHIR/R4
+    description: Producer FHIR API Standards
