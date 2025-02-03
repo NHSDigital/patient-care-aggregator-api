@@ -70,11 +70,11 @@ apigee:
           - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
     specs:
       - name: {{ NAME }}
-        path: {{ SERVICE_NAME }}.json
-      - name: {{ NAME }}-appointment-standard
-        path: {{ SERVICE_NAME }}-appointment-standard.json
-      - name: {{ NAME }}-record-service
-        path: {{ SERVICE_NAME }}-record-service.json
+        path: {{ SERVICE_NAME }}-consumer-api.json
+      - name: {{ NAME }}-producer-api-standards
+        path: {{ SERVICE_NAME }}-producer-api-standards.json
+      - name: {{ NAME }}-record-service-api
+        path: {{ SERVICE_NAME }}-record-service-api.json
     api_catalog:
       - edgeAPIProductName: {{ NAME }}
         anonAllowed: true
@@ -129,11 +129,11 @@ apigee:
           - 'urn:nhsd:apim:user-nhs-login:P9:{{ SERVICE_NAME }}'
     specs:
       - name: {{ NAME }}
-        path: {{ SERVICE_NAME }}.json
-      - name: {{ NAME }}-appointment-standard
-        path: {{ SERVICE_NAME }}-appointment-standard.json
-      - name: {{ NAME }}-record-service
-        path: {{ SERVICE_NAME }}-record-service.json
+        path: {{ SERVICE_NAME }}-consumer-api.json
+      - name: {{ NAME }}-producer-api-standards
+        path: {{ SERVICE_NAME }}-producer-api-standards.json
+      - name: {{ NAME }}-record-service-api
+        path: {{ SERVICE_NAME }}-record-service-api.json
     api_catalog:
       - edgeAPIProductName: {{ NAME }}
         anonAllowed: true

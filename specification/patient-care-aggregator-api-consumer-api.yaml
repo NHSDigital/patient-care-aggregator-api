@@ -44,24 +44,24 @@ info:
         
     ## Service level
     This API is a silver service, meaning it is operational 24 hours a day, 365 days a year but only supported during working hours.
-
+    
     For more details, see [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels).
     
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
-
+    
     It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir)
     global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/),
     except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
-
+    
     It includes some country-specific FHIR extensions, which have been built against [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core).
-
+    
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
     - resource names are capitalised and singular, for example `/CarePlan` not `/care-plans`
     - array names are singular, for example `entry` not `entries` for FHIR bundle entries
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
-
+    
     There are [libraries and SDKs available](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) to help with FHIR API integration.
 
     You must adhere to the following requirements when integrating to the Wayfinder Patient Care Aggregator.
@@ -89,7 +89,7 @@ info:
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
-
+    
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
     
     ## Security and authorisation
@@ -98,7 +98,7 @@ info:
     The end user must be:
     * a patient who receives health and social care or makes use of NHS services
     * strongly authenticated, using [NHS login](https://digital.nhs.uk/services/nhs-login)
-
+    
     To use this API, use one of the following security patterns:
     
     |Security pattern                                                                                                                                                                                                               |Technical details                                    |Advantages                                                   | Disadvantages                                           |
@@ -112,7 +112,7 @@ info:
     | Sandbox           | Not available                                                                   | Not applicable                |
     | Integration test  | `https://int.api.service.nhs.uk/patient-care-aggregator-api/aggregator/events/` | NHS login - integration (AOS) |
     | Production        | `https://api.service.nhs.uk/patient-care-aggregator-api/aggregator/events/`     | NHS login - Live (production) |
-
+    
     ### Sandbox testing
     This API does not currently have a sandbox environment. If you would like us to add one, [contact us](https://digital.nhs.uk/developer/help-and-support).
     
@@ -120,11 +120,11 @@ info:
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
     * is for formal integration testing
     * includes authorisation
-
+    
     It is an end-to-end environment - it includes instances of each of the upstream applications, and is linked to the Integration (AOS) instance of NHS login.
     
     For details of test data, see [Patient care aggregator test data packs](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-fhir/patient-care-aggregator-fhir-api-test-data).
-
+    
     For more details on integration testing, see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
     
     ## Onboarding
@@ -136,7 +136,7 @@ info:
     
     ## Errors
     We use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:
-
+    
     * 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
     * 400 to 499 if it failed because of a client error by your application
     * 500 to 599 if it failed because of an error on our server
@@ -585,7 +585,7 @@ components:
                             type: string
                             example: '2020-11-19'
             performer:
-              description: The organisation responsible for the Referral.
+              description: The organisation responsible for the Referral. 
               type: array
               minItems: 1
               maxItems: 1
@@ -737,7 +737,7 @@ components:
                         enum:
                           - https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
                       valueCode:
-                        description: The encounter class required itself.
+                        description: "The encounter class required itself."
                         type: string
                         enum:
                           - outpatient
@@ -762,7 +762,7 @@ components:
                   type: string
                   example: '2024-06-02T13:45:00.000Z'
             location:
-              description: Booking location. Building name with a fallback of the provider (NHS Turst) ODS Organisation name. Building name not provided when the booking is virtual i.e. not at a physical location. _Note; This values was previously contained within the description_
+              description: Booking location. Building name with a fallback of the provider (NHS Turst) ODS Organisation name. Building name not provided when the booking is virtual i.e. not at a physical location. _Note; This values was previously contained within the description_ 
               type: object
               properties:
                 type:
@@ -1055,7 +1055,7 @@ components:
                   `timeout` means the request to the upstream application timed out;
                   `structure` means the response received from the upstream application failed validation;
                   `transient` or `exception` means we received an unexpected error from the upstream application;
-                  `business-rule` means the response has qualified business logic to suppress or transform the data returned.
+                  `business-rule` means the response has qualified business logic to suppress or transform the data returned. 
                 type: string
                 minLength: 1
                 enum:
@@ -1126,6 +1126,7 @@ components:
       required: true
       schema:
         type: string
+        pattern: ^https:\/\/fhir\.nhs\.uk\/Id\/nhs-number\|[1-9][0-9]{9}$
         example: https://fhir.nhs.uk/Id/nhs-number|9000000009
     nhsdIdToken:
       name: NHSD-ID-Token
@@ -1167,9 +1168,9 @@ components:
     2XX:
       description: |
         The request was valid and the API was able to request information from the various upstream applications.
-
+  
         There are two possible outcomes:
-
+  
         | HTTP status | Description                                                         |
         | ----------- | ------------------------------------------------------------------- |
         | 200         | A successful request will return a HTTP status code of `200 OK` containing a FHIR `Bundle` with `0..*` `CarePlan` resources. All upstream systems responded normally. |
@@ -1384,7 +1385,7 @@ components:
     4XX:
       description: |
         When the aggregator service is unable to serve a successful response a FHIR `OperationOutcome` resource is returned with the relevant HTTP status code defined as follows:
-
+  
         | HTTP status | Error code          | Description                                                         |
         | ----------- | ------------------- | ------------------------------------------------------------------- |
         | 400         | `exception`         | Missing or invalid NHS number in request                            |
@@ -1393,7 +1394,7 @@ components:
         | 403         | `forbidden`         | Patient is under 16 years of age                                    |
         | 404         | `not-found`         | Invalid value in `NHSD-Target-Identifier` header                    |
         | 429         | `TOO_MANY_REQUESTS` | You have exceeded your application's [rate limit](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits). |
-
+  
         For details see the `diagnostics` field.
       headers:
         #X-Request-ID:
@@ -1439,18 +1440,22 @@ components:
   headers:
     xRequestId:
       schema:
-        $ref: "#/components/parameters/xRequestId/schema"
+        type: string
+        format: uuid
+        example: 8b16ccfa-8e46-4ba5-bd04-ba9371c69db9
       description: Request parameter value echoed back (when provided)
     xCorrelationId:
       schema:
-        $ref: "#/components/parameters/xCorrelationId/schema"
+        type: string
+        format: uuid
+        example: c93e2449-a2ef-4476-ad15-13491036be22
       description: Request parameter value echoed back (when provided)
   examples:
     # Full Responses
     emptyBundle:
       summary: 200 Empty bundle / no activity
       description: |
-        A response where all upstream systems responded normally (HTTP status 200). Contains a `CarePlan` resource containing one referral and one booking.
+        A response where all upstream systems responded normally (HTTP status 200). Contains no resources.
         ```
         Bundle
         ```
@@ -1464,7 +1469,7 @@ components:
         total: 0
     operationOutcomeBusinessRule:
       summary: 200 OperationOutcome with a business-rule issue
-      value:
+      value: 
         resourceType: Bundle
         id: 324ece62-ab9a-484d-b882-f401fdd2a67d
         meta:
@@ -1959,7 +1964,7 @@ components:
                   value: '9000000009'
               activity:
                 - $ref: "#/components/examples/appointmentFuturePepFaceToFace"
-                - $ref: "#/components/examples/correspondenceUnreadLinked"
+                - $ref: "#/components/examples/correspondenceUnreadLinked" 
           - fullUrl: https://api.service.nhs.uk/patient-care-aggregator-api/OperationOutcome/2dda10de-2472-4f3f-ab13-480557d63d93
             search:
               mode: include
@@ -2184,7 +2189,7 @@ components:
             diagnostics: '"patient:identifier" with value "https://fhir.nhs.uk/Id/nhs-number" fails to match the required pattern: /^https://fhir.nhs.uk/Id/nhs-number|[0-9]*$/'
     mismatchNhsNumber:
       summary: 401 NHS number in request doesn't match NHS number in NHS login token
-      value:
+      value: 
         resourceType: OperationOutcome
         meta:
           profile:
@@ -2229,7 +2234,7 @@ components:
           "value": "db71698b-cd7c-4dd5-95c4-0aa9776595f5"
         }
         ```
-
+        
         Which encodes to: `ewoKwqAgwqAgInN5c3RlbSI6ICJ1cm46aWV0ZjpyZmM6Mzk4NiIKCsKgIMKgICJ2YWx1ZSI6ICJkYjcxNjk4Yi1jZDdjLTRkZDUtOTVjNC0wYWE5Nzc2NTk1ZjUiCgp9`
 
         If the NHSD-Target-Identifier does not equal the above then a HTTP 404 error will be returned. The OperationOutcome returned will include an issue.
@@ -2949,7 +2954,6 @@ components:
           location:
             type: Location
             display: "Outpatient Department at Buxton Hospital"
-    # ShCR appointment? # TODO
     # Diagnostics
     diagnosticFuturePepBooked:
       summary: Fragment - Future booked Diagnostic Appointment from a PEP
