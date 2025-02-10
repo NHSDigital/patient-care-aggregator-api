@@ -13,9 +13,9 @@ info:
 
     The Patient Care Aggregator needs this information in advance so it knows which secondary care providers to ask for a list of bookings, documents and questionnaires when a patient requests the list using the NHS App. 
 
-    As a secondary care provider, you’ll also need to: 
+    As a secondary care provider, you'll also need to: 
     - build an API using the [Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-get-appointments/patient-care-aggregator-get-appointments-api-standard) that the Patient Care Aggregator can use to get a list of bookings, documents and questionnaires for a patient
-    - build a ’patient portal’ web application that the patient can access via a hyperlink from the NHS App 
+    - build a 'patient portal' web application that the patient can access via a hyperlink from the NHS App 
 
     For more details, see [Patient access to referrals and bookings via the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator). 
 
