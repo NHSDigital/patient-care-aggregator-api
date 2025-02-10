@@ -51,7 +51,7 @@ info:
     | Requirement Reference | Quality attribute(s)                                 | Requirement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | MoSCoW  |
     |-----------------------|------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
     | WF-NFR-01             | Performance                                          | **Response times**<br>Each API (including Appointment, Document, and Questionnaire) must respond with patient data within 400ms  95th percentile (P95).<br>Page load times during the deeplink jump-off and after the blue screen hand-off between the NHS App and a Portal system, should not exceed 3 seconds, as perceived by the end-user. The hand-off involves multiple message exchanges between NHS App, NHS login and the Portal system. The aggregate NHS App and NHS login response time is 1 second (at 95th percentile) in the production environment. This means that the aggregate Portal systems' response time must be 2 seconds or less (as measured in the Portal system's volume & performance test environment, at 95th percentile). The measurements must be carried out from a browser with a strong and stable network connection. | M/S     |
-    | WF-NFR-02             | Performance                                          | **Timeouts**<br>Each API (including Appointment, Document, and Questionnaire) must respond with a HTTP 504 'Gateway Timeout' after 9,000 ms have expired<br>Calls to the Record Service time out after 30,000ms.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | M       |
+    | WF-NFR-02             | Performance                                          | **Timeouts**<br>Each API (including Appointment, Document, and Questionnaire) must respond with a HTTP 504 'Gateway Timeout' after 9,000 ms have expired.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | M       |
     | WF-NFR-03             | Availability                                         | **Throttling**<br>Each API must limit requests and respond with a HTTP 429 'Too Many Requests' response at 25 TPS (transactions per second)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | M       |
     | WF-NFR-04             | Reliability                                          | **Data timeliness**<br>Any changes made by patients within a PEP must be reflected in any subsequent request by the Patient Care Aggregator within 3 seconds (e.g. the requested appointment status if a request for a cancellation or amendment has been is made).<br>Any changes made at source (e.g. within the providers PAS) must be reflected in any subsequent request by the Patient Care Aggregator within 3 minutes. This should be sent prior to any notification regarding the update (e.g. a cancellation notification following a clinic cancellation).                                                                                                                                                                                                                                                                                                                                                                                                                                                 | M       |
     | WF-NFR-05             | Availability                                         | **Service availability**<br>Portal systems will provide Silver (99.5%) availability under NHS guidelines<br>See [Cloud security - good practice guide](https://digital.nhs.uk/services/cloud-centre-of-excellence/cloud-security-good-practice-guide/9.-appendix-b-service-classifications)                                                                                                                                                                                                                                                                                                                                                                                                                                             | M       |
@@ -110,18 +110,18 @@ paths:
         This endpoint returns a list of appointments from a secondary care booking system for a given patient.
         It returns the appointments as a FHIR 'Bundle' containing FHIR 'Appointment' resources.
         
-        Note that the above URL path is an example — you can use a different URL path if you prefer.
+        Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## Appointment inclusion and exclusion rules
         The endpoint includes / excludes appointments as per the following rules:
         - NHS in England only: Only include appointments for care settings within the NHS in England.
-        - NHS Trusts only: Only include appointments for acute, mental health or community care settings — not any other type.
-        - Elective care appointments only. Only include elective outpatient or inpatient — not any other type.
+        - NHS Trusts only: Only include appointments for acute, mental health or community care settings - not any other type.
+        - Elective care appointments only. Only include elective outpatient or inpatient - not any other type.
         - Information governance: Only include appointments for care settings where you have a legal agreement in place to handle their data.
         - Excluded patients (Trust) (SRCBR1a): Exclude appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system).
         - Excluded patients (PDS) (SRCBR1b): Appointments for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
         - Excluded clinics (SRCBR2): Appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
-        - Encounter types (SRCBR3): Only outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator — i.e. filter hidden appointments and appointments at ghost clinics.
+        - Encounter types (SRCBR3): Only outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator - i.e. filter hidden appointments and appointments at ghost clinics.
         - Excluded specialities (SRCBR4): Appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
         - Ghost appointments: Exclude appointments that are booked in the system but which the patient is not expected to attend - known as 'ghost' appointments.
         - Include all appointments, future dated and historic, in scope of the programme requirements. This includes cancelled appointments.
@@ -168,18 +168,18 @@ paths:
         This endpoint returns a list of documents from a secondary care booking system for a given patient.
         It returns the document references as a FHIR 'Bundle' containing FHIR 'DocumentReference' resources.
         
-        Note that the above URL path is an example — you can use a different URL path if you prefer.
+        Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## DocumentReference inclusion and exclusion rules
         The endpoint includes / excludes documents as per the following rules:
         - NHS in England only: Only include documents related to appointments for care settings within the NHS in England.
-        - NHS Trusts only: Only include documents related to appointments for acute, mental health or community care settings — not any other type.
-        - Elective care apointments only: Only include documents related to elective outpatient or inpatient appointments — not any other type.
+        - NHS Trusts only: Only include documents related to appointments for acute, mental health or community care settings - not any other type.
+        - Elective care apointments only: Only include documents related to elective outpatient or inpatient appointments - not any other type.
         - Information governance: Only include documents related to appointments for care settings where you have a legal agreement in place to handle their data.
         - Excluded patients (Trust) (SRCBR1a): Exclude documents related to appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system).
         - Excluded patients (PDS) (SRCBR1b): Documents for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
         - Excluded clinics (SRCBR2): Documents related to appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
-        - Encounter types (SRCBR3): Only documents related to outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator — i.e. filter hidden appointments and appointments at ghost clinics.
+        - Encounter types (SRCBR3): Only documents related to outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator - i.e. filter hidden appointments and appointments at ghost clinics.
         - Excluded specialities (SRCBR4): Documents related to appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
         - Include patient correspondence (letters)
         - Exclude non-patient facing corrospondence (letters) e.g. GP Letters or corrospondence to parents or guardians
@@ -227,18 +227,18 @@ paths:
         This endpoint returns a list of tasks for completion of questionnaires from a secondary care booking system for a given patient.
         It returns the tasks as a FHIR 'Bundle' containing FHIR 'Task' resources.
         
-        Note that the above URL path is an example — you can use a different URL path if you prefer.
+        Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## Questionnaires inclusion and exclusion rules
         The endpoint includes / excludes tasks as per the following rules:
         - NHS in England only: Only include tasks related to appointments for care settings within the NHS in England.
-        - NHS Trusts only: Only include tasks related to appointments for acute, mental health or community care settings — not any other type.
-        - Elective care appointments only: Only include tasks related to outpatient appointments — not any other type.
+        - NHS Trusts only: Only include tasks related to appointments for acute, mental health or community care settings - not any other type.
+        - Elective care appointments only: Only include tasks related to outpatient appointments - not any other type.
         - Information governance: Only include tasks related to appointments for care settings where you have a legal agreement in place to handle their data.
         - Excluded patients (Trust) (SRCBR1a): Exclude tasks related to appointments for patients flagged from/within a Trust as not being allow access via a portal (as marked in PAS system).
         - Excluded patients (PDS) (SRCBR1b): Tasks for patients flagged with an sensitive / restricted within PDS must be filtered out from the feed to the Aggregator.
         - Excluded clinics (SRCBR2): Tasks related to appointments at clinics where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
-        - Encounter types (SRCBR3): Only tasks related to outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator — i.e. filter hidden appointments and appointments at ghost clinics.
+        - Encounter types (SRCBR3): Only tasks related to outpatient appointments where attendance is required virtually or face-to-face must be sent to the Aggregator - i.e. filter hidden appointments and appointments at ghost clinics.
         - Excluded specialities (SRCBR4): Tasks related to appointments for certain specialities where a Trust has rules in place for these not to be visible to patients must not be sent to the Aggregator.
         - Under 16s: Exclude patients under 16.
 
@@ -491,7 +491,7 @@ components:
           description: "Only to be provided for planned inpatient attendances and community appointments e.g. a Day Case procedure. (warning) If an EncounterClass is not provided it is assumed to be a Outpatient appointment."
           type: object
           properties:
-            valueCoding:
+            coding:
               description: "An EncounterClass coding"
               type: array
               items:
@@ -503,7 +503,7 @@ components:
                         type: string
                         enum:
                           - "http://terminology.hl7.org/CodeSystem/v3-ActCode"
-                      value:
+                      code:
                         type: string
                         enum:
                           - "IMP"
