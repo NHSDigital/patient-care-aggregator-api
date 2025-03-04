@@ -7,5 +7,5 @@ idna==3.7
 lxml==4.9.1
 pycparser==2.21
 PyJWT==2.4.0
-requests==2.31.0
+requests==2.32.2
 urllib3==1.26.19
