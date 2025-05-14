@@ -26,7 +26,7 @@ info:
     
     The API aggregates details of referrals and bookings from a number of systems. For details, see [status and roadmap](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator#status-and-roadmap).
     
-    We might add other providers in the future.
+    We might add other providers in the future. 
     
     This API is only for use in patient-facing applications, not point-of-care applications.
     
