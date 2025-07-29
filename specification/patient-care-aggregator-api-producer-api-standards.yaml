@@ -1,5 +1,5 @@
 # This is an OpenAPI Specification (https://swagger.io/specification/) 
-# for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/)
+# for patient-care-aggregator-api owned by NHS Digital (https://digital.nhs.uk/) .
 openapi: '3.0.3'
 info:
   title: "Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard"
