@@ -439,7 +439,7 @@ components:
                       - "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
                   valueUrl:
                     type: string
-                    description: The Portal provider deep link URL. Please note: If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
+                    description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
                     example: "https://wayfinder.example-pep.com/fhir/Appointment/770DA42C-C8F2-A5F7-6185-40EE9409B494"
         identifier:
           type: array
@@ -1055,7 +1055,7 @@ components:
                       - "application/pdf"
                   url:
                     type: string
-                    description: The Portal provider deep link URL. Please note: If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
+                    description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
                     example: "https://my.portal.com/Document/b710e648-c12e-4f66-80e2-9957a254900f"
     Task:
       description: "FHIR TASK resource for the questionnaire"
@@ -1207,8 +1207,8 @@ components:
                 - "Questionnaire"
             reference: 
               type: string
-              description: The Portal provider deep link URL. Please note: If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
-              example: https://my.portal.com/Questionnaire/3a146c43-2b21-44e9-95bc-6f4849e504c8
+              description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
+              example: "https://my.portal.com/Questionnaire/3a146c43-2b21-44e9-95bc-6f4849e504c8"
         owner:
           type: object
           description: Organization responsible for the patients care
