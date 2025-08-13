@@ -2,10 +2,13 @@
   <PreFlow>
     <Request>
       <Step>
+        AssignMessage.RemoveTraceParentHeader
+      </Step>
+      <Step>
         <Name>OauthV2.VerifyAccessToken</Name>
       </Step>
       <Step>
-          <Name>AssignMessage.AddIdTokenHeader</Name>
+        <Name>AssignMessage.AddIdTokenHeader</Name>
       </Step>
       <Step>
         <Name>FlowCallout.ApplyRateLimiting</Name>
