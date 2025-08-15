@@ -2,7 +2,7 @@
   <PreFlow>
     <Request>
       <Step>
-        AssignMessage.RemoveTraceParentHeader
+        <Name>AssignMessage.RemoveTraceParentHeader</Name>
       </Step>
       <Step>
         <Name>OauthV2.VerifyAccessToken</Name>
