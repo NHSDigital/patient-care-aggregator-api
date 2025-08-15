@@ -1,0 +1,7 @@
+<AssignMessage async="false" continueOnError="true" enabled="true" name="AssignMessage.RemoveTraceParentHeader">
+  <Remove>
+    <Headers>
+      <Header name='traceparent'/>
+    </Headers>
+  </Remove>
+</AssignMessage>
