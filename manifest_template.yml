@@ -98,21 +98,21 @@ apigee:
               {{ NAME }}:
                 quota:
                   enabled: true
-                  limit: 6000
+                  limit: 18000
                   interval: 1
                   timeunit: minute
                 spikeArrest:
                   enabled: true
-                  ratelimit: 12000pm
+                  ratelimit: 36000pm
               app:
                 quota:
                   enabled: false
-                  limit: 6000
+                  limit: 18000
                   interval: 1
                   timeunit: minute
                 spikeArrest:
                   enabled: false
-                  ratelimit: 12000pm
+                  ratelimit: 36000pm
         description: {{ DESCRIPTION }}
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]
