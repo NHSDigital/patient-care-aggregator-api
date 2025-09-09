@@ -13,7 +13,7 @@ info:
     The Patient Care Aggregator aggregates this information with similar information from other providers before returning them to the NHS App for the patient to see. 
 
     As a secondary care provider, you'll also need to: 
-    - use the [Patient Cate Aggregator Record Service API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api) to let the let the Patient Care Aggregator know which patients you have bookings for 
+    - use the [Patient Care Aggregator Record Service API](https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api) to let the let the Patient Care Aggregator know which patients you have bookings for 
     - build a 'patient engagement portal' web application that the patient can access via a hyperlink from the NHS App 
 
     For more details, see [Patient access to referrals and bookings via the Patient Care Aggregator](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/referrals-and-bookings/patient-care-aggregator).
