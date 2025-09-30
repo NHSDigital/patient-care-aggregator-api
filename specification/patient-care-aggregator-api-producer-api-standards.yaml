@@ -1254,7 +1254,7 @@ components:
               properties:
                 system:
                   type: string
-                  description: URI to identifier Questionnaire types
+                  description: URI for identifier Questionnaire types
                   enum:
                     - https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                 code:
