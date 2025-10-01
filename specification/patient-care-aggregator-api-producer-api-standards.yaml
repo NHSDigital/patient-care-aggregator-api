@@ -3,7 +3,7 @@
 openapi: '3.0.3'
 info:
   title: "Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard"
-  version: "3.5.0"
+  version: "3.6.0"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
@@ -114,8 +114,6 @@ x-spec-publication:
   try-this-api:
     disabled: true
 servers:
-  - url: 'https://integration.servita-demo.co.uk'
-    description: Sandbox environment.
   - url: 'https://aos.patient-care-aggregator.com'
     description: End-to-end test environment.
   - url: 'https://prod.patient-care-aggregator.com'
@@ -1261,7 +1259,7 @@ components:
                     - https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                 code:
                   type: string
-                  description: Questionnaire type code
+                  description: Questionnaire type code. For questionnaires that are part of the patient initiated follow-up (PIFU) feature, the questionnaire type code must be set to "pifu-triage".
                   example: CONS-Survey
                 display:
                   type: string
@@ -1526,19 +1524,19 @@ components:
     outpatientAppointment:
       summary: 200 Example Patient with a Outpatient Appointment
       value:
-        $ref: "components/examples/GetAppointmentResponseHappyPath.json"
+        $ref: "./components/examples/GetAppointmentResponseHappyPath.json"
     inpatientAdmission:
       summary: 200 Example Patient with a Inpatient Admission and a pre assessment appointment
       value:
-        $ref: "components/examples/GetInpatientAdmissionResponseHappyPath.json"
+        $ref: "./components/examples/GetInpatientAdmissionResponseHappyPath.json"
     document:
       summary: 200 Example Patient with a Document
       value:
-        $ref: "components/examples/GetDocumentReferencesResponseHappyPath.json"
+        $ref: "./components/examples/GetDocumentReferencesResponseHappyPath.json"
     questionnaire:
       summary: 200 Example Patient with a Questionnaire
       value:
-        $ref: "components/examples/GetTasksResponseHappyPath.json"
+        $ref: "./components/examples/GetTasksResponseHappyPath.json"
     missingNhsNumber:
       summary: 400 Missing patient:identifier search parameter
       description: No patient:identifier as a search parameter.
