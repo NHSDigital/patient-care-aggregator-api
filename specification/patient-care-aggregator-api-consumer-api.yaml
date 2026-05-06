@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Wayfinder Patient Care Aggregator API
-  version: v3.8.0
+  version: v3.9.0
   description: |
     <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
         <div class="nhsd-a-box nhsd-a-box--border-blue">
