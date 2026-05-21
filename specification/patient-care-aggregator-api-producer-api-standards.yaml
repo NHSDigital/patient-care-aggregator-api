@@ -421,6 +421,8 @@ components:
                     enum:
                       - "FACE_TO_FACE"
                       - "VIRTUAL"
+                      - "VIDEO_CONSULTATION"
+                      - "TELEPHONE"
               - description: "Deep link URL to appointment in portal system (required)."
                 type: object
                 required:

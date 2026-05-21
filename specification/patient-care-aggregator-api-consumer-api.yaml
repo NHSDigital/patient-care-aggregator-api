@@ -774,6 +774,8 @@ components:
                         enum:
                           - FACE_TO_FACE
                           - VIRTUAL
+                          - VIDEO_CONSULTATION
+                          - TELEPHONE
                   - description: Encounter class element
                     type: object
                     required:
