@@ -39,7 +39,9 @@ class TestEndpoints:
                 "spikeArrest": {"ratelimit": "100ps", "enabled": True},
             }
         }
-        await apigee_product.update_attributes({"ratelimiting": json.dumps(product_ratelimit)})
+        await apigee_product.update_attributes(
+            {"ratelimiting": json.dumps(product_ratelimit)}
+        )
 
         await apigee_product.update_environments([config.ENVIRONMENT])
 
@@ -89,12 +91,6 @@ class TestEndpoints:
             "typ": "JWT",
             "alg": "RS512",
             "kid": "nhs-login",
-            "sub": "49f470a1-cc52-49b7-beba-0f9cec937c46",
-            "aud": "some-client-id",
-            "iss": "https://internal-dev.api.service.nhs.uk",
-            "exp": 4114224185,
-            "iat": 1623849271,
-            "jti": str(uuid.uuid4()),
         }
         claims = {
             "sub": "49f470a1-cc52-49b7-beba-0f9cec937c46",
@@ -149,7 +145,7 @@ class TestEndpoints:
             },
         )
 
-        print('Auth server response:')
+        print("Auth server response:")
         print(resp.json())
 
         return resp.json()["access_token"]
@@ -158,7 +154,9 @@ class TestEndpoints:
         # Given I have a token
         token = get_token
         expected_status_code = 200
-        proxy_url = f"https://internal-dev.api.service.nhs.uk/{config.ENV['base_path']}/status"
+        proxy_url = (
+            f"https://internal-dev.api.service.nhs.uk/{config.ENV['base_path']}/status"
+        )
         # When calling the proxy
         headers = {"Authorization": f"Bearer {token}"}
         resp = SESSION.get(url=proxy_url, headers=headers)

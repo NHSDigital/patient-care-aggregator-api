@@ -34,7 +34,7 @@ def identity_service_url(environment, mock_username=None):
         base_path = "oauth2-mock"
     elif environment == "int":
         base_path = "oauth2-no-smartcard"
-    elif environment == 'prod':
+    elif environment == "prod":
         return "https://api.service.nhs.uk/oauth2"
     else:
         base_path = "oauth2"
@@ -145,7 +145,7 @@ def do_jwt(environment, client_id, private_key_file):
         claims, private_key, algorithm="RS512", headers=additional_headers
     )
 
-    id_token_jwt = ''
+    id_token_jwt = ""
 
     resp = SESSION.post(
         url,

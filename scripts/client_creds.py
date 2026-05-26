@@ -32,7 +32,7 @@ def identity_service_url(environment, mock_username=None):
     elif environment == "int":
         # base_path = "oauth2-no-smartcard"
         base_path = "oauth2"
-    elif environment == 'prod':
+    elif environment == "prod":
         return "https://api.service.nhs.uk/oauth2"
     else:
         base_path = "oauth2-mock"
@@ -59,20 +59,20 @@ def do_jwt(environment, client_id, private_key_file):
         claims, private_key, algorithm="RS512", headers=additional_headers
     )
 
-    print('Client Assertion')
+    print("Client Assertion")
     print(client_assertion)
-    print('URL')
+    print("URL")
     print(url)
 
     data = {
-            "grant_type": "client_credentials",
-            "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-            "clientId": client_id,
-            "client_assertion": client_assertion,
-            "header": additional_headers,
-            "algorithm": "RS512"
-            }
-    print('Data')
+        "grant_type": "client_credentials",
+        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        "clientId": client_id,
+        "client_assertion": client_assertion,
+        "header": additional_headers,
+        "algorithm": "RS512",
+    }
+    print("Data")
     print(json.dumps(data))
 
     resp = SESSION.post(
@@ -84,9 +84,9 @@ def do_jwt(environment, client_id, private_key_file):
             "clientId": client_id,
             "client_assertion": client_assertion,
             "header": additional_headers,
-            "algorithm": "RS512"
-            }
-        )
+            "algorithm": "RS512",
+        },
+    )
 
     return resp.json()
 
