@@ -2,6 +2,7 @@ SHELL=/bin/bash -euo pipefail
 
 install-python:
 	poetry install
+	poetry run pip install --no-deps "https://github.com/NHSDigital/apim-test-utils/releases/download/v1.1.43-alpha/api_test_utils-1.1.43a0-py3-none-any.whl"
 
 install-node:
 	npm install --legacy-peer-deps

@@ -10,7 +10,7 @@ import json
 import os
 import os.path
 from docopt import docopt
-from jsonpath_rw import parse
+from jsonpath_ng import parse
 
 
 def generate_resource_example(schema_dict, path=None):
