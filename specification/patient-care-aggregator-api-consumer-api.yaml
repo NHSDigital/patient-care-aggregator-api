@@ -757,7 +757,7 @@ components:
                               - bookedPendingReschedule
                               - bookedPendingChange
                               - cancelledPendingReschedule
-                  - description: The consultation medium for the booking (face-to-face or virtual). Always present if the activity is a booking, but might be blank if the underlying consultation type is not recognised.
+                  - description: The consultation medium for the booking (face-to-face, telephone or video call). Always present if the activity is a booking, but might be blank if the underlying consultation type is not recognised. VIRTUAL is now deprecated, but remains in the API for backward compatibility reasons, so it might still be passed by systems integrated with the Aggregator.
                     type: object
                     required:
                       - url

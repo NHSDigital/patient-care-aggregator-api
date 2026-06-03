@@ -404,7 +404,7 @@ components:
                       - Pending Reschedule 
                       - Pending Cancellation 
                       - Confirmed Attendance                                
-              - description: "Consultation medium - whether visit is face-to-face or remote (required)."
+              - description: "Consultation medium - whether the appointment is face-to-face, on the telephone or via an online video consultation (required). VIRTUAL is now deprecated and only remains in the API spec for backwards compatibility reasons."
                 type: object
                 required:
                   - url
