@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Wayfinder Patient Care Aggregator API
-  version: v3.9.0
+  version: v3.11.0
   description: |
     <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
         <div class="nhsd-a-box nhsd-a-box--border-blue">
@@ -757,6 +757,19 @@ components:
                               - bookedPendingReschedule
                               - bookedPendingChange
                               - cancelledPendingReschedule
+                  - description: "A boolean extension indicating whether the patient is required to confirm their attendance before the appointment. When true, the patient should confirm; when false or absent, no confirmation is required."
+                    type: object
+                    required:
+                      - url
+                      - valueBoolean
+                    properties:
+                      url:
+                        type: string
+                        description: FHIR extension type for Appointment Confirmation Required.
+                        enum:
+                          - "https://fhir.nhs.uk/StructureDefinition/Extension-England-AppointmentConfirmationRequired"
+                      valueBoolean:
+                        type: boolean
                   - description: The consultation medium for the booking (face-to-face or virtual). Always present if the activity is a booking, but might be blank if the underlying consultation type is not recognised.
                     type: object
                     required:
