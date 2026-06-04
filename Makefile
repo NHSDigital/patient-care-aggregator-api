@@ -2,14 +2,17 @@ SHELL=/bin/bash -euo pipefail
 
 install-python:
 	poetry install
-	poetry run pip install --no-deps "https://github.com/NHSDigital/apim-test-utils/releases/download/v1.1.43-alpha/api_test_utils-1.1.43a0-py3-none-any.whl"
+	poetry run pip install --no-deps "pytest-nhsd-apim==5.0.14"
 
 install-node:
 	npm install --legacy-peer-deps
 #	cd sandbox && npm install
 
-.git/hooks/pre-commit:
+.git/hooks/pre-commit: scripts/pre-commit
 	cp scripts/pre-commit .git/hooks/pre-commit
+	chmod +x .git/hooks/pre-commit
+
+install-hooks: .git/hooks/pre-commit
 
 install: install-node install-python .git/hooks/pre-commit
 
