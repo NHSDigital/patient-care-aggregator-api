@@ -2,7 +2,7 @@ SHELL=/bin/bash -euo pipefail
 
 install-python:
 	poetry install
-	poetry run pip install --no-deps "pytest-nhsd-apim==5.0.14"
+	poetry run pip install "pytest-nhsd-apim==5.0.14"
 
 install-node:
 	npm install --legacy-peer-deps
