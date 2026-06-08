@@ -5,7 +5,7 @@ install-python:
 	poetry run pip install "pytest-nhsd-apim==5.0.14"
 
 install-node:
-	npm install --legacy-peer-deps
+	npm ci
 #	cd sandbox && npm install
 
 .git/hooks/pre-commit: scripts/pre-commit
