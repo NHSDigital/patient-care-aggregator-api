@@ -14,7 +14,7 @@ install-node:
 
 install-hooks: .git/hooks/pre-commit
 
-install: install-node install-python .git/hooks/pre-commit
+install: install-node install-python install-hooks
 
 lint:
 	npm run lint
