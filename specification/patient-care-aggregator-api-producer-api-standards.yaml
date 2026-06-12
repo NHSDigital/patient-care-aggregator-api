@@ -3,7 +3,7 @@
 openapi: '3.0.3'
 info:
   title: "Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard"
-  version: "3.10.0"
+  version: "3.11.0"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
@@ -404,7 +404,7 @@ components:
                       - Pending Reschedule 
                       - Pending Cancellation 
                       - Confirmed Attendance                                
-              - description: "Consultation medium - whether visit is face-to-face or remote (required)."
+              - description: "Consultation medium - whether the appointment is face-to-face, on the telephone or via an online video consultation (required). VIRTUAL is now deprecated and only remains in the API spec for backwards compatibility reasons."
                 type: object
                 required:
                   - url
@@ -421,6 +421,8 @@ components:
                     enum:
                       - "FACE_TO_FACE"
                       - "VIRTUAL"
+                      - "VIDEO_CONSULTATION"
+                      - "TELEPHONE"
               - description: "Deep link URL to appointment in portal system (required)."
                 type: object
                 required:

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Wayfinder Patient Care Aggregator API
-  version: v3.9.0
+  version: v3.10.0
   description: |
     <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
         <div class="nhsd-a-box nhsd-a-box--border-blue">
@@ -757,7 +757,7 @@ components:
                               - bookedPendingReschedule
                               - bookedPendingChange
                               - cancelledPendingReschedule
-                  - description: The consultation medium for the booking (face-to-face or virtual). Always present if the activity is a booking, but might be blank if the underlying consultation type is not recognised.
+                  - description: The consultation medium for the booking (face-to-face, telephone or video call). Always present if the activity is a booking, but might be blank if the underlying consultation type is not recognised. VIRTUAL is now deprecated, but remains in the API for backward compatibility reasons, so it might still be passed by systems integrated with the Aggregator.
                     type: object
                     required:
                       - url
@@ -774,6 +774,8 @@ components:
                         enum:
                           - FACE_TO_FACE
                           - VIRTUAL
+                          - VIDEO_CONSULTATION
+                          - TELEPHONE
                   - description: Encounter class element
                     type: object
                     required:
