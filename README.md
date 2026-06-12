@@ -113,3 +113,5 @@ Our _Target Servers_ defined in the [api-management-infrasture](https://github.c
 ### Publishing
 
 The downstream ADO pipelines for publishing to production are no longer supported. The workflows in this repo will help you update, lint and package the specifications ready for publishing, but wont actually publish the changes.
+
+The full process is defined here: https://nhsd-confluence.digital.nhs.uk/spaces/WAYF/pages/1073028098/KT+NHSE+API+Management+APIM+Procedures
