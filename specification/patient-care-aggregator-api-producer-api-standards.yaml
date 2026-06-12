@@ -3,7 +3,7 @@
 openapi: '3.0.3'
 info:
   title: "Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard"
-  version: "3.11.0"
+  version: "3.12.0"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
@@ -403,7 +403,20 @@ components:
                       - Pending Change 
                       - Pending Reschedule 
                       - Pending Cancellation 
-                      - Confirmed Attendance                                
+                      - Confirmed Attendance
+              - description: "Confirm Attendance - a boolean value indicating whether the patient is required to confirm their attendance before the appointment. When true, the patient should confirm; when false or the extension is absent, no confirmation is required."
+                type: object
+                required:
+                  - url
+                  - valueBoolean
+                properties:
+                  url:
+                    type: string
+                    description: FHIR extension type for Appointment Confirmation Required.
+                    enum:
+                      - "https://fhir.nhs.uk/StructureDefinition/Extension-England-AppointmentConfirmationRequired"
+                  valueBoolean:
+                    type: boolean                                                      
               - description: "Consultation medium - whether the appointment is face-to-face, on the telephone or via an online video consultation (required). VIRTUAL is now deprecated and only remains in the API spec for backwards compatibility reasons."
                 type: object
                 required:
