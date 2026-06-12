@@ -16,3 +16,4 @@ __pycache__/
 smoketest-report.xml
 .vscode/settings.json
 .gitignore
+openapitools.json

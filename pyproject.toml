@@ -34,7 +34,4 @@ lxml = "^5.0"
 cryptography = "^42.0"
 pyjwt = "^2.8"
 selenium = "^4.0"
-# api-test-utils is installed separately with --no-deps (see Makefile) because its
-# pinned transitive dependencies (pytest<7, pytest-asyncio<0.15) conflict with Python 3.13.
-
 [tool.poetry.scripts]
