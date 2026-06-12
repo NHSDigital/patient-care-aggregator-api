@@ -8,10 +8,10 @@ install-node:
 	npm ci
 #	cd sandbox && npm install
 
-.git/hooks/pre-commit: 
+.git/hooks/pre-commit:
 	cp scripts/pre-commit .git/hooks/pre-commit
 
-install: install-node install-python install-hooks .git/hooks/pre-commit
+install: install-node install-python .git/hooks/pre-commit
 
 lint:
 	npm run lint
