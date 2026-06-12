@@ -8,13 +8,10 @@ install-node:
 	npm ci
 #	cd sandbox && npm install
 
-.git/hooks/pre-commit: scripts/pre-commit
+.git/hooks/pre-commit: 
 	cp scripts/pre-commit .git/hooks/pre-commit
-	chmod +x .git/hooks/pre-commit
 
-install-hooks: .git/hooks/pre-commit
-
-install: install-node install-python install-hooks
+install: install-node install-python install-hooks .git/hooks/pre-commit
 
 lint:
 	npm run lint
@@ -27,9 +24,6 @@ clean:
 publish: clean
 	mkdir -p build
 	npm run publish 2> /dev/null
-
-serve:
-	npm run serve
 
 check-licenses:
 	npm run check-licenses
