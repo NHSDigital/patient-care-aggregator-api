@@ -404,7 +404,7 @@ components:
                       - Pending Reschedule 
                       - Pending Cancellation 
                       - Confirmed Attendance                                
-              - description: "Consultation medium - whether the appointment is face-to-face, on the telephone or via an online video consultation (required). VIRTUAL is now deprecated and only remains in the API spec for backwards compatibility reasons."
+              - description: "Consultation medium - whether the appointment is face-to-face, on the telephone or via an online video consultation (required). VIRTUAL is now deprecated, it will be filtered and removed from responses, along with any other values not listed."
                 type: object
                 required:
                   - url
@@ -420,7 +420,6 @@ components:
                     description: The consultation medium itself.
                     enum:
                       - "FACE_TO_FACE"
-                      - "VIRTUAL"
                       - "VIDEO_CONSULTATION"
                       - "TELEPHONE"
               - description: "Deep link URL to appointment in portal system (required)."

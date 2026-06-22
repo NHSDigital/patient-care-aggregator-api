@@ -757,7 +757,7 @@ components:
                               - bookedPendingReschedule
                               - bookedPendingChange
                               - cancelledPendingReschedule
-                  - description: The consultation medium for the booking (face-to-face, telephone or video call). Always present if the activity is a booking, but might be blank if the underlying consultation type is not recognised. VIRTUAL is now deprecated, but remains in the API for backward compatibility reasons, so it might still be passed by systems integrated with the Aggregator.
+                  - description: The consultation medium for the booking (face-to-face, telephone or video call). Only present if the underlying consultation type is recognised.
                     type: object
                     required:
                       - url
@@ -769,11 +769,10 @@ components:
                         enum:
                           - https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium
                       valueCode:
-                        description: The consultation code medium itself. Will be blank (empty string) if the underlying consultation type is not recognised.
+                        description: The consultation code medium itself, only set if the underlying consultation type is recognised.
                         type: string
                         enum:
                           - FACE_TO_FACE
-                          - VIRTUAL
                           - VIDEO_CONSULTATION
                           - TELEPHONE
                   - description: Encounter class element
