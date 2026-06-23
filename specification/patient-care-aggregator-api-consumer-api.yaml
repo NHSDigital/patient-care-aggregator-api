@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Wayfinder Patient Care Aggregator API
-  version: v3.10.0
+  version: v3.11.0
   description: |
     <div class="nhsd-m-emphasis-box nhsd-m-emphasis-box--emphasis nhsd-!t-margin-bottom-6" aria-label="Highlighted Information">
         <div class="nhsd-a-box nhsd-a-box--border-blue">
@@ -769,7 +769,7 @@ components:
                         enum:
                           - https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium
                       valueCode:
-                        description: The consultation code medium itself, only set if the underlying consultation type is recognised.
+                        description: The consultation medium code itself, only set if the underlying consultation type is recognised.
                         type: string
                         enum:
                           - FACE_TO_FACE
@@ -1471,12 +1471,12 @@ components:
               $ref: "#/components/examples/appointmentFuturePepCancelledPendingReschedule"
             appointmentFuturePepFaceToFace:
               $ref: "#/components/examples/appointmentFuturePepFaceToFace"
-            appointmentFuturePepVirtual:
-              $ref: "#/components/examples/appointmentFuturePepVirtual"
+            appointmentFuturePepVideoConsultation:
+              $ref: "#/components/examples/appointmentFuturePepVideoConsultation"
             appointmentHistoricPepFaceToFace:
               $ref: "#/components/examples/appointmentHistoricPepFaceToFace"
-            appointmentHistoricPepVirtual:
-              $ref: "#/components/examples/appointmentHistoricPepVirtual"
+            appointmentHistoricPepVideoConsultation:
+              $ref: "#/components/examples/appointmentHistoricPepVideoConsultation"
             appointmentHistoricSusAttended:
               $ref: "#/components/examples/appointmentHistoricSusAttended"
             appointmentHistoricSusCancelled:
@@ -1803,9 +1803,9 @@ components:
                 - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/appointmentFuturePepFaceToFace"
                 - $ref: "#/components/examples/correspondenceReadLinked"
-                - $ref: "#/components/examples/appointmentFuturePepVirtual"
+                - $ref: "#/components/examples/appointmentFuturePepVideoConsultation"
                 - $ref: "#/components/examples/appointmentHistoricPepFaceToFace"
-                - $ref: "#/components/examples/appointmentHistoricPepVirtual"
+                - $ref: "#/components/examples/appointmentHistoricPepVideoConsultation"
                 - $ref: "#/components/examples/appointmentHistoricSusAttended"
                 - $ref: "#/components/examples/appointmentHistoricSusCancelled"
                 - $ref: "#/components/examples/appointmentHistoricSusDNA"
@@ -2982,7 +2982,7 @@ components:
                 system: http://hl7.org/fhir/appointmentstatus
                 code: bookedPendingCancellation
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium
-              valueCode: VIRTUAL
+              valueCode: VIDEO_CONSULTATION
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: outpatient
           description: Gastroenterology
@@ -3074,7 +3074,7 @@ components:
                 system: http://hl7.org/fhir/appointmentstatus
                 code: cancelledPendingReschedule
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium
-              valueCode: VIRTUAL
+              valueCode: VIDEO_CONSULTATION
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: outpatient
           description: Cardiology Service
@@ -3154,8 +3154,8 @@ components:
                 system: https://fhir.nhs.uk/Id/ods-organization-code
                 value: 'RCX'
               display: THE QUEEN ELIZABETH HOSPITAL, KING'S LYNN, NHS FOUNDATION
-    appointmentFuturePepVirtual:
-      summary: Fragment - Future booked Appointment from a PEP, virtual
+    appointmentFuturePepVideoConsultation:
+      summary: Fragment - Future booked Appointment from a PEP, video consultation
       value:
         detail:
           id: 2c48ec66-2e84-407a-b9a1-6c42c4e8969a
@@ -3171,7 +3171,7 @@ components:
                 system: http://hl7.org/fhir/appointmentstatus
                 code: booked
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium
-              valueCode: VIRTUAL
+              valueCode: VIDEO_CONSULTATION
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: outpatient
           description: Oral Maxillo-Facial Surgery
@@ -3218,8 +3218,8 @@ components:
                 system: https://fhir.nhs.uk/Id/ods-organization-code
                 value: 'RR8'
               display: LEEDS TEACHING HOSPITALS NHS TRUST
-    appointmentHistoricPepVirtual:
-      summary: Fragment - Historic attended Appointment from a PEP, virtual
+    appointmentHistoricPepVideoConsultation:
+      summary: Fragment - Historic attended Appointment from a PEP, video consultation
       value:
         detail:
           id: 9f30c28b-c2f6-4e88-bcec-0b2c17f80b87
@@ -3235,7 +3235,7 @@ components:
                 system: http://hl7.org/fhir/appointmentstatus
                 code: fulfilled
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium
-              valueCode: VIRTUAL
+              valueCode: VIDEO_CONSULTATION
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: outpatient
           description: Dermatology
@@ -3295,7 +3295,7 @@ components:
                 system: http://hl7.org/fhir/appointmentstatus
                 code: cancelled
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium
-              valueCode: VIRTUAL
+              valueCode: VIDEO_CONSULTATION 
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Encounter-Class
               valueCode: outpatient
           description: Gastroenterology
