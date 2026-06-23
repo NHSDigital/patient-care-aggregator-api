@@ -3,7 +3,7 @@
 openapi: '3.0.3'
 info:
   title: "Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard"
-  version: "3.11.0"
+  version: "3.12.0"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
@@ -404,7 +404,7 @@ components:
                       - Pending Reschedule 
                       - Pending Cancellation 
                       - Confirmed Attendance                                
-              - description: "Consultation medium - whether the appointment is face-to-face, on the telephone or via an online video consultation (required). VIRTUAL is now deprecated and only remains in the API spec for backwards compatibility reasons."
+              - description: "Consultation medium - whether the appointment is face-to-face, on the telephone or via an online video consultation (required). VIRTUAL is now deprecated, it will be filtered and removed from PEP responses by Aggregator, along with any other values not listed."
                 type: object
                 required:
                   - url
@@ -420,7 +420,6 @@ components:
                     description: The consultation medium itself.
                     enum:
                       - "FACE_TO_FACE"
-                      - "VIRTUAL"
                       - "VIDEO_CONSULTATION"
                       - "TELEPHONE"
               - description: "Deep link URL to appointment in portal system (required)."
@@ -1589,7 +1588,7 @@ components:
                 - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Appointment-RequestStatus"
                   valueCode: "Pending Reschedule"
                 - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium"
-                  valueCode: "VIRTUAL"
+                  valueCode: "VIDEO_CONSULTATION"
                 - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link"
                   valueUrl: "https://my.patientportal.co.uk/Appointment/d9df1326-1008-45df-b9dd-a920b64ec043"
               identifier:
