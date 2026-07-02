@@ -21,7 +21,7 @@
         "valueCode": "Pending Reschedule"
       }, {
         "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Consultation-Medium",
-        "valueCode": "VIRTUAL"
+        "valueCode": "VIDEO_CONSULTATION"
       }, {
         "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link",
         "valueUrl": "https://my.patientportal.co.uk/Appointment/d9df1326-1008-45df-b9dd-a920b64ec043"
