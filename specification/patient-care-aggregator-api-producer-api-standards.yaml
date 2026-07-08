@@ -3,7 +3,7 @@
 openapi: '3.0.3'
 info:
   title: "Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard"
-  version: "3.12.0"
+  version: "3.13.0"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
@@ -972,25 +972,25 @@ components:
                 type: object
                 required:
                   - type
-                  - references
+                  - reference
                 properties:
                   type:
                     type: string
                     description: Resource of the referenced appointment.
                     enum:
                       - "Appointment"
-                  references:
+                  reference:
                     type: string
                     description: Reference to the linked Appointment contained in the Appointment.Id 
                     example: https://my.portal.com/fhir/R4/Appointment/0448E4C8-DD12-4BAD-9B59-6091C9484701
-        period:
-          description: "The time period over which the service that is described by the document was provided."
-          type: object
-          properties:
-            start:
-              type: string
-              description: "Document effective date/time in a UTC format."
-              example: "2021-06-13T12:30:00+00:00"
+            period:
+              description: "The time period over which the service that is described by the document was provided."
+              type: object
+              properties:
+                start:
+                  type: string
+                  description: "Document effective date/time in a UTC format."
+                  example: "2021-06-13T12:30:00+00:00"
         date:
           description: "When this document reference was created in a UTC format."
           type: string
