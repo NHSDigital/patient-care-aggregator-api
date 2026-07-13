@@ -1,0 +1,98 @@
+name: API Specs Docs
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  generate-api-docs:
+    name: Generate API Specs Docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish bundled API specs
+        run: npm run publish
+
+      - name: Generate static HTML docs
+        run: |
+          set -euo pipefail
+
+          OUTPUT_DIR="build/api-docs"
+          mkdir -p "$OUTPUT_DIR"
+
+          generate_doc() {
+            local spec_path="$1"
+            local output_file="$2"
+
+            echo "Generating docs for $spec_path"
+            if ! npx --yes @redocly/cli@1.25.13 build-docs "$spec_path" -o "$output_file"; then
+              echo "::error::Failed to generate docs for $spec_path"
+              exit 1
+            fi
+          }
+
+          generate_doc "build/patient-care-aggregator-api-consumer-api.json" "$OUTPUT_DIR/consumer-api.html"
+          generate_doc "build/patient-care-aggregator-api-producer-api-standards.json" "$OUTPUT_DIR/producer-api-standards.html"
+          generate_doc "build/patient-care-aggregator-api-record-service-api.json" "$OUTPUT_DIR/record-service-api.html"
+
+          cat > "$OUTPUT_DIR/index.html" << 'EOF'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>Patient Care Aggregator API Specs</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  margin: 2rem;
+                  max-width: 60rem;
+                }
+                h1 {
+                  margin-bottom: 1rem;
+                }
+                ul {
+                  line-height: 2;
+                }
+                a {
+                  color: #005eb8;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>Patient Care Aggregator API Specs</h1>
+              <p>Static API documentation generated from OpenAPI source files.</p>
+              <ul>
+                <li><a href="consumer-api.html">Consumer API</a></li>
+                <li><a href="producer-api-standards.html">Producer API Standards</a></li>
+                <li><a href="record-service-api.html">Record Service API</a></li>
+              </ul>
+            </body>
+          </html>
+          EOF
+
+      - name: Upload API docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-specs-html-docs
+          path: build/api-docs
+          if-no-files-found: error

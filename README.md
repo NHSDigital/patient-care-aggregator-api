@@ -77,17 +77,12 @@ Each API and team is unique. We encourage you to use a `test/` folder in the roo
 
 - [**openapi-yaml-mode**](https://github.com/esc-emacs/openapi-yaml-mode) provides syntax highlighting, completion, and path help
 
-### Speccy
+### Specification tooling
 
-> [Speccy](http://speccy.io/) _A handy toolkit for OpenAPI, with a linter to enforce quality rules, documentation rendering, and resolution._
+This repository currently uses OpenAPI Generator to validate and publish bundled specifications, and Redocly to render static HTML documentation.
 
-Speccy does the lifting for the following npm scripts:
-
-- `test` -- Lints the definition
-- `publish` -- Outputs the specification as a **single file** into the `build/` directory
-- `serve` -- Serves a preview of the specification in human-readable format
-
-(Workflow detailed in a [post](https://developerjack.com/blog/2018/maintaining-large-design-first-api-specs/) on the _developerjack_ blog.)
+- `npm run lint` -- Validates each specification file
+- `npm run publish` -- Outputs each specification as a **single file** into the `build/` directory
 
 :bulb: The `publish` command is useful when uploading to Apigee which requires the spec as a single file.
 
@@ -95,7 +90,7 @@ Speccy does the lifting for the following npm scripts:
 
 #### Swagger UI
 
-Swagger UI unfortunately doesn't correctly render `$ref`s in examples, so use `speccy serve` instead.
+Swagger UI unfortunately doesn't correctly render `$ref`s in examples, so prefer bundled specs or the generated static docs when reviewing rendered output.
 
 #### Apigee Portal
 
