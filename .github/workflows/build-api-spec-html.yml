@@ -38,7 +38,8 @@ jobs:
             local output_path="$2"
 
             echo "Dereferencing $input_path"
-            if ! npx --yes @redocly/cli@1.25.13 bundle "$input_path" --dereferenced -o "$output_path"; then
+            if ! npx --yes @redocly/cli@1.25.13 bundle --dereferenced --output "$output_path" --ext json "$input_path"; then
+
               echo "::error::Failed to dereference $input_path"
               exit 1
             fi
