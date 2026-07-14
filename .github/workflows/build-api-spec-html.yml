@@ -32,6 +32,25 @@ jobs:
       - name: Publish bundled API specs
         run: npm run publish
 
+      - name: Dereference bundled API specs
+        run: |
+          set -euo pipefail
+
+          deref_spec() {
+            local input_path="$1"
+            local output_path="$2"
+
+            echo "Dereferencing $input_path"
+            if ! npx --yes @apidevtools/swagger-cli bundle "$input_path" -o "$output_path" --dereference; then
+              echo "::error::Failed to dereference $input_path"
+              exit 1
+            fi
+          }
+
+          deref_spec "build/patient-care-aggregator-api-consumer-api.json" "build/patient-care-aggregator-api-consumer-api.deref.json"
+          deref_spec "build/patient-care-aggregator-api-producer-api-standards.json" "build/patient-care-aggregator-api-producer-api-standards.deref.json"
+          deref_spec "build/patient-care-aggregator-api-record-service-api.json" "build/patient-care-aggregator-api-record-service-api.deref.json"
+
       - name: Generate static HTML docs
         run: |
           set -euo pipefail
@@ -50,9 +69,9 @@ jobs:
             fi
           }
 
-          generate_doc "build/patient-care-aggregator-api-consumer-api.json" "$OUTPUT_DIR/consumer-api.html"
-          generate_doc "build/patient-care-aggregator-api-producer-api-standards.json" "$OUTPUT_DIR/producer-api-standards.html"
-          generate_doc "build/patient-care-aggregator-api-record-service-api.json" "$OUTPUT_DIR/record-service-api.html"
+          generate_doc "build/patient-care-aggregator-api-consumer-api.deref.json" "$OUTPUT_DIR/consumer-api.html"
+          generate_doc "build/patient-care-aggregator-api-producer-api-standards.deref.json" "$OUTPUT_DIR/producer-api-standards.html"
+          generate_doc "build/patient-care-aggregator-api-record-service-api.deref.json" "$OUTPUT_DIR/record-service-api.html"
 
 
       - name: Upload API docs artifact
