@@ -2,6 +2,8 @@ name: API Specs Docs
 
 on:
   push:
+    branches:
+      - apm-000-WPP-11527-export-swagger
   workflow_dispatch:
 
 jobs:
