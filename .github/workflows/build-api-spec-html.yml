@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint API specs
+        run: npm run lint
+
       - name: Publish bundled API specs
         run: npm run publish
 
@@ -35,7 +38,7 @@ jobs:
             local output_path="$2"
 
             echo "Dereferencing $input_path"
-            if ! npx --yes @apidevtools/swagger-cli bundle "$input_path" -o "$output_path" --dereference; then
+            if ! npx --yes @redocly/cli@1.25.13 bundle "$input_path" --dereferenced -o "$output_path"; then
               echo "::error::Failed to dereference $input_path"
               exit 1
             fi
@@ -44,7 +47,7 @@ jobs:
           deref_spec "build/patient-care-aggregator-api-consumer-api.json" "build/patient-care-aggregator-api-consumer-api.deref.json"
           deref_spec "build/patient-care-aggregator-api-producer-api-standards.json" "build/patient-care-aggregator-api-producer-api-standards.deref.json"
           deref_spec "build/patient-care-aggregator-api-record-service-api.json" "build/patient-care-aggregator-api-record-service-api.deref.json"
-
+ 
       - name: Generate static HTML docs
         run: |
           set -euo pipefail
