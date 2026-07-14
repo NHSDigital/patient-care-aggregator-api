@@ -3,7 +3,7 @@ name: Build API Spec HTML Docs
 on:
   push:
     branches:
-      - master
+      - apm-000-WPP-11527-export-swagger
   workflow_dispatch:
 
 jobs:
