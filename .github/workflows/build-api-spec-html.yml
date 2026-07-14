@@ -1,14 +1,14 @@
-name: API Specs Docs
+name: Build API Spec HTML Docs
 
 on:
   push:
     branches:
-      - apm-000-WPP-11527-export-swagger
+      - master
   workflow_dispatch:
 
 jobs:
   generate-api-docs:
-    name: Generate API Specs Docs
+    name: Generate API Specs HTML Docs
     runs-on: ubuntu-latest
 
     steps:
