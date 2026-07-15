@@ -1052,7 +1052,7 @@ components:
                     description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
                     example: "https://my.portal.com/Document/b710e648-c12e-4f66-80e2-9957a254900f"
     Task:
-      description: "FHIR TASK resource for the questionnaire"
+      description: "FHIR Task resource for the task"
       type: object
       required: 
         - resourceType
@@ -1063,7 +1063,7 @@ components:
         - for
         - authored
         - reasonReference
-        - owner
+        # removed 'owner' as it might need to be optional, as booking invites might offer a range of hospitals to choose from
         - reasonCode
       properties:
         resourceType:
@@ -1091,7 +1091,7 @@ components:
               type: string
               example: "3a146c43-2b21-44e9-95bc-6f4849e504c8"
         basedOn:
-          description: Reference to the related CarePlan (Pathway). This reference should contain the pathway ID. This field is required for PIFU questionnaires to identify duplicate entries and is optional for other questionnaire types.
+          description: Reference to the related CarePlan (Pathway). This reference should contain the pathway ID. This field is required to identify duplicate entries and is optional for other task types.
           type: array
           minItems: 0
           maxItems: 1
@@ -1124,25 +1124,55 @@ components:
                         description: "Care pathway Identifier"
                         example: "RBH5644312231"
         status:
-          description: "Status of the Task for the completion of the Questionnaire. See: https://build.fhir.org/valueset-task-status.html"
+          description: "Status of the task. See: https://build.fhir.org/valueset-task-status.html"
           type: string
           enum:
             - requested
+            # rejected is in FHIR R4, but will need to be added to our spec
+            - rejected
             - cancelled
             - in-progress
             - completed
+        statusReason:
+          # statusReason exists in FHIR R4 but we will need to define which codes can be used
+          # as it is a CodeableConcept, which allows us to extend it as we see fit
+          description: "Additional detail about the status of a task, for when further clarity is required, such as the reason a patient rejected an invite to book their appointment."
+          type: object
+          properties:
+            coding:
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: object
+                properties:
+                  system:
+                    type: string
+                    enum:
+                      - https://fhir.nhs.uk/CodeSystem/Task-StatusReason
+                  code:
+                    type: string
+                    enum:
+                    # This a just some possible codes; need more input for stakeholders to determine suitable list
+                      - appointment-type-unsuitable
+                      - condition-resolved
+                      - location-unsuitable
+                      - no-reason-given
+                      - no-response-within-booking-window
         intent: 
           description: "Hardcoded to plan. See: https://build.fhir.org/valueset-task-intent.html"
           type: string
           enum:
             - plan
         description:
-          description: "The patient-friendly, standardised title of the questionnaire that is suitable for display to patients. This value should match the name shown in your own interface and should follow the structure {Specialty name} {Questionnaire type}. If the questionnaire is linked to an appointment, the specialty should align with that appointment. For Patient Initiated Follow-Up (PIFU) questionnaires, the questionnaire type should not be included. The values presented within this field are required to be provided for Data Quality Assurance."
+          # Might need to extend this description to mention appointment bookings
+          description: "The patient-friendly, standardised title of the task that is suitable for display to patients. For questionnaires this value should match the name shown in your own interface and should follow the structure {Specialty name} {Questionnaire type}. If the questionnaire is linked to an appointment, the specialty should align with that appointment. For Patient Initiated Follow-Up (PIFU) questionnaires, the questionnaire type should not be included. The values presented within this field are required to be provided for Data Quality Assurance."
           type: string
           example: Dermatology pre-assessment questionnaire
         focus:
+          # This is optional and wouldn't apply to invites, as the appointment wouldn't exist
           type: object
-          description: Appointment reference to the appointments this questionnaire relates to.
+          description: Appointment reference to the appointments this task relates to (optional). Not required for appointment booking invites.
           required:
             - type
             - reference
@@ -1158,7 +1188,7 @@ components:
               example: https://my.portal.com/fhir/R4/Appointment/ec2458f2-1e24-41c8-b71b-0e701af7583d
         for:
           type: object
-          description: Patient whom the questionnaire relates to.
+          description: Patient whom the task relates to.
           required:
             - type
             - identifier
@@ -1185,40 +1215,47 @@ components:
                   example: "9123456789"
         authored:
           type: string
-          description: Date the questionnaire was first made available to a patient in a UTC format.
+          description: Date the task was first made available to a patient in a UTC format.
           example: "2021-06-13T12:30:00+00:00"
         lastModified:
           type: string
-          description: Records the date and time (UTC) the questionnaire was completed by the patient. For Patient Initiated Follow-up (PIFU) feature, this field represents the date and time the patient last requested a follow-up appointment, and applies only to that individual PIFU request. This date must be greater than or equal to authored date.
+          description: Records the date and time (UTC) the task was completed by the patient. For Patient Initiated Follow-up (PIFU) feature, this field represents the date and time the patient last requested a follow-up appointment, and applies only to that individual PIFU request. This date must be greater than or equal to authored date.
           example: "2025-08-28T12:30:00+00:00"
         restriction:
+          # This is optional, but can be used for invites to signal when it must be actioned by
           type: object
-          description: Constraints on the questionnaire.
+          description: Constraints on the task.
           properties:
             period: 
               type: object
               properties:
                 end:
                   type: string
-                  description: Indicates the end date for the questionnaire. For the Patient Initiated Follow-up (PIFU) feature, this represents the expiration date of the questionnaire. After this date has passed, the patient can no longer raise a follow-up request.
+                  description: Indicates the end date for the task. For the Patient Initiated Follow-up (PIFU) feature, this represents the expiration date of the questionnaire. After this date has passed, the patient can no longer raise a follow-up request. For appointment booking invites, this date is when this invite expires.
                   example: "2025-10-18T12:30:00+00:00"
         reasonReference:
+          # This mandatory, so its type enum will need to be extended to include invites
+          # Not sure why it is called "reasonReference"; doesn't seem like a suitable name to me
           type: object
-          description: Reference to the Questionnaire being requested.
+          description: Reference to the Task being requested.
           required:
             - type
             - reference
           properties:
             type: 
               type: string
-              description: Questionnaire FHIR Resource
+              description: FHIR Resource
               enum:
                 - "Questionnaire"
+                # Need to check if this should relate to the specific task, such as Invite to Book, or just be "Task" 
+                - "AppointmentBooking"
             reference: 
               type: string
               description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
               example: "https://my.portal.com/Questionnaire/3a146c43-2b21-44e9-95bc-6f4849e504c8"
         owner:
+          # This might be a problem as it is mandatory, and for invite to book the patient
+          # would likely be given the choice of hospitals at which to have their appointment
           type: object
           description: Organization responsible for the patients care
           required:
@@ -1249,15 +1286,16 @@ components:
               type: string
               example: Barnsley Hospital NHS Foundation Trust
         reasonCode:
+          # This is mandatory, so will need to be extended to include booking invites
           type: object
-          description: Reason for the Task, the request for a patient to complete a Questionnaire.
+          description: Reason for the Task, the request for a patient to complete a the Task.
           required:
             - coding
             - text
           properties:
             coding:
               type: object
-              description: Array of Coding for the type of questionnaire to be completed.
+              description: Array of Coding for the type of task to be completed.
               required:
                 - system
                 - code
@@ -1265,27 +1303,29 @@ components:
               properties:
                 system:
                   type: string
-                  description: URI to identifier Questionnaire types
+                  description: URI to identify Task types
                   enum:
                     - https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
+                    # Proposed extension; should it be for a generic task or for an invite?
+                    - https://fhir.nhs.uk/StructureDefinition/Extension-Task-Type
                 code:
                   type: string
-                  description: Questionnaire type code. For questionnaires that are part of the patient initiated follow-up (PIFU) feature, the questionnaire type code must be set to "pifu-triage".
+                  description: Task type code. For questionnaires that are part of the patient initiated follow-up (PIFU) feature, the questionnaire type code must be set to "pifu-triage".
                   example: CONS-Survey
                 display:
                   type: string
-                  description: Questionnaire type
+                  description: Task type
                   example: Consultation Survey
             text:
               type: string
-              description: Questionnaire type
+              description: Task type
               example: Pre-consultation Survey
         extension:
           description: "FHIR extensions for Task resources."
           type: array
           items:
             anyOf: 
-              - description: "Treatment function associated to the Questionnaire. Please note: this must be provided for any \"pifu-triage\" Questionnaires."
+              - description: "Treatment function associated to the Task. Please note: this must be provided for any \"pifu-triage\" Questionnaires."
                 type: object
                 required:
                   - url
