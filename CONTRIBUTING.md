@@ -32,6 +32,12 @@ Longer description of changes if explaining rationale is necessary,
 limited to 80 columns and spanning as many lines as you need.
 ```
 
+### API Spec Changes
+
+When proposing API spec updates, treat the pull request as the working record for the change. Once the proposed spec is ready, open or update the PR so the HTML docs can be generated and reviewed from the same branch, then use that PR to gather/collate feedback from the relevant stakeholders and capture sign-off.
+
+This helps show the evolution of the proposed spec over time and keeps the discussion, generated docs, review comments, and approvals together in one place. Please keep the PR up to date as the spec iterates so reviewers can compare each revision against the previous state.
+
 ### Changelog
 Every pull request must include a change to the changelog.
 
