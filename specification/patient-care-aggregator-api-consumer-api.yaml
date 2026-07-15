@@ -156,7 +156,7 @@ servers:
 paths:
   /aggregator/events:
     get:
-      summary: Get patients referrals, bookings, documents, questionnaires and waiting lists
+      summary: Get patients referrals, bookings, documents, questionnaires, tasks and waiting lists
       operationId: get-referrals-and-bookings
       description: The Wayfinder Patient Care Aggregator CarePlan response will return a FHIR [Bundle](https://www.hl7.org/fhir/r4/bundle.html) resource which will contain one [CarePlan](https://www.hl7.org/fhir/r4/careplan.html) resource per Waiting List Entry, one [CarePlan](https://www.hl7.org/fhir/r4/careplan.html) resource containing all Referrals, Appointments, Documents and Questionnaires and one optional [OperationOutcome](https://www.hl7.org/fhir/r4/OperationOutcome.html) resource (based on the UK Core FHIR specification) for use by the NHS App to the following specification.
         
@@ -451,7 +451,7 @@ components:
               type: string
               example: Isle of Wight NHS Trust
         activity:
-          description: Array of referral, appointments, documents and questionnaires related to the patients care.
+          description: Array of referral, appointments, documents, tasks and questionnaires related to the patients care.
           type: array
           items:
             anyOf:
@@ -459,6 +459,7 @@ components:
               - $ref: "#/components/schemas/Appointment"
               - $ref: "#/components/schemas/Document"
               - $ref: "#/components/schemas/Questionnaire"
+              - $ref: "#/components/schemas/Task"
       externalDocs:
         description: FHIR UK Core CarePlan (R4) Resource Profile
         url: https://hl7.org/fhir/R4/careplan.html
@@ -1196,6 +1197,236 @@ components:
                     description: ODS Organisation name (NHS Trust)
                     type: string
                     example: THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST
+    Task:
+      # The layout of the proposed Task resource contains all the fields from the Questionnaire resource
+      # so that it could also be used to represent a questionnaire response and then the Questionnaire 
+      # resource could be deprecated.
+      description: A summary of the task to be actioned by the patient.
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          description: Details of the task.
+          type: object
+          required:
+          # The required fields match those in the Questionnaire resource, as retain interoperability
+            - kind
+            - status
+            - description
+          properties:
+            id:
+              description: Identifier for the Task
+              type: string
+              example: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
+            kind:
+              # This is mandatory, so it will need to be extended whenever a new task type is needed
+              description: Type of task activity.
+              type: string
+              enum:
+                - QuestionnaireResponse
+                - AppointmentBookingInvite
+            status:
+              description: The status of the task, if it has been started or completed by the patient.
+              type: string
+              enum:
+                - not-started
+                - in-progress
+                - completed
+                - cancelled
+                # rejected is in FHIR R$, but not currently in our spec
+                - rejected
+            statusReason:
+              # statusReason is in FHIR R4, and very flexible because it is a CodeableConcept, so we could chose to pass the same codes through from the producer spec 
+              # or preprend these codes with status they refer to, such as "rejected-condition-resolved".
+              description: Additional information to clarify the reason for the status (optional). Can be used to indicate why an appointment booking invitation has been rejected, such as when the patient has recovered, or offered appointment type is no desired by the patient.
+              type: string
+              enum:
+                - appointment-type-unsuitable
+                - condition-resolved
+                - location-unsuitable
+                - no-reason-given
+                - no-response-within-booking-window
+            extension:
+              description: FHIR extension wrapper for various country-specific data items.
+              type: array
+              items:
+                anyOf:
+                  - description: URL for a patient-facing web application for the referral or booking. Always present.
+                    type: object
+                    required:
+                      - url
+                      - valueUrl
+                      - extension
+                    properties:
+                      url:
+                        description: FHIR extension type.
+                        type: string
+                        enum:
+                          - https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+                      valueUrl:
+                        description: The URL itself.
+                        type: string
+                        example: https://refer.nhs.uk/nhslogin?ubrn=808993698030
+                  - description: FHIR extension wrapper for the details of which upstream application the referral or booking came from.
+                    type: array
+                    items:
+                      description: Unique identifier for the upstream application the referral or booking came from.
+                      type: object
+                      required:
+                        - url
+                        - valueCode
+                      properties:
+                        url:
+                          description: FHIR extension type for the identifier.
+                          type: string
+                          enum:
+                            - client-id
+                        valueCode:
+                          description: The identifier itself.
+                          type: string
+                          example: ers-01
+                  - description: Reference to Appointment extension (optional). To be included when an Appointment has been booked; will be absent when task is for an invitation to book an appointment.
+                    type: object
+                    required:
+                      - url
+                      - valueReference
+                    properties:
+                      url:
+                        description: FHIR extension uri for the Appointment Reference.
+                        type: string
+                        enum:
+                          - https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
+                      valueReference:
+                        description: The Reference to Appointment which this Questionnaire is associated to.
+                        type: object
+                        required:
+                          - reference
+                        properties:
+                          reference:
+                            type: string
+                            example: Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+                  - description: FHIR extension for Task type coding
+                  # This will likely need to be created so the NHS App can distinguish between Questionnaires and other 
+                  # tasks, such as booking invites
+                    type: object
+                    required:
+                      - url
+                      - valueCoding
+                    properties:
+                      url:
+                        type: string
+                        enum:
+                          - https://fhir.nhs.uk/StructureDefinition/Extension-Task-Type
+                        description: Extension URL indicating the type of task.
+                      valueCoding:
+                        type: object
+                        required:
+                          - system
+                          - code
+                        properties:
+                          system:
+                            type: string
+                            enum:
+                              - https://fhir.nhs.uk/CodeSystem/Task-Type
+                          code:
+                            type: string
+                            example: appointment-booking-invite
+                  - description: FHIR extension for Questionnaire type coding
+                  # The existing Questionnaire coding is retained for backwards compatibility with the Questionnaire
+                  # resource. The Task type coding extension above could eventually be extended to include any
+                  # required questionnaire type codes, so this extension could eventually be dropped.
+                    type: object
+                    required:
+                      - url
+                      - valueCoding
+                    properties:
+                      url:
+                        type: string
+                        enum:
+                          - https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
+                        description: Extension URL indicating the type of Questionnaire.
+                      valueCoding:
+                        type: object
+                        required:
+                          - system
+                          - code
+                        properties:
+                          system:
+                            type: string
+                            enum:
+                              - https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
+                          code:
+                            type: string
+                            example: pifu-triage          
+                  - description: FHIR extension for Task last modified date
+                    type: object
+                    required:
+                      - url
+                      - valueDate
+                    properties:
+                      url:
+                        description: Extension URL for the Task last modified date.
+                        type: string
+                        enum:
+                          - https://fhir.nhs.uk/StructureDefinition/Extension-Task-LastModifiedDate
+                      valueDate:
+                        description: The date that this task was last modified by the user.
+                        type: string
+                        example: '2025-06-23'
+            description:
+              description: Description of the task to be displayed to the patient. _Note; this is freetext and can contain some data quality issues._
+              type: string
+              example: Appointment Booking Invitation
+            scheduledPeriod:
+              description: The period over which the activity is to occur.
+              type: object
+              required:
+                - start
+              properties:
+                start:
+                  description: The effective start date of the task i.e. the date the appointment booking invite was first available to the patient to complete.
+                  type: string
+                  example: '2025-06-20T18:00:00.000Z'
+                end:
+                  description: The effective end date of the task i.e. the date by which the patient should complete the appointment booking task.
+                  type: string
+                  example: '2025-12-20T00:00:00.000Z'
+            performer:
+              description: The organisation responsible for the Task. 
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                description: The organisation the task is from.
+                type: object
+                required:
+                  - type
+                  - display
+                  - identifier
+                properties:
+                  type:
+                    description: Type of entity.
+                    type: string
+                    enum:
+                      - Organization
+                  identifier:
+                    type: object
+                    required:
+                      - system
+                      - value
+                    properties:
+                      system:
+                        type: string
+                        enum:
+                        - "https://fhir.nhs.uk/Id/ods-organization-code"
+                      value:
+                        type: string
+                        example: "RTD"
+                  display:
+                    description: ODS Organisation name (NHS Trust)
+                    type: string
+                    example: THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST                
     OperationOutcome:
       description: A FHIR `OperationOutcome` resource containing details of the issues that have occurred.
       type: object
