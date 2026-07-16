@@ -1625,8 +1625,8 @@ components:
               $ref: "#/components/examples/allAppointmentStates"
             allDocumentStates:
               $ref: "#/components/examples/allDocumentStates"
-            allQuestionnairestates:
-              $ref: "#/components/examples/allQuestionnairestates"
+            allQuestionnaireStates:
+              $ref: "#/components/examples/allQuestionnaireStates"
             allAppointmentBookingInvitationStates:
               $ref: "#/components/examples/allAppointmentBookingInvitationStates"  
             incompleteWaitingLists:
