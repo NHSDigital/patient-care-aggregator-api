@@ -1298,7 +1298,7 @@ components:
                         enum:
                           - https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                       valueReference:
-                        description: The Reference to Appointment which this Questionnaire is associated to.
+                        description: The Reference to Appointment which this Task is associated to.
                         type: object
                         required:
                           - reference
@@ -1627,6 +1627,8 @@ components:
               $ref: "#/components/examples/allDocumentStates"
             allQuestionnairestates:
               $ref: "#/components/examples/allQuestionnairestates"
+            allTaskStates:
+              $ref: "#/components/examples/allTaskStates"  
             incompleteWaitingLists:
               $ref: "#/components/examples/incompleteWaitingLists"
             incompleteWaitingListBreastScreening: # Not current supported
@@ -1784,6 +1786,21 @@ components:
               $ref: "#/components/examples/questionnaireCompleteLinked"
             questionnaireCompleteUnlinked:
               $ref: "#/components/examples/questionnaireCompleteUnlinked"
+            # Tasks  
+            appointmentBookingInvitation:
+              $ref: "#/components/examples/appointmentBookingInvitation"
+            appointmentBookingInvitationWithExpiryDate:
+              $ref: "#/components/examples/appointmentBookingInvitationWithExpiryDate"
+            appointmentBookingInvitationStartedNotComplete:
+              $ref: "#/components/examples/appointmentBookingInvitationStartedNotComplete"
+            appointmentBookingInvitationCompleted:
+              $ref: "#/components/examples/appointmentBookingInvitationCompleted"
+            appointmentBookingInvitationCancelledNoResponse:
+              $ref: "#/components/examples/appointmentBookingInvitationCancelledNoResponse"
+            appointmentBookingInvitationRejected:
+              $ref: "#/components/examples/appointmentBookingInvitationRejected"
+            appointmentBookingInvitationRejectedConditionResolved:
+              $ref: "#/components/examples/appointmentBookingInvitationRejectedConditionResolved"                        
             # PIFU
             pifuZeroWaitingListZeroPifu:
               $ref: "#/components/examples/pifuZeroWaitingListZeroPifu"
@@ -2098,7 +2115,7 @@ components:
                 - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/correspondenceReadUnlinked"
                 #- $ref: "#/components/examples/Attachment" # Not current supported
-    allQuestionnairestates:
+    allQuestionnaireStates:
       summary: 200 All Questionnaire states
       value:
         resourceType: Bundle
@@ -4500,6 +4517,106 @@ components:
                 system: https://fhir.nhs.uk/Id/ods-organization-code
                 value: 'RXP'              
               display: COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST
+    # Tasks
+    appointmentBookingInvitation:
+      summary: Fragment - Task for an invitation to book an appointment which has not been undertaken by the patient yet
+      value:
+        detail:
+          id: ad8baee0-f2b2-4258-ad25-a8de19c32c14
+          kind: AppointmentBookingInvite
+          status: not-started
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://my.portal.com/AppointmentBookingInvite/ad8baee0-f2b2-4258-ad25-a8de19c32c14
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01
+    appointmentBookingInvitationWithExpiryDate:
+      summary: Fragment - Task for an invitation to book an appointment which has an expiry date, and has not been undertaken by the patient yet
+      value:
+        detail:
+          id: 76c9d16f-1640-45f7-9455-17359eb38b03
+          kind: AppointmentBookingInvite
+          status: not-started
+          scheduledPeriod:
+            start: '2025-07-16T09:00:00.000Z'
+            end: '2025-08-01T09:00:00.000Z'
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://my.portal.com/AppointmentBookingInvite/76c9d16f-1640-45f7-9455-17359eb38b03
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01          
+    appointmentBookingInvitationStartedNotComplete:
+      summary: Fragment - Task for an invitation to book an appointment which has been started but not yet completed by the patient
+      value:
+        detail:
+          id: a814df2b-3e47-4f1a-9895-7e987bcdf5d6
+          kind: AppointmentBookingInvite
+          status: in-progress
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://my.portal.com/AppointmentBookingInvite/a814df2b-3e47-4f1a-9895-7e987bcdf5d6
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01
+    appointmentBookingInvitationCompleted:
+      summary: Fragment - Task for an invitation to book an appointment which has been completed by the patient
+      value:
+        detail:
+          id: 0d3d275b-b3f6-4419-a72a-f6f10f1bef94
+          kind: AppointmentBookingInvite
+          status: completed
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://my.portal.com/AppointmentBookingInvite/0d3d275b-b3f6-4419-a72a-f6f10f1bef94
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
+              valueReference:
+                reference: Appointment/067024ee-134c-45fe-aa04-1a8544653c8f
+    appointmentBookingInvitationCancelledNoResponse:
+      summary: Fragment - Task for an invitation to book an appointment which has been cancelled due to a lack of action by the patient within the booking window
+      value:
+        detail:
+          id: 22dd1b13-6b74-49a2-9fee-89e4a079fdcb
+          kind: AppointmentBookingInvite
+          status: cancelled
+          statusReason: no-response-within-booking-window
+          scheduledPeriod:
+            start: '2025-06-01T09:00:00.000Z'
+            end: '2025-07-01T09:00:00.000Z'
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://my.portal.com/AppointmentBookingInvite/22dd1b13-6b74-49a2-9fee-89e4a079fdcb
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01
+    appointmentBookingInvitationRejected:
+      summary: Fragment - Task for an invitation to book an appointment which has been rejected by the patient within the booking window
+      value:
+        detail:
+          id: c293d1b5-a297-430a-8ffb-7b426854df93
+          kind: AppointmentBookingInvite
+          status: rejected
+          scheduledPeriod:
+            start: '2025-07-16T09:00:00.000Z'
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://my.portal.com/AppointmentBookingInvite/c293d1b5-a297-430a-8ffb-7b426854df93
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01
+    appointmentBookingInvitationRejectedConditionResolved:
+      summary: Fragment - Task for an invitation to book an appointment which has been cancelled by the patient due to an improvement in their condition
+      value:
+        detail:
+          id: 5d86e89b-53dc-4ed2-b296-bbf31b5333c2
+          kind: AppointmentBookingInvite
+          status: rejected
+          statusReason: condition-resolved
+          scheduledPeriod:
+            start: '2025-07-16T09:00:00.000Z'
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://my.portal.com/AppointmentBookingInvite/5d86e89b-53dc-4ed2-b296-bbf31b5333c2
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01                                                  
     # PIFU
     pifuZeroWaitingListZeroPifu:
       summary: 200 - PIFU Zero Waiting List entries, Zero PIFU pathways
