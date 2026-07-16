@@ -289,7 +289,8 @@ paths:
         # - $ref: "#/components/parameters/nhsdTargetIdentifier"       
       responses:
         2XX:
-          $ref: "#/components/responses/questionnaireHappyPath"
+          $ref: "#/components/responses/taskQuestionnaireHappyPath"
+          $ref: "#/components/responses/taskAppointmentBookingInvitationHappyPath"
         4XX:
           $ref: "#/components/responses/4XX"
 components:
@@ -1510,7 +1511,7 @@ components:
               $ref: "#/components/examples/emptyBundle"
             document:
               $ref: "#/components/examples/document"
-    questionnaireHappyPath:
+    tasksQuestionnaireHappyPath:
       description: A successful request.
       headers:
         #X-Request-ID:
@@ -1525,7 +1526,23 @@ components:
             emptyBundle:
               $ref: "#/components/examples/emptyBundle"
             questionnaire:
-              $ref: "#/components/examples/questionnaire"
+              $ref: "#/components/examples/taskQuestionnaire"
+    tasksAppointmentBookingInvitationHappyPath:
+      description: A successful request.
+      headers:
+        #X-Request-ID:
+        #  $ref: "#/components/headers/xRequestId"
+        X-Correlation-ID:
+          $ref: "#/components/headers/xCorrelationId"
+      content:
+        application/fhir+json:
+          schema:
+            $ref: "#/components/schemas/Task"
+          examples:
+            emptyBundle:
+              $ref: "#/components/examples/emptyBundle"
+            appointmentBookingInvite:
+              $ref: "#/components/examples/taskAppointmentBookingInvite"          
     4XX:
       description: |
         When the service is unable to serve a successful response a FHIR `OperationOutcome` resource should be returned with the relevant HTTP status code defined as follows:
@@ -1809,7 +1826,7 @@ components:
                 - attachment:
                     contentType: "application/pdf"
                     url: "https://my.portal.com/Document/2f02f7ac-0de5-4271-81ad-92b69ead27e9"
-    questionnaire:
+    taskQuestionnaire:
       summary: 200 Example Patient with a Questionnaire
       value:
         resourceType: Bundle
@@ -1854,6 +1871,57 @@ components:
                     code: "CONS-Survey"
                     display: "Consultation Survey"
                 text: "Pre-consultation Survey"
+              extension:
+                - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
+                  valueCoding:
+                    system: "https://fhir.nhs.uk/CodeSystem/Specialty-1"
+                    code: "330"
+                    display: "Dermatology"
+    taskAppointmentBookingInvite:
+      summary: 200 Example Patient with a Appointment Booking Invitation
+      value:
+        resourceType: Bundle
+        type: searchset
+        total: 1
+        entry:
+          - fullUrl: "https://my.patientportal.co.uk/Task/3947e645-c7f9-4791-b5b5-386b97e4b271"
+            search:
+              mode: match
+            resource:
+              resourceType: Task
+              id: "6383658e-fef4-4b89-9f68-7af67ed8c382"
+              basedOn:
+                - type: "CarePlan"
+                  identifier:
+                    system: "https://fhir.nhs.uk/Id/PathwayId"
+                    value: "RBH5644312231"
+              status: "requested"
+              intent: "plan"
+              description: "Invitation to Book a Video Consultation Appointment"
+              for:
+                type: "Patient"
+                identifier:
+                  system: "https://fhir.nhs.uk/Id/nhs-number"
+                  value: "9000000014"
+              authoredOn: "2026-07-13T12:30:00+00:00"
+              restriction:
+                period:
+                  end: "2026-07-13T18:00:00+00:00"
+              reasonReference:
+                type: "AppointmentBooking"
+                reference: "https://my.portal.com/AppointmentBooking/cdb83383-f17e-4bf7-8f40-342f7f7c7d8d"
+              owner:
+                type: "Organization"
+                identifier:
+                  system: "https://fhir.nhs.uk/Id/ods-organization-code"
+                  value: "RFF"
+                display: "Barnsley Hospital NHS Foundation Trust"
+              reasonCode:
+                coding:
+                  - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-Type"
+                    code: "VIDEO-CONSULT"
+                    display: "Video Consultation"
+                text: "Online Video Consultation"
               extension:
                 - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
                   valueCoding:
