@@ -242,12 +242,12 @@ paths:
       operationId: get-tasks
       description: |
         ## Overview
-        This endpoint returns a list of tasks for completion of questionnaires from a secondary care booking system for a given patient.
+        This endpoint returns a list of tasks, such as those for appointment booking invitations or for the completion of questionnaires, from a secondary care booking system for a given patient.
         It returns the tasks as a FHIR 'Bundle' containing FHIR 'Task' resources.
         
         Note that the above URL path is an example - you can use a different URL path if you prefer.
         
-        ## Questionnaires inclusion and exclusion rules
+        ## Task inclusion and exclusion rules
         The endpoint includes / excludes tasks as per the following rules:
         - NHS in England only: Only include tasks related to appointments for care settings within the NHS in England.
         - NHS Trusts only: Only include tasks related to appointments for acute, mental health or community care settings - not any other type.
