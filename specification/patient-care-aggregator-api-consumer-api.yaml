@@ -1627,8 +1627,8 @@ components:
               $ref: "#/components/examples/allDocumentStates"
             allQuestionnairestates:
               $ref: "#/components/examples/allQuestionnairestates"
-            allTaskStates:
-              $ref: "#/components/examples/allTaskStates"  
+            allAppointmentBookingInvitationStates:
+              $ref: "#/components/examples/allAppointmentBookingInvitationStates"  
             incompleteWaitingLists:
               $ref: "#/components/examples/incompleteWaitingLists"
             incompleteWaitingListBreastScreening: # Not current supported
@@ -1773,7 +1773,7 @@ components:
               $ref: "#/components/examples/correspondenceReadUnlinked"
             #Attachment:
             #  $ref: "#/components/examples/Attachment"
-            # Questionnaires
+            # Task - Questionnaires
             questionnaireIncompleteLinked:
               $ref: "#/components/examples/questionnaireIncompleteLinked"
             questionnaireIncompleteUnlinked:
@@ -1786,7 +1786,7 @@ components:
               $ref: "#/components/examples/questionnaireCompleteLinked"
             questionnaireCompleteUnlinked:
               $ref: "#/components/examples/questionnaireCompleteUnlinked"
-            # Tasks  
+            # Task - Appointment Booking Invitations  
             appointmentBookingInvitation:
               $ref: "#/components/examples/appointmentBookingInvitation"
             appointmentBookingInvitationWithExpiryDate:
@@ -2148,6 +2148,40 @@ components:
                 - $ref: "#/components/examples/questionnairePartiallyCompleteUnlinked"
                 - $ref: "#/components/examples/questionnaireCompleteLinked"
                 - $ref: "#/components/examples/questionnaireCompleteUnlinked"
+    allAppointmentBookingInvitationStates:
+      summary: 200 All Appointment Booking Invitation states
+      value:
+        resourceType: Bundle
+        id: 665c2aab-a7c1-49f5-a128-686db221be81
+        meta:
+          versionId: "3.3.4"
+          profile:
+            - https://fhir.nhs.uk/StructureDefinition/WayfinderUKCoreBundle
+        type: searchset
+        total: 1
+        entry:
+          - fullUrl: https://api.service.nhs.uk/patient-care-aggregator-api/CarePlan/665c2aab-a7c1-49f5-a128-686db221be81
+            search:
+              mode: match
+            resource:
+              resourceType: CarePlan
+              meta:
+                profile:
+                  - https://fhir.nhs.uk/StructureDefinition/WayfinderUKCoreCarePlan
+              status: active
+              intent: order
+              subject:
+                identifier:
+                  system: https://fhir.nhs.uk/Id/nhs-number
+                  value: '9000000014'
+              activity:
+                - $ref: "#/components/examples/appointmentBookingInvitation"
+                - $ref: "#/components/examples/appointmentBookingInvitationWithExpiryDate"
+                - $ref: "#/components/examples/appointmentBookingInvitationStartedNotComplete"
+                - $ref: "#/components/examples/appointmentBookingInvitationCompleted"
+                - $ref: "#/components/examples/appointmentBookingInvitationCancelledNoResponse"
+                - $ref: "#/components/examples/appointmentBookingInvitationRejected"
+                - $ref: "#/components/examples/appointmentBookingInvitationRejectedConditionResolved"
     incompleteWaitingLists:
       summary: 200 One incomplete waiting list
       description: |
