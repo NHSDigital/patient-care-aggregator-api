@@ -289,8 +289,7 @@ paths:
         # - $ref: "#/components/parameters/nhsdTargetIdentifier"       
       responses:
         2XX:
-          $ref: "#/components/responses/taskQuestionnaireHappyPath"
-          $ref: "#/components/responses/taskAppointmentBookingInvitationHappyPath"
+            $ref: "#/components/responses/tasksHappyPath"
         4XX:
           $ref: "#/components/responses/4XX"
 components:
@@ -1511,7 +1510,7 @@ components:
               $ref: "#/components/examples/emptyBundle"
             document:
               $ref: "#/components/examples/document"
-    tasksQuestionnaireHappyPath:
+    tasksHappyPath:
       description: A successful request.
       headers:
         #X-Request-ID:
@@ -1527,22 +1526,8 @@ components:
               $ref: "#/components/examples/emptyBundle"
             questionnaire:
               $ref: "#/components/examples/taskQuestionnaire"
-    tasksAppointmentBookingInvitationHappyPath:
-      description: A successful request.
-      headers:
-        #X-Request-ID:
-        #  $ref: "#/components/headers/xRequestId"
-        X-Correlation-ID:
-          $ref: "#/components/headers/xCorrelationId"
-      content:
-        application/fhir+json:
-          schema:
-            $ref: "#/components/schemas/Task"
-          examples:
-            emptyBundle:
-              $ref: "#/components/examples/emptyBundle"
             appointmentBookingInvite:
-              $ref: "#/components/examples/taskAppointmentBookingInvite"          
+              $ref: "#/components/examples/taskAppointmentBookingInvite"
     4XX:
       description: |
         When the service is unable to serve a successful response a FHIR `OperationOutcome` resource should be returned with the relevant HTTP status code defined as follows:
