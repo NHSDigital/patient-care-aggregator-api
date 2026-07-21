@@ -9,9 +9,9 @@ jobs:
 
       - name: Grab ticket name
         if: contains(github.event.pull_request.head.ref, 'apm-') || contains(github.event.pull_request.head.ref, 'APM-') || contains(github.event.pull_request.head.ref, 'apmspii-') || contains(github.event.pull_request.head.ref, 'APMSPII-') || contains(github.event.pull_request.head.ref, 'adz-') || contains(github.event.pull_request.head.ref, 'ADZ-') || contains(github.event.pull_request.head.ref, 'amb-') || contains(github.event.pull_request.head.ref, 'AMB-') || contains(github.event.pull_request.head.ref, 'amp-') || contains(github.event.pull_request.head.ref, 'AMP-')|| contains(github.event.pull_request.head.ref, 'wpp-') || contains(github.event.pull_request.head.ref, 'WPP-')
-        run: echo ::set-env name=TICKET_NAME::$(echo ${{ github.event.pull_request.head.ref }} | grep -i -o '\(apm-[0-9]\+\)\|\(apmspii-[0-9]\+\)\|\(adz-[0-9]\+\)|\(amb-[0-9]\+\)|\(amp-[0-9]\+\)|\(wpp-[0-9]\+\)' | tr '[:lower:]' '[:upper:]')
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        run: |
+           TICKET_NAME=$(echo "${{ github.event.pull_request.head.ref }}" | grep -i -E -o '(apm-[0-9]+|apmspii-[0-9]+|adz-[0-9]+|amb-[0-9]+|amp-[0-9]+|wpp-[0-9]+)' | tr '[:lower:]' '[:upper:]')
+           echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
 
       - name: Comment on PR with link to JIRA ticket
         if: contains(github.event.pull_request.head.ref, 'apm-') || contains(github.event.pull_request.head.ref, 'APM-') || contains(github.event.pull_request.head.ref, 'apmspii-') || contains(github.event.pull_request.head.ref, 'APMSPII-') || contains(github.event.pull_request.head.ref, 'adz-') || contains(github.event.pull_request.head.ref, 'ADZ-') || contains(github.event.pull_request.head.ref, 'amb-') || contains(github.event.pull_request.head.ref, 'AMB-') || contains(github.event.pull_request.head.ref, 'amp-') || contains(github.event.pull_request.head.ref, 'AMP-') || contains(github.event.pull_request.head.ref, 'wpp-') || contains(github.event.pull_request.head.ref, 'WPP-')
