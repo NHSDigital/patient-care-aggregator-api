@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - 'specification/**'
   workflow_dispatch:
 
 jobs:
@@ -14,6 +16,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set short SHA
+        id: short-sha
+        run: echo "value=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -74,6 +80,25 @@ jobs:
       - name: Upload API docs artifact
         uses: actions/upload-artifact@v4
         with:
-          name: api-specs-html-docs
+          name: api-specs-html-docs-${{ steps.short-sha.outputs.value }}
           path: build/api-docs
           if-no-files-found: error
+
+      - name: Comment on PR with artifact links
+        if: github.event_name == 'pull_request'
+        uses: unsplash/comment-on-pr@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: |
+            ## API Spec HTML Docs
+
+            Built from commit `${{ steps.short-sha.outputs.value }}` — [view workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Download the **api-specs-html-docs-${{ steps.short-sha.outputs.value }}** artifact from the workflow run to view the generated docs:
+
+            | Spec | File |
+            | --- | --- |
+            | Consumer API | `consumer-api.html` |
+            | Producer API Standards | `producer-api-standards.html` |
+            | Record Service API | `record-service-api.html` |
