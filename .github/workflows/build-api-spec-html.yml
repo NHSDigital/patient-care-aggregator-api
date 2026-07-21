@@ -78,6 +78,7 @@ jobs:
 
 
       - name: Upload API docs artifact
+        id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
           name: api-specs-html-docs-${{ steps.short-sha.outputs.value }}
@@ -95,4 +96,4 @@ jobs:
 
             Built from commit `${{ steps.short-sha.outputs.value }}` — [view workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
-            **Download artifact:** [api-specs-html-docs-${{ steps.short-sha.outputs.value }}.zip](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/1#artifacts)
+            **Download HTML API Specs:** [api-specs-html-docs-${{ steps.short-sha.outputs.value }}.zip](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload-artifact.outputs.artifact-id }})
