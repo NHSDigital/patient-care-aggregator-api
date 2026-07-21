@@ -95,10 +95,4 @@ jobs:
 
             Built from commit `${{ steps.short-sha.outputs.value }}` — [view workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
-            Download the **api-specs-html-docs-${{ steps.short-sha.outputs.value }}** artifact from the workflow run to view the generated docs:
-
-            | Spec | File |
-            | --- | --- |
-            | Consumer API | `consumer-api.html` |
-            | Producer API Standards | `producer-api-standards.html` |
-            | Record Service API | `record-service-api.html` |
+            **Download artifact:** [api-specs-html-docs-${{ steps.short-sha.outputs.value }}.zip](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/1#artifacts)
