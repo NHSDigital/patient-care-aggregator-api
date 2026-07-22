@@ -5,13 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check ticket name conforms to requirements
-        run: echo ${{ github.event.pull_request.head.ref }} | grep -i -E -q "(wpp-[0-9]+)|(dependabot\/)"
-
-      - name: Grab ticket name
-        if: contains(github.event.pull_request.head.ref, 'wpp-') || contains(github.event.pull_request.head.ref, 'WPP-')
         run: |
-           TICKET_NAME=$(echo "${{ github.event.pull_request.head.ref }}" | grep -i -E -o '(wpp-[0-9]+)' | tr '[:lower:]' '[:upper:]')
-           echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
+          PR_REF=${{ github.event.pull_request.head.ref }}
+          VALID_TICKET=$(echo "$PR_REF" | grep -i -E -o '(wpp-[0-9]+)' | tr '[:lower:]' '[:upper:]')
+          if [ -z  "$VALID_TICKET" ]; then
+            echo "TICKET_NAME=$VALID_TICKET" >> "$GITHUB_ENV"
+          else
+            # dependabot branches are also valid, but won't have Jira ticket numbers
+            echo "$PR_REF" | grep -i -E -q "(dependabot\/)"
+          fi
 
       - name: Comment on PR with link to JIRA ticket
         if: contains(github.event.pull_request.head.ref, 'wpp-') || contains(github.event.pull_request.head.ref, 'WPP-')
