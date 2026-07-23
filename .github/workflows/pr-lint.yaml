@@ -8,11 +8,12 @@ jobs:
         env:
           PR_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          VALID_TICKET=$(echo "$PR_REF" | grep -i -E -o '(wpp-[0-9]+)' | tr '[:lower:]' '[:upper:]')
-          DEPENDABOT_PR=$(echo "$PR_REF" | grep -i -E -o '(dependabot\/)')
-          if [ -n  "$VALID_TICKET" ]; then
-            echo "TICKET_NAME=$VALID_TICKET" >> "$GITHUB_ENV"
-          elif [ -n "$DEPENDABOT_PR" ]; then
+          PR_REF_LC="${PR_REF,,}"  # lowercase copy for case-insensitive matching
+
+          if [[ "$PR_REF_LC" =~ (wpp-[0-9]+) ]]; then
+            TICKET_NAME="${BASH_REMATCH[1]^^}"  # convert matched ticket to uppercase
+            echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
+          elif [[ "$PR_REF_LC" == dependabot/* ]]; then
             echo "DEPENDABOT PR - NO JIRA TICKET REQUIRED"
           else
             echo "MISSING_JIRA_TICKET=true" >> "$GITHUB_ENV"
