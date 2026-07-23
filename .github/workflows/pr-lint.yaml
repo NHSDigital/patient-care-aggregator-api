@@ -51,7 +51,7 @@ jobs:
               issue_number: context.payload.pull_request.number,
             });
 
-            const ticketNumberComments = comments.data.filter(comment => comment.body.find('<!-- Jira Ticket: Ticket Info -->'))
+            const ticketNumberComments = comments.data.filter(comment => (comment.body || '').includes('<!-- Jira Ticket: Ticket Info -->'))
 
             if (ticketNumberComments.length > 0) {
               // linked ticket comment has already been posted, so exit early
