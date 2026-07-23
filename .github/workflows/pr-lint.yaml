@@ -17,32 +17,16 @@ jobs:
             echo "MISSING_JIRA_TICKET=true" >> "$GITHUB_ENV"
           fi
 
-      - name: Check for Existing Jira Ticket Comments
-        id: find-comments
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-            });
-
-            const ticketNumberCommentIds = comments.data.filter(comment => comment.body.find('<!-- Jira Ticket: Ticket Info -->')).map(c => c.id);
-            const warningCommentIds = comments.data.filter(comment => comment.body.find('<!-- Jira Ticket: Warning -->')).map(c => c.id);
-
-            core.setOutput('ticket-number-comment-ids', JSON.stringify(ticketNumberCommentIds));
-            core.setOutput('warning-comment-ids', JSON.stringify(warningCommentIds));
-
       - name: Comment on PR with Warning
-        if: env.MISSING_JIRA_TICKET == true && fromJSON(steps.find-comments.warning-comment-ids).length < 1
+        if: env.MISSING_JIRA_TICKET == 'true'
         uses: actions/github-script@v7
         with:
           script: |
             const message = `
-            <!-- Jira Ticket: Warning -->
-            ⚠️ This branch is missing its Jira Ticket number.
-            Please rename the branch to include it.
+            ⚠️ This branch name is missing its Jira Ticket number.
+            Please rename the branch to include the ticket number.
+              ex. feature/wpp-1234-spec-changes-for-abc
+            Then close this PR and open a new one from the branch with the corrected name.
             `;
 
             await github.rest.issues.createComment({
@@ -56,10 +40,23 @@ jobs:
             core.setFailed('No Jira ticket number found in branch name');
 
       - name: Comment on PR with link to JIRA ticket
-        if: env.TICKET_NAME != '' && fromJSON(steps.find-comments.ticket-number-comment-ids).length < 1
+        if: env.TICKET_NAME != ''
         uses: actions/github-script@v7
         with:
           script: |
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+
+            const ticketNumberComments = comments.data.filter(comment => comment.body.find('<!-- Jira Ticket: Ticket Info -->'))
+
+            if (ticketNumberComments.length > 0) {
+              // linked ticket comment has already been posted, so exit early
+              process.exit(0);
+            }
+
             const ticket = process.env.TICKET_NAME;
             const message = `
             <!-- Jira Ticket: Ticket Info -->
@@ -73,42 +70,3 @@ jobs:
               issue_number: context.payload.pull_request.number,
               body: message
             });
-
-      - name: Remove Unnecessary Warning Comments
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-            }).data;
-
-            const warningComments = comments.filter(comment => comment.body.find('<!-- Jira Ticket: Warning -->'));
-            const ticketComments = comments.filter(comment => comment.body.find('<!-- Jira Ticket: Ticket Info -->'));
-
-            if (warningComments.length > 0 && ticketComments > 0) {
-              // PR now has a ticket number in its branch name, and a corresponding comment
-              // so remove any previous warning comments
-              for (warning in warningComments) {
-                await github.rest.issues.deleteComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: warning.id
-                });
-              }
-            }
-
-            if (ticketComments > 1) {
-              // PR has more than one comment relating to the Jira ticket number
-              // so remove all but the most recent one
-              const commentsToDelete = ticketComments.slice(0, -1);
-
-              for (const comment of commentsToDelete) {
-                await github.rest.issues.deleteComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: comment.id
-                });
-              }
-            }
