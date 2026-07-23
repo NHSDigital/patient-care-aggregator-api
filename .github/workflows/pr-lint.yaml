@@ -8,9 +8,10 @@ jobs:
         run: |
           PR_REF=${{ github.event.pull_request.head.ref }}
           VALID_TICKET=$(echo "$PR_REF" | grep -i -E -o '(wpp-[0-9]+)' | tr '[:lower:]' '[:upper:]')
-          if [ -z  "$VALID_TICKET" ]; then
+          DEPENDABOT_PR=$(echo "$PR_REF" | grep -i -E -o '(dependabot\/)'')
+          if [ -n  "$VALID_TICKET" ]; then
             echo "TICKET_NAME=$VALID_TICKET" >> "$GITHUB_ENV"
-          echo "$PR_REF" | grep -i -E -q "(dependabot\/)"; then
+          elif [ -n "$DEPENDABOT_PR" ]; then
             echo "DEPENDABOT PR - NO JIRA TICKET REQUIRED"
           else
             echo "MISSING_JIRA_TICKET=true" >> "$GITHUB_ENV"
