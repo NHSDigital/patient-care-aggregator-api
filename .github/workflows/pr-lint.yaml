@@ -5,21 +5,70 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check ticket name conforms to requirements
-        run: echo ${{ github.event.pull_request.head.ref }} | grep -i -E -q "(apm-[0-9]+)|(apmspii-[0-9]+)|(adz-[0-9]+)|(amb-[0-9]+)|(amp-[0-9]+)|(dependabot\/)"
-
-      - name: Grab ticket name
-        if: contains(github.event.pull_request.head.ref, 'apm-') || contains(github.event.pull_request.head.ref, 'APM-') || contains(github.event.pull_request.head.ref, 'apmspii-') || contains(github.event.pull_request.head.ref, 'APMSPII-') || contains(github.event.pull_request.head.ref, 'adz-') || contains(github.event.pull_request.head.ref, 'ADZ-') || contains(github.event.pull_request.head.ref, 'amb-') || contains(github.event.pull_request.head.ref, 'AMB-') || contains(github.event.pull_request.head.ref, 'amp-') || contains(github.event.pull_request.head.ref, 'AMP-')
-        run: echo ::set-env name=TICKET_NAME::$(echo ${{ github.event.pull_request.head.ref }} | grep -i -o '\(apm-[0-9]\+\)\|\(apmspii-[0-9]\+\)\|\(adz-[0-9]\+\)|\(amb-[0-9]\+\)|\(amp-[0-9]\+\)' | tr '[:lower:]' '[:upper:]')
         env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+          PR_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          PR_REF_LC="${PR_REF,,}"  # lowercase copy for case-insensitive matching
+
+          if [[ "$PR_REF_LC" =~ (wpp-[0-9]+) ]]; then
+            TICKET_NAME="${BASH_REMATCH[1]^^}"  # convert matched ticket to uppercase
+            echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
+          elif [[ "$PR_REF_LC" == dependabot/* ]]; then
+            echo "DEPENDABOT PR - NO JIRA TICKET REQUIRED"
+          else
+            echo "MISSING_JIRA_TICKET=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Comment on PR with Warning
+        if: env.MISSING_JIRA_TICKET == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const message = `
+            ⚠️ This branch name is missing its Jira Ticket number.
+            Please rename the branch to include the ticket number.
+              ex. feature/wpp-1234-spec-changes-for-abc
+            Then close this PR and open a new one from the branch with the corrected name.
+            `;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: message
+            });
+
+            // fail workflow early when warning comment is posted
+            core.setFailed('No Jira ticket number found in branch name');
 
       - name: Comment on PR with link to JIRA ticket
-        if: contains(github.event.pull_request.head.ref, 'apm-') || contains(github.event.pull_request.head.ref, 'APM-') || contains(github.event.pull_request.head.ref, 'apmspii-') || contains(github.event.pull_request.head.ref, 'APMSPII-') || contains(github.event.pull_request.head.ref, 'adz-') || contains(github.event.pull_request.head.ref, 'ADZ-') || contains(github.event.pull_request.head.ref, 'amb-') || contains(github.event.pull_request.head.ref, 'AMB-') || contains(github.event.pull_request.head.ref, 'amp-') || contains(github.event.pull_request.head.ref, 'AMP-')
-        uses: unsplash/comment-on-pr@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: env.TICKET_NAME != ''
+        uses: actions/github-script@v7
         with:
-          msg: |
-            This branch is work on a ticket in the NHS Digital APM JIRA Project. Here's a handy link to the ticket:
-            # [${{ env.TICKET_NAME }}](https://nhsd-jira.digital.nhs.uk/browse/${{ env.TICKET_NAME}})
+          script: |
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
 
+            const ticketNumberComments = comments.data.filter(comment => (comment.body || '').includes('<!-- Jira Ticket: Ticket Info -->'))
+
+            if (ticketNumberComments.length > 0) {
+              // linked ticket comment has already been posted, so exit early
+              process.exit(0);
+            }
+
+            const ticket = process.env.TICKET_NAME;
+            const message = `
+            <!-- Jira Ticket: Ticket Info -->
+            This branch is work on a ticket in the NHS Digital WPP JIRA Project. Here's a handy link to the ticket:
+            # [${ticket}](https://nhsd-jira.digital.nhs.uk/browse/${ticket})
+            `;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: message
+            });
