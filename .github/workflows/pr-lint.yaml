@@ -5,10 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check ticket name conforms to requirements
+        env:
+          PR_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          PR_REF=${{ github.event.pull_request.head.ref }}
           VALID_TICKET=$(echo "$PR_REF" | grep -i -E -o '(wpp-[0-9]+)' | tr '[:lower:]' '[:upper:]')
-          DEPENDABOT_PR=$(echo "$PR_REF" | grep -i -E -o '(dependabot\/)'')
+          DEPENDABOT_PR=$(echo "$PR_REF" | grep -i -E -o '(dependabot\/)')
           if [ -n  "$VALID_TICKET" ]; then
             echo "TICKET_NAME=$VALID_TICKET" >> "$GITHUB_ENV"
           elif [ -n "$DEPENDABOT_PR" ]; then
