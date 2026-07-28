@@ -1,74 +1,19 @@
 name: PR Quality Check
 on: pull_request
+
 jobs:
   link-ticket:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check ticket name conforms to requirements
-        env:
-          PR_REF: ${{ github.event.pull_request.head.ref }}
-        run: |
-          PR_REF_LC="${PR_REF,,}"  # lowercase copy for case-insensitive matching
-
-          if [[ "$PR_REF_LC" =~ (wpp-[0-9]+) ]]; then
-            TICKET_NAME="${BASH_REMATCH[1]^^}"  # convert matched ticket to uppercase
-            echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
-          elif [[ "$PR_REF_LC" == dependabot/* ]]; then
-            echo "DEPENDABOT PR - NO JIRA TICKET REQUIRED"
-          else
-            echo "MISSING_JIRA_TICKET=true" >> "$GITHUB_ENV"
-          fi
-
-      - name: Comment on PR with Warning
-        if: env.MISSING_JIRA_TICKET == 'true'
-        uses: actions/github-script@v7
+      - name: Validate branch name and Jira ticket
+        id: validate
+        uses: NHSDigital/patient-care-aggregator.utilities/actions/validate-branch-name@118f47906ba9ac874c7a5f56f1e045d57c5c016f
         with:
-          script: |
-            const message = `
-            ⚠️ This branch name is missing its Jira Ticket number.
-            Please rename the branch to include the ticket number.
-              ex. feature/wpp-1234-spec-changes-for-abc
-            Then close this PR and open a new one from the branch with the corrected name.
-            `;
+          branch-name: ${{ github.head_ref }}
+          allowed-ticket-regex: '([Ww][Pp][Pp]-[0-9]+)'     
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body: message
-            });
-
-            // fail workflow early when warning comment is posted
-            core.setFailed('No Jira ticket number found in branch name');
-
-      - name: Comment on PR with link to JIRA ticket
-        if: env.TICKET_NAME != ''
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-            });
-
-            const ticketNumberComments = comments.data.filter(comment => (comment.body || '').includes('<!-- Jira Ticket: Ticket Info -->'))
-
-            if (ticketNumberComments.length > 0) {
-              // linked ticket comment has already been posted, so exit early
-              process.exit(0);
-            }
-
-            const ticket = process.env.TICKET_NAME;
-            const message = `
-            <!-- Jira Ticket: Ticket Info -->
-            This branch is work on a ticket in the NHS Digital WPP JIRA Project. Here's a handy link to the ticket:
-            # [${ticket}](https://nhsd-jira.digital.nhs.uk/browse/${ticket})
-            `;
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body: message
-            });
+      # - name: Fail if validation failed
+      #       if: steps.validate.outputs.validation-passed == 'false'
+      #       shell: bash
+      #       run: exit 1
