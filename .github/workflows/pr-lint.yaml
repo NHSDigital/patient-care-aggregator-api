@@ -54,27 +54,27 @@ jobs:
           if [[ "$PASSED" == "true" ]]; then
             read -r -d '' BODY <<EOF || true
             ${MARKER}
-
+            
             ## ✅ Branch Name Validation Passed
-
+            
             \`\`\`
             ${BRANCH_NAME}
             \`\`\`
-
+            
             ${JIRA_LINK}
             EOF
           else
             read -r -d '' BODY <<EOF || true
             ${MARKER}
-
+            
             ## ❌ Branch Name Validation Failed
-
+            
             Branch format is invalid.
-
+            
             Expected format: \`<prefix>/<JIRA-key>-<kebab-description>\`
-
+            
             Ensure JIRA ticket key is included. Allowed prefixes: feat, feature, chore, spike, hotfix, bugfix, release, revert
-
+            
             \`\`\`
             ${BRANCH_NAME}
             \`\`\`
