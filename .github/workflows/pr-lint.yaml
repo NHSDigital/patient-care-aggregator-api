@@ -53,33 +53,33 @@ jobs:
           
           if [[ "$PASSED" == "true" ]]; then
           # read line is correctly indented; it needs to be one tab ahead of the rest of the heredoc lines
-              read -r -d '' BODY <<EOF || true
-            ${MARKER}
-            
-            ## ✅ Branch Name Validation Passed
-            
-            \`\`\`
-            ${BRANCH_NAME}
-            \`\`\`
-            
-            ${JIRA_LINK}
-            EOF
+            read -r -d '' BODY <<EOF || true
+          ${MARKER}
+          
+          ## ✅ Branch Name Validation Passed
+          
+          \`\`\`
+          ${BRANCH_NAME}
+          \`\`\`
+          
+          ${JIRA_LINK}
+          EOF
           else
-              read -r -d '' BODY <<EOF || true
-            ${MARKER}
-            
-            ## ❌ Branch Name Validation Failed
-            
-            Branch format is invalid.
-            
-            Expected format: \`<prefix>/<JIRA-key>-<kebab-description>\`
-            
-            Ensure JIRA ticket key is included. Allowed prefixes: feat, feature, chore, spike, hotfix, bugfix, release, revert
-            
-            \`\`\`
-            ${BRANCH_NAME}
-            \`\`\`
-            EOF
+            read -r -d '' BODY <<EOF || true
+          ${MARKER}
+          
+          ## ❌ Branch Name Validation Failed
+          
+          Branch format is invalid.
+          
+          Expected format: \`<prefix>/<JIRA-key>-<kebab-description>\`
+          
+          Ensure JIRA ticket key is included. Allowed prefixes: feat, feature, chore, spike, hotfix, bugfix, release, revert
+          
+          \`\`\`
+          ${BRANCH_NAME}
+          \`\`\`
+          EOF
           fi
           
           # Find and delete existing comment with marker
