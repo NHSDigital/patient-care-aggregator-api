@@ -52,7 +52,8 @@ jobs:
           fi
           
           if [[ "$PASSED" == "true" ]]; then
-            read -r -d '' BODY <<EOF || true
+          # read line is correctly indented; it needs to be one tab ahead of the rest of the heredoc lines
+              read -r -d '' BODY <<EOF || true
             ${MARKER}
             
             ## ✅ Branch Name Validation Passed
@@ -64,7 +65,7 @@ jobs:
             ${JIRA_LINK}
             EOF
           else
-            read -r -d '' BODY <<EOF || true
+              read -r -d '' BODY <<EOF || true
             ${MARKER}
             
             ## ❌ Branch Name Validation Failed
