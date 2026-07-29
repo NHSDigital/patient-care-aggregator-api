@@ -4,71 +4,92 @@ jobs:
   link-ticket:
     runs-on: ubuntu-latest
     steps:
-      - name: Check ticket name conforms to requirements
+      - name: Validate branch name
+        id: validate
         env:
-          PR_REF: ${{ github.event.pull_request.head.ref }}
+          BRANCH_NAME: ${{ github.head_ref }}
+          ALLOWED_BRANCH_REGEX: '^(feat|feature|chore|spike|bugfix)\/[A-Z][A-Z0-9]+-[0-9]+(-[a-zA-Z0-9]+)*$|^(release|hotfix|revert|dependabot)\/.+$'
         run: |
-          PR_REF_LC="${PR_REF,,}"  # lowercase copy for case-insensitive matching
-
-          if [[ "$PR_REF_LC" =~ (wpp-[0-9]+) ]]; then
-            TICKET_NAME="${BASH_REMATCH[1]^^}"  # convert matched ticket to uppercase
-            echo "TICKET_NAME=$TICKET_NAME" >> "$GITHUB_ENV"
-          elif [[ "$PR_REF_LC" == dependabot/* ]]; then
-            echo "DEPENDABOT PR - NO JIRA TICKET REQUIRED"
+          if [[ "$BRANCH_NAME" =~ $ALLOWED_BRANCH_REGEX ]]; then
+            echo "passed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "MISSING_JIRA_TICKET=true" >> "$GITHUB_ENV"
+            echo "passed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Comment on PR with Warning
-        if: env.MISSING_JIRA_TICKET == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const message = `
-            ⚠️ This branch name is missing its Jira Ticket number.
-            Please rename the branch to include the ticket number.
-              ex. feature/wpp-1234-spec-changes-for-abc
-            Then close this PR and open a new one from the branch with the corrected name.
-            `;
+      - name: Extract Jira ticket
+        id: jira
+        if: ${{ steps.validate.outputs.passed == 'true' }}
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+          TICKET_REGEX: ([Ww][Pp][Pp]-[0-9]+)
+        run: |
+          if [[ "$BRANCH_NAME" =~ $TICKET_REGEX ]]; then
+            TICKET="${BASH_REMATCH[1]^^}"  # convert matched ticket to uppercase
+            echo "ticket=$TICKET" >> "$GITHUB_OUTPUT"
+          else
+            echo "ticket='" >> "$GITHUB_OUTPUT"
+          fi
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body: message
-            });
+      - name: Manage PR Comment
+        env:
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BRANCH_NAME: ${{ github.head_ref }}
+          PASSED: ${{ steps.validate.outputs.passed }}
+          REASON: ${{ steps.validate.outputs.reason }}
+          JIRA_TICKET: ${{ steps.jira.outputs.ticket }}
+        run: |
+          if [[ -z "$PR_NUMBER" ]]; then exit 0; fi
+          
+          MARKER="<!-- pr-lint-marker -->"
+          
+          # create a Jira ticket link to add to the comment when one matching the regex is present in the branch name
+          if (( ! "$BRANCH_NAME" == '' )); then
+            JIRA_LINK="Jira ticket: [${JIRA_TICKET}](https://nhsd-jira.digital.nhs.uk/browse/${JIRA_TICKET})"
+          else
+            JIRA_LINK=""
+          fi
+          
+          if [[ "$PASSED" == "true" ]]; then
+            read -r -d '' BODY <<-EOF || true
+            ${MARKER}
 
-            // fail workflow early when warning comment is posted
-            core.setFailed('No Jira ticket number found in branch name');
+            ## ✅ Branch Name Validation Passed
 
-      - name: Comment on PR with link to JIRA ticket
-        if: env.TICKET_NAME != ''
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-            });
+            \`\`\`
+            ${BRANCH_NAME}
+            \`\`\`
 
-            const ticketNumberComments = comments.data.filter(comment => (comment.body || '').includes('<!-- Jira Ticket: Ticket Info -->'))
+            ${JIRA_LINK}
+            EOF
+          else
+            read -r -d '' BODY <<-EOF || true
+            ${MARKER}
 
-            if (ticketNumberComments.length > 0) {
-              // linked ticket comment has already been posted, so exit early
-              process.exit(0);
-            }
+            ## ❌ Branch Name Validation Failed
 
-            const ticket = process.env.TICKET_NAME;
-            const message = `
-            <!-- Jira Ticket: Ticket Info -->
-            This branch is work on a ticket in the NHS Digital WPP JIRA Project. Here's a handy link to the ticket:
-            # [${ticket}](https://nhsd-jira.digital.nhs.uk/browse/${ticket})
-            `;
+            Branch format is invalid.
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body: message
-            });
+            Expected format: \`<prefix>/<JIRA-key>-<kebab-description>\`
+
+            Ensure JIRA ticket key is included. Allowed prefixes: feat, feature, chore, spike, hotfix, bugfix, release, revert
+
+            \`\`\`
+            ${BRANCH_NAME}
+            \`\`\`
+            EOF
+          fi
+          
+          # Find and delete existing comment with marker
+          COMMENT_ID=$(gh api "repos/$GH_REPO/issues/$PR_NUMBER/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" | head -1)
+          if [[ -n "$COMMENT_ID" ]]; then
+            gh api -X DELETE "repos/$GH_REPO/issues/comments/$COMMENT_ID"
+          fi
+
+          # Post new comment
+          gh pr comment "$PR_NUMBER" --body "$BODY"
+
+      - name: Fail if validation failed
+        if: steps.validate.outputs.passed == 'false'
+        shell: bash
+        run: exit 1      
