@@ -45,7 +45,7 @@ jobs:
           MARKER="<!-- pr-lint-marker -->"
           
           # create a Jira ticket link to add to the comment when one matching the regex is present in the branch name
-          if (( ! "$BRANCH_NAME" == '' )); then
+          if [[ -n "$BRANCH_NAME" ]]; then
             JIRA_LINK="Jira ticket: [${JIRA_TICKET}](https://nhsd-jira.digital.nhs.uk/browse/${JIRA_TICKET})"
           else
             JIRA_LINK=""
