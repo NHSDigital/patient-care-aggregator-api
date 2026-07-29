@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Validate branch name and Jira ticket
         id: validate
-        uses: NHSDigital/patient-care-aggregator.utilities/actions/validate-branch-name
+        uses: NHSDigital/patient-care-aggregator.utilities/actions/validate-branch-name@main
         with:
           branch-name: ${{ github.head_ref }}
           allowed-ticket-regex: '([Ww][Pp][Pp]-[0-9]+)'     
