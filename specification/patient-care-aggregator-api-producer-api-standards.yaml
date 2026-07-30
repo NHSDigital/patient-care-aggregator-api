@@ -1285,7 +1285,6 @@ components:
               type: string
               example: Barnsley Hospital NHS Foundation Trust
         reasonCode:
-          # This is mandatory, so will need to be extended to include booking invites
           type: object
           description: Reason for the Task, the request for a patient to complete a the Task.
           required:
@@ -1305,8 +1304,6 @@ components:
                   description: URI to identify Task types
                   enum:
                     - https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
-                    # Proposed extension; should it be for a generic task or for an invite?
-                    - https://fhir.nhs.uk/StructureDefinition/Extension-Task-Type
                 code:
                   type: string
                   description: Task type code. For questionnaires that are part of the patient initiated follow-up (PIFU) feature, the questionnaire type code must be set to "pifu-triage".
@@ -1900,12 +1897,6 @@ components:
                   system: "https://fhir.nhs.uk/Id/ods-organization-code"
                   value: "RFF"
                 display: "Barnsley Hospital NHS Foundation Trust"
-              reasonCode:
-                coding:
-                  - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-Type"
-                    code: "VIDEO-CONSULT"
-                    display: "Video Consultation"
-                text: "Online Video Consultation"
               extension:
                 - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
                   valueCoding:
