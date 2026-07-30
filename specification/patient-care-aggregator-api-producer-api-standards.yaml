@@ -242,13 +242,15 @@ paths:
       operationId: get-tasks
       description: |
         ## Overview
-        This endpoint returns a list of tasks, such as those for appointment booking invitations or for the completion of questionnaires, from a secondary care booking system for a given patient.
+        This endpoint returns a list of tasks, specifically Invite to Book tasks and questionnaire completion tasks, from a secondary care booking system for a given patient.
         It returns the tasks as a FHIR 'Bundle' containing FHIR 'Task' resources.
         
         Note that the above URL path is an example - you can use a different URL path if you prefer.
         
         ## Task inclusion and exclusion rules
-        The endpoint includes / excludes tasks as per the following rules:
+        This endpoint returns only two types of tasks: **Invite to Book tasks** (prompting a patient to book an appointment) and **questionnaire completion tasks** (prompting a patient to complete a questionnaire, including Patient Initiated Follow-Up (PIFU) questionnaires). No other task types should be included.
+
+        The endpoint includes / excludes tasks of these types as per the following rules:
         - NHS in England only: Only include tasks related to appointments for care settings within the NHS in England.
         - NHS Trusts only: Only include tasks related to appointments for acute, mental health or community care settings - not any other type.
         - Elective care appointments only: Only include tasks related to outpatient appointments - not any other type.
@@ -289,7 +291,7 @@ paths:
         # - $ref: "#/components/parameters/nhsdTargetIdentifier"       
       responses:
         2XX:
-            $ref: "#/components/responses/tasksHappyPath"
+          $ref: "#/components/responses/tasksHappyPath"
         4XX:
           $ref: "#/components/responses/4XX"
 components:
@@ -1052,7 +1054,7 @@ components:
                     description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
                     example: "https://my.portal.com/Document/b710e648-c12e-4f66-80e2-9957a254900f"
     Task:
-      description: "FHIR Task resource for the task"
+      description: "FHIR Task resource representing either an Invite to Book task (prompting a patient to book an appointment) or a questionnaire completion task (prompting a patient to complete a questionnaire, including Patient Initiated Follow-Up (PIFU) questionnaires)."
       type: object
       required: 
         - resourceType
@@ -1063,7 +1065,7 @@ components:
         - for
         - authored
         - reasonReference
-        # removed 'owner' as it might need to be optional, as booking invites might offer a range of hospitals to choose from
+        - owner
         - reasonCode
       properties:
         resourceType:
@@ -1091,7 +1093,7 @@ components:
               type: string
               example: "3a146c43-2b21-44e9-95bc-6f4849e504c8"
         basedOn:
-          description: Reference to the related CarePlan (Pathway). This reference should contain the pathway ID. This field is required to identify duplicate entries and is optional for other task types.
+          description: Reference to the related CarePlan (Pathway). This reference should contain the pathway ID. This field is required for PIFU questionnaires to identify duplicate entries and is optional for other task types.
           type: array
           minItems: 0
           maxItems: 1
@@ -1136,7 +1138,7 @@ components:
         statusReason:
           # statusReason exists in FHIR R4 but we will need to define which codes can be used
           # as it is a CodeableConcept, which allows us to extend it as we see fit
-          description: "Additional detail about the status of a task, for when further clarity is required, such as the reason a patient rejected an invite to book their appointment."
+          description: "Provides additional context about the task status where the status value alone is not sufficient. For example, use this field to explain why a task was rejected or cancelled."
           type: object
           properties:
             coding:
@@ -1231,7 +1233,7 @@ components:
               properties:
                 end:
                   type: string
-                  description: Indicates the end date for the task. For the Patient Initiated Follow-up (PIFU) feature, this represents the expiration date of the questionnaire. After this date has passed, the patient can no longer raise a follow-up request. For appointment booking invites, this date is when this invite expires.
+                  description: The date after which the task expires and can no longer be acted upon by the patient.
                   example: "2025-10-18T12:30:00+00:00"
         reasonReference:
           # This mandatory, so its type enum will need to be extended to include invites
@@ -1244,18 +1246,15 @@ components:
           properties:
             type: 
               type: string
-              description: FHIR Resource
+              description: The type of task, used to differentiate behaviour in the Aggregator. Must be either `BookingInvitation` for Invite to Book tasks, or `Questionnaire` for questionnaire completion tasks.
               enum:
+                - "BookingInvitation"
                 - "Questionnaire"
-                # Need to check if this should relate to the specific task, such as Invite to Book, or just be "Task" 
-                - "AppointmentBooking"
             reference: 
               type: string
               description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
               example: "https://my.portal.com/Questionnaire/3a146c43-2b21-44e9-95bc-6f4849e504c8"
         owner:
-          # This might be a problem as it is mandatory, and for invite to book the patient
-          # would likely be given the choice of hospitals at which to have their appointment
           type: object
           description: Organization responsible for the patients care
           required:
@@ -1526,8 +1525,8 @@ components:
               $ref: "#/components/examples/emptyBundle"
             questionnaire:
               $ref: "#/components/examples/taskQuestionnaire"
-            appointmentBookingInvite:
-              $ref: "#/components/examples/taskAppointmentBookingInvite"
+            bookingInvitation:
+              $ref: "#/components/examples/taskBookingInvitation"
     4XX:
       description: |
         When the service is unable to serve a successful response a FHIR `OperationOutcome` resource should be returned with the relevant HTTP status code defined as follows:
@@ -1862,7 +1861,7 @@ components:
                     system: "https://fhir.nhs.uk/CodeSystem/Specialty-1"
                     code: "330"
                     display: "Dermatology"
-    taskAppointmentBookingInvite:
+    taskBookingInvitation:
       summary: 200 Example Patient with a Appointment Booking Invitation
       value:
         resourceType: Bundle
@@ -1893,8 +1892,8 @@ components:
                 period:
                   end: "2026-07-13T18:00:00+00:00"
               reasonReference:
-                type: "AppointmentBooking"
-                reference: "https://my.portal.com/AppointmentBooking/cdb83383-f17e-4bf7-8f40-342f7f7c7d8d"
+                type: "BookingInvitation"
+                reference: "https://my.portal.com/BookingInvitation/cdb83383-f17e-4bf7-8f40-342f7f7c7d8d"
               owner:
                 type: "Organization"
                 identifier:
