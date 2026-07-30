@@ -4,22 +4,94 @@ jobs:
   link-ticket:
     runs-on: ubuntu-latest
     steps:
-      - name: Check ticket name conforms to requirements
-        run: echo ${{ github.event.pull_request.head.ref }} | grep -i -E -q "(apm-[0-9]+)|(apmspii-[0-9]+)|(adz-[0-9]+)|(amb-[0-9]+)|(amp-[0-9]+)|(dependabot\/)"
-
-      - name: Grab ticket name
-        if: contains(github.event.pull_request.head.ref, 'apm-') || contains(github.event.pull_request.head.ref, 'APM-') || contains(github.event.pull_request.head.ref, 'apmspii-') || contains(github.event.pull_request.head.ref, 'APMSPII-') || contains(github.event.pull_request.head.ref, 'adz-') || contains(github.event.pull_request.head.ref, 'ADZ-') || contains(github.event.pull_request.head.ref, 'amb-') || contains(github.event.pull_request.head.ref, 'AMB-') || contains(github.event.pull_request.head.ref, 'amp-') || contains(github.event.pull_request.head.ref, 'AMP-')
-        run: echo ::set-env name=TICKET_NAME::$(echo ${{ github.event.pull_request.head.ref }} | grep -i -o '\(apm-[0-9]\+\)\|\(apmspii-[0-9]\+\)\|\(adz-[0-9]\+\)|\(amb-[0-9]\+\)|\(amp-[0-9]\+\)' | tr '[:lower:]' '[:upper:]')
+      - name: Validate branch name
+        id: validate
         env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+          BRANCH_NAME: ${{ github.head_ref }}
+          ALLOWED_BRANCH_REGEX: '^(feat|feature|chore|spike|bugfix)\/[A-Z][A-Z0-9]+-[0-9]+(-[a-zA-Z0-9]+)*$|^(release|hotfix|revert|dependabot)\/.+$'
+        run: |
+          if [[ "$BRANCH_NAME" =~ $ALLOWED_BRANCH_REGEX ]]; then
+            echo "passed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "passed=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Comment on PR with link to JIRA ticket
-        if: contains(github.event.pull_request.head.ref, 'apm-') || contains(github.event.pull_request.head.ref, 'APM-') || contains(github.event.pull_request.head.ref, 'apmspii-') || contains(github.event.pull_request.head.ref, 'APMSPII-') || contains(github.event.pull_request.head.ref, 'adz-') || contains(github.event.pull_request.head.ref, 'ADZ-') || contains(github.event.pull_request.head.ref, 'amb-') || contains(github.event.pull_request.head.ref, 'AMB-') || contains(github.event.pull_request.head.ref, 'amp-') || contains(github.event.pull_request.head.ref, 'AMP-')
-        uses: unsplash/comment-on-pr@master
+      - name: Extract Jira ticket
+        id: jira
+        if: ${{ steps.validate.outputs.passed == 'true' }}
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+          TICKET_REGEX: ([Ww][Pp][Pp]-[0-9]+)
+        run: |
+          if [[ "$BRANCH_NAME" =~ $TICKET_REGEX ]]; then
+            TICKET="${BASH_REMATCH[1]^^}"  # convert matched ticket to uppercase
+            echo "ticket=$TICKET" >> "$GITHUB_OUTPUT"
+          else
+            echo "ticket='" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Manage PR Comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          msg: |
-            This branch is work on a ticket in the NHS Digital APM JIRA Project. Here's a handy link to the ticket:
-            # [${{ env.TICKET_NAME }}](https://nhsd-jira.digital.nhs.uk/browse/${{ env.TICKET_NAME}})
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BRANCH_NAME: ${{ github.head_ref }}
+          PASSED: ${{ steps.validate.outputs.passed }}
+          REASON: ${{ steps.validate.outputs.reason }}
+          JIRA_TICKET: ${{ steps.jira.outputs.ticket }}
+        run: |
+          if [[ -z "$PR_NUMBER" ]]; then exit 0; fi
+          
+          MARKER="<!-- pr-lint-marker -->"
+          
+          # create a Jira ticket link to add to the comment when one matching the regex is present in the branch name
+          if [[ -n "$JIRA_TICKET" ]]; then
+            JIRA_LINK="Jira ticket: [${JIRA_TICKET}](https://nhsd-jira.digital.nhs.uk/browse/${JIRA_TICKET})"
+          else
+            JIRA_LINK=""
+          fi
+          
+          if [[ "$PASSED" == "true" ]]; then
+          # read line is correctly indented; it needs to be one tab ahead of the rest of the heredoc lines
+            read -r -d '' BODY <<EOF || true
+          ${MARKER}
+          
+          ## ✅ Branch Name Validation Passed
+          
+          \`\`\`
+          ${BRANCH_NAME}
+          \`\`\`
+          
+          ${JIRA_LINK}
+          EOF
+          else
+            read -r -d '' BODY <<EOF || true
+          ${MARKER}
+          
+          ## ❌ Branch Name Validation Failed
+          
+          Branch format is invalid.
+          
+          Expected format: \`<prefix>/<JIRA-key>-<kebab-description>\`
+          
+          Ensure JIRA ticket key is included. Allowed prefixes: feat, feature, chore, spike, hotfix, bugfix, release, revert
+          
+          \`\`\`
+          ${BRANCH_NAME}
+          \`\`\`
+          EOF
+          fi
+          
+          # Find and delete existing comment with marker
+          COMMENT_ID=$(gh api "repos/$GH_REPO/issues/$PR_NUMBER/comments" --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" | head -1)
+          if [[ -n "$COMMENT_ID" ]]; then
+            gh api -X DELETE "repos/$GH_REPO/issues/comments/$COMMENT_ID"
+          fi
 
+          # Post new comment
+          gh pr comment "$PR_NUMBER" --body "$BODY"
+
+      - name: Fail if validation failed
+        if: steps.validate.outputs.passed == 'false'
+        shell: bash
+        run: exit 1      
