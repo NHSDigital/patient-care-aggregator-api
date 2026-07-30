@@ -1066,7 +1066,6 @@ components:
         - authored
         - reasonReference
         - owner
-        - reasonCode
       properties:
         resourceType:
           description: "FHIR resource type."
@@ -1286,7 +1285,7 @@ components:
               example: Barnsley Hospital NHS Foundation Trust
         reasonCode:
           type: object
-          description: Reason for the Task, the request for a patient to complete a the Task.
+          description: Reason for the Task, the request for a patient to complete a the Task. Required for questionnaire tasks.
           required:
             - coding
             - text
