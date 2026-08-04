@@ -1442,21 +1442,6 @@ components:
               type: array
               items:
                 anyOf:
-                  - description: URL for a patient-facing web application for the task. Always present.
-                    type: object
-                    required:
-                      - url
-                      - valueUrl
-                    properties:
-                      url:
-                        description: FHIR extension type.
-                        type: string
-                        enum:
-                          - https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
-                      valueUrl:
-                        description: The Portal provider deep link URL to access the task.
-                        type: string
-                        example: "https://my.portal.com/Task/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
                   - description: Unique identifier for the upstream application (Portal) the task came from.
                     type: object
                     required:
