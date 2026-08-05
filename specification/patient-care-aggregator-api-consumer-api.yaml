@@ -1843,12 +1843,8 @@ components:
               $ref: "#/components/examples/appointmentBookingInvitationStartedNotComplete"
             appointmentBookingInvitationCompleted:
               $ref: "#/components/examples/appointmentBookingInvitationCompleted"
-            appointmentBookingInvitationCancelledNoResponse:
-              $ref: "#/components/examples/appointmentBookingInvitationCancelledNoResponse"
             appointmentBookingInvitationRejected:
-              $ref: "#/components/examples/appointmentBookingInvitationRejected"
-            appointmentBookingInvitationRejectedConditionResolved:
-              $ref: "#/components/examples/appointmentBookingInvitationRejectedConditionResolved"                        
+              $ref: "#/components/examples/appointmentBookingInvitationRejected"                       
             # PIFU
             pifuZeroWaitingListZeroPifu:
               $ref: "#/components/examples/pifuZeroWaitingListZeroPifu"
@@ -2227,9 +2223,7 @@ components:
                 - $ref: "#/components/examples/appointmentBookingInvitationWithExpiryDate"
                 - $ref: "#/components/examples/appointmentBookingInvitationStartedNotComplete"
                 - $ref: "#/components/examples/appointmentBookingInvitationCompleted"
-                - $ref: "#/components/examples/appointmentBookingInvitationCancelledNoResponse"
                 - $ref: "#/components/examples/appointmentBookingInvitationRejected"
-                - $ref: "#/components/examples/appointmentBookingInvitationRejectedConditionResolved"
     incompleteWaitingLists:
       summary: 200 One incomplete waiting list
       description: |
