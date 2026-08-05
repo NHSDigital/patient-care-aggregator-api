@@ -1125,7 +1125,7 @@ components:
                         description: "Care pathway Identifier"
                         example: "RBH5644312231"
         status:
-          description: "Status of the task. See: https://build.fhir.org/valueset-task-status.html"
+          description: "Status of the task. See the following link for details definitions of each status code: https://build.fhir.org/valueset-task-status.html"
           type: string
           enum:
             - requested
