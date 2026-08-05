@@ -1241,15 +1241,6 @@ components:
                 - cancelled
                 - in-progress
                 - completed
-            statusReason:
-              description: Additional detail about the status of a task, for when further clarity is required, such as the reason a patient rejected an invite to book their appointment.
-              type: string
-              enum:
-                - appointment-type-unsuitable
-                - condition-resolved
-                - location-unsuitable
-                - no-reason-given
-                - no-response-within-booking-window
             intent:
               description: Hardcoded to 'plan'. Indicates the intent is to perform as a plan/task (See FHIR Task.intent).
               type: string
@@ -4729,40 +4720,6 @@ components:
               valueUrl: "https://my.portal.com/Task/0d3d275b-b3f6-4419-a72a-f6f10f1bef94"
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
               valueCode: myportal-01
-    appointmentBookingInvitationCancelledNoResponse:
-      summary: Fragment - Task for an invitation to book an appointment which has been cancelled due to a lack of action by the patient within the booking window
-      value:
-        detail:
-          id: 22dd1b13-6b74-49a2-9fee-89e4a079fdcb
-          status: cancelled
-          statusReason: no-response-within-booking-window
-          intent: plan
-          description: Book your Neurology appointment
-          authored: '2025-06-01T09:00:00.000Z'
-          lastModified: '2025-07-01T09:00:00.000Z'
-          restriction:
-            period:
-              start: '2025-06-01T09:00:00.000Z'
-              end: '2025-07-01T09:00:00.000Z'
-          for:
-            type: Patient
-            identifier:
-              system: "https://fhir.nhs.uk/Id/nhs-number"
-              value: "9000000002"
-          owner:
-            type: Organization
-            identifier:
-              system: "https://fhir.nhs.uk/Id/ods-organization-code"
-              value: "RXP"
-            display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
-          reasonReference:
-            type: BookingInvitation
-            reference: "https://my.portal.com/BookingInvitation/22dd1b13-6b74-49a2-9fee-89e4a079fdcb"
-          extension:
-            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
-              valueUrl: "https://my.portal.com/Task/22dd1b13-6b74-49a2-9fee-89e4a079fdcb"
-            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
-              valueCode: myportal-01
     appointmentBookingInvitationRejected:
       summary: Fragment - Task for an invitation to book an appointment which has been rejected by the patient within the booking window
       value:
@@ -4791,37 +4748,7 @@ components:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
               valueUrl: "https://my.portal.com/Task/c293d1b5-a297-430a-8ffb-7b426854df93"
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
-              valueCode: myportal-01
-    appointmentBookingInvitationRejectedConditionResolved:
-      summary: Fragment - Task for an invitation to book an appointment which has been rejected by the patient due to an improvement in their condition
-      value:
-        detail:
-          id: 5d86e89b-53dc-4ed2-b296-bbf31b5333c2
-          status: rejected
-          statusReason: condition-resolved
-          intent: plan
-          description: Book your Rheumatology appointment
-          authored: '2025-07-16T09:00:00.000Z'
-          lastModified: '2025-07-19T11:00:00.000Z'
-          for:
-            type: Patient
-            identifier:
-              system: "https://fhir.nhs.uk/Id/nhs-number"
-              value: "9000000002"
-          owner:
-            type: Organization
-            identifier:
-              system: "https://fhir.nhs.uk/Id/ods-organization-code"
-              value: "RXP"
-            display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
-          reasonReference:
-            type: BookingInvitation
-            reference: "https://my.portal.com/BookingInvitation/5d86e89b-53dc-4ed2-b296-bbf31b5333c2"
-          extension:
-            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
-              valueUrl: "https://my.portal.com/Task/5d86e89b-53dc-4ed2-b296-bbf31b5333c2"
-            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
-              valueCode: myportal-01                                                  
+              valueCode: myportal-01                                               
     # Questionnaire Tasks (using new Task resource)
     pifuQuestionnaireTask:
       summary: Fragment - Task for a PIFU questionnaire to be completed by the patient

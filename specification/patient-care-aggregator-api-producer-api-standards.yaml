@@ -1134,32 +1134,6 @@ components:
             - cancelled
             - in-progress
             - completed
-        statusReason:
-          # statusReason exists in FHIR R4 but we will need to define which codes can be used
-          # as it is a CodeableConcept, which allows us to extend it as we see fit
-          description: "Provides additional context about the task status where the status value alone is not sufficient. For example, use this field to explain why a task was rejected or cancelled."
-          type: object
-          properties:
-            coding:
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
-                type: object
-                properties:
-                  system:
-                    type: string
-                    enum:
-                      - https://fhir.nhs.uk/CodeSystem/Task-StatusReason
-                  code:
-                    type: string
-                    enum:
-                    # This a just some possible codes; need more input for stakeholders to determine suitable list
-                      - appointment-type-unsuitable
-                      - condition-resolved
-                      - location-unsuitable
-                      - no-reason-given
-                      - no-response-within-booking-window
         intent: 
           description: "Hardcoded to plan. See: https://build.fhir.org/valueset-task-intent.html"
           type: string
