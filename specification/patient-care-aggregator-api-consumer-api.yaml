@@ -1821,7 +1821,7 @@ components:
               $ref: "#/components/examples/correspondenceReadUnlinked"
             #Attachment:
             #  $ref: "#/components/examples/Attachment"
-            # Task - Questionnaires
+            # Questionnaires (using Questionnaire resource)
             questionnaireIncompleteLinked:
               $ref: "#/components/examples/questionnaireIncompleteLinked"
             questionnaireIncompleteUnlinked:
@@ -1834,7 +1834,7 @@ components:
               $ref: "#/components/examples/questionnaireCompleteLinked"
             questionnaireCompleteUnlinked:
               $ref: "#/components/examples/questionnaireCompleteUnlinked"
-            # Task - Appointment Booking Invitations  
+            # Tasks - Appointment Booking Invitations  
             appointmentBookingInvitation:
               $ref: "#/components/examples/appointmentBookingInvitation"
             appointmentBookingInvitationWithExpiryDate:
@@ -1844,7 +1844,12 @@ components:
             appointmentBookingInvitationCompleted:
               $ref: "#/components/examples/appointmentBookingInvitationCompleted"
             appointmentBookingInvitationRejected:
-              $ref: "#/components/examples/appointmentBookingInvitationRejected"                       
+              $ref: "#/components/examples/appointmentBookingInvitationRejected"
+            # Tasks - Questionnaires (using Task resource)
+            pifuQuestionnaireTask:
+              $ref: "#/components/examples/pifuQuestionnaireTask"
+            preAssessmentQuestionnaireTask:
+              $ref: "#/components/examples/preAssessmentQuestionnaireTask"                         
             # PIFU
             pifuZeroWaitingListZeroPifu:
               $ref: "#/components/examples/pifuZeroWaitingListZeroPifu"
@@ -2224,6 +2229,36 @@ components:
                 - $ref: "#/components/examples/appointmentBookingInvitationStartedNotComplete"
                 - $ref: "#/components/examples/appointmentBookingInvitationCompleted"
                 - $ref: "#/components/examples/appointmentBookingInvitationRejected"
+    allTaskStatesForQuestionnaires:
+      summary: 200 All Questionnaire states using Task resource
+      value:
+        resourceType: Bundle
+        id: 53315e22-8ce1-4303-a53a-1d6c825c3bc6
+        meta:
+          versionId: "3.3.4"
+          profile:
+            - https://fhir.nhs.uk/StructureDefinition/WayfinderUKCoreBundle
+        type: searchset
+        total: 1
+        entry:
+          - fullUrl: https://api.service.nhs.uk/patient-care-aggregator-api/CarePlan/53315e22-8ce1-4303-a53a-1d6c825c3bc6
+            search:
+              mode: match
+            resource:
+              resourceType: CarePlan
+              meta:
+                profile:
+                  - https://fhir.nhs.uk/StructureDefinition/WayfinderUKCoreCarePlan
+              status: active
+              intent: order
+              subject:
+                identifier:
+                  system: https://fhir.nhs.uk/Id/nhs-number
+                  value: '9000000023'
+              activity:
+                - $ref: "#/components/examples/pifuQuestionnaireTask"
+                - $ref: "#/components/examples/preAssessmentQuestionnaireTask"    
+                # what other questionniare state examples need to be included?         
     incompleteWaitingLists:
       summary: 200 One incomplete waiting list
       description: |
@@ -4457,7 +4492,7 @@ components:
                 system: https://fhir.nhs.uk/Id/ods-organization-code
                 value: 'RJ7'
               display: ST GEORGE'S UNIVERSITY HOSPITALS NHS FOUNDATION TRUST
-    # Questionnaires
+    # Questionnaires (using Questionnaire resource)
     questionnaireIncompleteLinked:
       summary: Fragment - Questionnaire in an incomplete state linked to an appointment
       value:
@@ -4594,6 +4629,89 @@ components:
                 value: 'RXP'              
               display: COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST
     # Tasks
+    # Questionnaires (using new Task resource)
+    pifuQuestionnaireTask:
+      summary: Fragment - Task for a PIFU questionnaire to be completed by the patient
+      value:
+        detail:
+          id: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
+          status: requested
+          intent: plan
+          description: Dermatology PIFU follow-up questionnaire
+          authored: '2025-06-20T18:00:00.000Z'
+          restriction:
+            period:
+              start: '2025-06-20T18:00:00.000Z'
+              end: '2025-12-20T00:00:00.000Z'
+          for:
+            type: Patient
+            identifier:
+              system: "https://fhir.nhs.uk/Id/nhs-number"
+              value: "9000000002"
+          owner:
+            type: Organization
+            identifier:
+              system: "https://fhir.nhs.uk/Id/ods-organization-code"
+              value: "RXP"
+            display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+          reasonCode:
+            coding:
+              - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
+                code: "pifu-triage"
+                display: "PIFU Triage Questionnaire"
+            text: "Patient Initiated Follow-Up Questionnaire"
+          reasonReference:
+            type: Questionnaire
+            reference: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01
+            - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
+              valueCoding:
+                system: "https://fhir.nhs.uk/CodeSystem/Specialty-1"
+                code: "330"
+                display: "Dermatology"
+    preAssessmentQuestionnaireTask:
+      summary: Fragment - Task for a pre-assessment questionnaire linked to an appointment
+      value:
+        detail:
+          id: b519a5f2-dc78-417c-a5aa-1d62d889787b
+          status: in-progress
+          intent: plan
+          description: Orthopaedic Surgery pre-assessment questionnaire
+          authored: '2025-06-15T09:00:00.000Z'
+          lastModified: '2025-06-18T14:30:00.000Z'
+          restriction:
+            period:
+              start: '2025-06-15T09:00:00.000Z'
+              end: '2025-07-15T09:00:00.000Z'
+          focus:
+            type: Appointment
+            reference: "Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c"
+          for:
+            type: Patient
+            identifier:
+              system: "https://fhir.nhs.uk/Id/nhs-number"
+              value: "9000000002"
+          owner:
+            type: Organization
+            identifier:
+              system: "https://fhir.nhs.uk/Id/ods-organization-code"
+              value: "RXP"
+            display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+          reasonCode:
+            coding:
+              - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
+                code: "pre-assessment"
+                display: "Pre-Assessment Questionnaire"
+            text: "Pre-assessment Questionnaire for upcoming appointment"
+          reasonReference:
+            type: Questionnaire
+            reference: "https://my.portal.com/Questionnaire/b519a5f2-dc78-417c-a5aa-1d62d889787b"
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: myportal-01
+    # Appointment Booking Invitations      
     appointmentBookingInvitation:
       summary: Fragment - Task for an invitation to book an appointment which has not been undertaken by the patient yet
       value:
@@ -4730,88 +4848,6 @@ components:
           reasonReference:
             type: BookingInvitation
             reference: "https://my.portal.com/BookingInvitation/c293d1b5-a297-430a-8ffb-7b426854df93"
-          extension:
-            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
-              valueCode: myportal-01                                               
-    # Questionnaire Tasks (using new Task resource)
-    pifuQuestionnaireTask:
-      summary: Fragment - Task for a PIFU questionnaire to be completed by the patient
-      value:
-        detail:
-          id: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
-          status: requested
-          intent: plan
-          description: Dermatology PIFU follow-up questionnaire
-          authored: '2025-06-20T18:00:00.000Z'
-          restriction:
-            period:
-              start: '2025-06-20T18:00:00.000Z'
-              end: '2025-12-20T00:00:00.000Z'
-          for:
-            type: Patient
-            identifier:
-              system: "https://fhir.nhs.uk/Id/nhs-number"
-              value: "9000000002"
-          owner:
-            type: Organization
-            identifier:
-              system: "https://fhir.nhs.uk/Id/ods-organization-code"
-              value: "RXP"
-            display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
-          reasonCode:
-            coding:
-              - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
-                code: "pifu-triage"
-                display: "PIFU Triage Questionnaire"
-            text: "Patient Initiated Follow-Up Questionnaire"
-          reasonReference:
-            type: Questionnaire
-            reference: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
-          extension:
-            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
-              valueCode: myportal-01
-            - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
-              valueCoding:
-                system: "https://fhir.nhs.uk/CodeSystem/Specialty-1"
-                code: "330"
-                display: "Dermatology"
-    preAssessmentQuestionnaireTask:
-      summary: Fragment - Task for a pre-assessment questionnaire linked to an appointment
-      value:
-        detail:
-          id: b519a5f2-dc78-417c-a5aa-1d62d889787b
-          status: in-progress
-          intent: plan
-          description: Orthopaedic Surgery pre-assessment questionnaire
-          authored: '2025-06-15T09:00:00.000Z'
-          lastModified: '2025-06-18T14:30:00.000Z'
-          restriction:
-            period:
-              start: '2025-06-15T09:00:00.000Z'
-              end: '2025-07-15T09:00:00.000Z'
-          focus:
-            type: Appointment
-            reference: "Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c"
-          for:
-            type: Patient
-            identifier:
-              system: "https://fhir.nhs.uk/Id/nhs-number"
-              value: "9000000002"
-          owner:
-            type: Organization
-            identifier:
-              system: "https://fhir.nhs.uk/Id/ods-organization-code"
-              value: "RXP"
-            display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
-          reasonCode:
-            coding:
-              - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
-                code: "pre-assessment"
-                display: "Pre-Assessment Questionnaire"
-            text: "Pre-assessment Questionnaire for upcoming appointment"
-          reasonReference:
-            type: Questionnaire
-            reference: "https://my.portal.com/Questionnaire/b519a5f2-dc78-417c-a5aa-1d62d889787b"
           extension:
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
               valueCode: myportal-01
