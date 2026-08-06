@@ -1201,287 +1201,281 @@ components:
       description: A generic task resource representing an action for the patient to complete (e.g. questionnaire, appointment booking invite). Aligns with FHIR R4 Task and Producer spec implementation.
       type: object
       required:
-        - detail
+        - id
+        - status
+        - description
+        - authored
+        - reasonCode
+        - reasonReference
       properties:
-        detail:
-          description: Details of the task.
+        id:
+          description: Globally unique identifier for the Task. To be persisted over time.
+          type: string
+          example: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
+        identifier:
+          description: The ID of the task in your Patient Portal database (system-specific identifier).
           type: object
           required:
-            - id
-            - status
-            - description
-            - authored
-            - reasonCode
-            - reasonReference
+            - system
+            - value
           properties:
-            id:
-              description: Globally unique identifier for the Task. To be persisted over time.
+            system:
+              description: Local (portal) system identifier URI.
+              type: string
+              example: "https://my.portal.com/fhir/Task?Id={system|value}"
+            value:
+              description: Local (portal) system identifier value.
               type: string
               example: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
+        status:
+          description: The status of the task as progressed by the patient.
+          type: string
+          enum:
+            - requested
+            - rejected
+            - cancelled
+            - in-progress
+            - completed
+        intent:
+          description: Hardcoded to 'plan'. Indicates the intent is to perform as a plan/task (See FHIR Task.intent).
+          type: string
+          enum:
+            - plan
+        description:
+          description: The patient-friendly, standardised title of the task suitable for display to patients. For questionnaires, this should match the name shown in your interface and follow the structure {Specialty name} {Questionnaire type}. For appointment booking invites, use the description to indicate the action e.g. 'Book your appointment'. The values presented within this field are required for Data Quality Assurance.
+          type: string
+          example: Dermatology pre-assessment questionnaire
+        authored:
+          description: Date/time when the task was first made available to the patient in UTC format.
+          type: string
+          format: date-time
+          example: '2025-06-20T18:00:00.000Z'
+        lastModified:
+          description: Date/time when the task was last modified by the patient in UTC format. For PIFU questionnaires, represents when the patient last requested a follow-up.
+          type: string
+          format: date-time
+          example: '2025-06-23T12:30:00.000Z'
+        restriction:
+          description: Constraints on the task, including deadline for task completion.
+          type: object
+          properties:
+            period:
+              description: The period during which the task should be actioned.
+              type: object
+              properties:
+                start:
+                  description: The effective start date/time when the task became available to the patient in UTC format.
+                  type: string
+                  format: date-time
+                  example: '2025-06-20T18:00:00.000Z'
+                end:
+                  description: The effective end date/time by which the task should be completed by the patient in UTC format. For appointment booking invites, this is when the invite expires.
+                  type: string
+                  format: date-time
+                  example: '2025-12-20T00:00:00.000Z'
+        focus:
+          description: Reference to the Appointment this task relates to (optional). Not required for appointment booking invites where the appointment doesn't exist yet.
+          type: object
+          properties:
+            type:
+              description: Resource type.
+              type: string
+              enum:
+                - Appointment
+            reference:
+              description: Absolute URL to the linked Appointment.
+              type: string
+              example: Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+        for:
+          description: Patient whom the task relates to.
+          type: object
+          required:
+            - type
+            - identifier
+          properties:
+            type:
+              description: Resource type.
+              type: string
+              enum:
+                - Patient
             identifier:
-              description: The ID of the task in your Patient Portal database (system-specific identifier).
               type: object
               required:
                 - system
                 - value
               properties:
                 system:
-                  description: Local (portal) system identifier URI.
-                  type: string
-                  example: "https://my.portal.com/fhir/Task?Id={system|value}"
-                value:
-                  description: Local (portal) system identifier value.
-                  type: string
-                  example: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
-            status:
-              description: The status of the task as progressed by the patient.
-              type: string
-              enum:
-                - requested
-                - rejected
-                - cancelled
-                - in-progress
-                - completed
-            intent:
-              description: Hardcoded to 'plan'. Indicates the intent is to perform as a plan/task (See FHIR Task.intent).
-              type: string
-              enum:
-                - plan
-            description:
-              description: The patient-friendly, standardised title of the task suitable for display to patients. For questionnaires, this should match the name shown in your interface and follow the structure {Specialty name} {Questionnaire type}. For appointment booking invites, use the description to indicate the action e.g. 'Book your appointment'. The values presented within this field are required for Data Quality Assurance.
-              type: string
-              example: Dermatology pre-assessment questionnaire
-            authored:
-              description: Date/time when the task was first made available to the patient in UTC format.
-              type: string
-              format: date-time
-              example: '2025-06-20T18:00:00.000Z'
-            lastModified:
-              description: Date/time when the task was last modified by the patient in UTC format. For PIFU questionnaires, represents when the patient last requested a follow-up.
-              type: string
-              format: date-time
-              example: '2025-06-23T12:30:00.000Z'
-            restriction:
-              description: Constraints on the task, including deadline for task completion.
-              type: object
-              properties:
-                period:
-                  description: The period during which the task should be actioned.
-                  type: object
-                  properties:
-                    start:
-                      description: The effective start date/time when the task became available to the patient in UTC format.
-                      type: string
-                      format: date-time
-                      example: '2025-06-20T18:00:00.000Z'
-                    end:
-                      description: The effective end date/time by which the task should be completed by the patient in UTC format. For appointment booking invites, this is when the invite expires.
-                      type: string
-                      format: date-time
-                      example: '2025-12-20T00:00:00.000Z'
-            focus:
-              description: Reference to the Appointment this task relates to (optional). Not required for appointment booking invites where the appointment doesn't exist yet.
-              type: object
-              properties:
-                type:
-                  description: Resource type.
+                  description: URI to identifier NHS Numbers.
                   type: string
                   enum:
-                    - Appointment
-                reference:
-                  description: Absolute URL to the linked Appointment.
+                    - "https://fhir.nhs.uk/Id/nhs-number"
+                value:
+                  description: The patient's NHS Number.
                   type: string
-                  example: Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
-            for:
-              description: Patient whom the task relates to.
+                  example: "9000000002"
+        basedOn:
+          description: Reference to the related CarePlan (Pathway). Optional, used to identify related tasks from the same pathway.
+          type: array
+          minItems: 0
+          maxItems: 1
+          items:
+            type: object
+            properties:
+              type:
+                description: Resource type.
+                type: string
+                enum:
+                  - CarePlan
+              identifier:
+                type: object
+                required:
+                  - system
+                  - value
+                properties:
+                  system:
+                    description: Identifier system for Care Pathway.
+                    type: string
+                    enum:
+                      - "https://fhir.nhs.uk/Id/PathwayId"
+                  value:
+                    description: Care pathway identifier.
+                    type: string
+                    example: "RBH5644312231"
+        owner:
+          description: Organization responsible for the task (the provider organization).
+          type: object
+          required:
+            - type
+            - identifier
+          properties:
+            type:
+              description: Resource type.
+              type: string
+              enum:
+                - Organization
+            identifier:
               type: object
               required:
-                - type
-                - identifier
+                - system
+                - value
               properties:
-                type:
-                  description: Resource type.
+                system:
+                  description: URI to identifier NHS Trust Organizations.
                   type: string
                   enum:
-                    - Patient
-                identifier:
-                  type: object
-                  required:
-                    - system
-                    - value
-                  properties:
-                    system:
-                      description: URI to identifier NHS Numbers.
-                      type: string
-                      enum:
-                        - "https://fhir.nhs.uk/Id/nhs-number"
-                    value:
-                      description: The patient's NHS Number.
-                      type: string
-                      example: "9000000002"
-            basedOn:
-              description: Reference to the related CarePlan (Pathway). Optional, used to identify related tasks from the same pathway.
+                    - "https://fhir.nhs.uk/Id/ods-organization-code"
+                value:
+                  description: NHS Trust Organization (ODS) code.
+                  type: string
+                  example: "RTD"
+            display:
+              description: ODS Organisation name (NHS Trust).
+              type: string
+              example: "THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST"
+        reasonCode:
+          description: Coding for the type of task to be completed (e.g., questionnaire or appointment booking invite).
+          type: object
+          required:
+            - coding
+          properties:
+            coding:
+              description: Array of codings for the type of task. Use system to distinguish between questionnaire types and booking invite types.
               type: array
-              minItems: 0
+              minItems: 1
               maxItems: 1
               items:
                 type: object
+                required:
+                  - system
+                  - code
                 properties:
-                  type:
-                    description: Resource type.
+                  system:
+                    description: Identifier system for task type. For questionnaires use Extension-Questionnaire-Type.
                     type: string
                     enum:
-                      - CarePlan
-                  identifier:
-                    type: object
-                    required:
-                      - system
-                      - value
-                    properties:
-                      system:
-                        description: Identifier system for Care Pathway.
-                        type: string
-                        enum:
-                          - "https://fhir.nhs.uk/Id/PathwayId"
-                      value:
-                        description: Care pathway identifier.
-                        type: string
-                        example: "RBH5644312231"
-            owner:
-              description: Organization responsible for the task (the provider organization).
-              type: object
-              required:
-                - type
-                - identifier
-              properties:
-                type:
-                  description: Resource type.
-                  type: string
-                  enum:
-                    - Organization
-                identifier:
-                  type: object
-                  required:
-                    - system
-                    - value
-                  properties:
-                    system:
-                      description: URI to identifier NHS Trust Organizations.
-                      type: string
-                      enum:
-                        - "https://fhir.nhs.uk/Id/ods-organization-code"
-                    value:
-                      description: NHS Trust Organization (ODS) code.
-                      type: string
-                      example: "RTD"
-                display:
-                  description: ODS Organisation name (NHS Trust).
-                  type: string
-                  example: "THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST"
-            reasonCode:
-              description: Coding for the type of task to be completed (e.g., questionnaire or appointment booking invite).
-              type: object
-              required:
-                - coding
-              properties:
-                coding:
-                  description: Array of codings for the type of task. Use system to distinguish between questionnaire types and booking invite types.
-                  type: array
-                  minItems: 1
-                  maxItems: 1
-                  items:
+                      - "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                  code:
+                    description: Task type code. Examples - 'pifu-triage' for PIFU questionnaires, 'appointment-booking-invite' for booking invites.
+                    type: string
+                    enum:
+                      - pre-appointment-questionnaire
+                      - post-appointment-questionnaire
+                      - general-update-questionnaire
+                      - pifu-triage
+                      - appointment-booking-invite
+                    example: "pifu-triage"
+                  display:
+                    description: Human-readable display name for the task type.
+                    type: string
+                    example: "PIFU Triage Questionnaire"
+            text:
+              description: Human-readable text description of the task type.
+              type: string
+              example: "Patient Initiated Follow-Up Questionnaire"
+        reasonReference:
+          description: Reference to the Questionnaire or BookingInvitation this task is requesting be completed.
+          type: object
+          required:
+            - type
+            - reference
+          properties:
+            type:
+              description: Resource type being referenced.
+              type: string
+              enum:
+                - Questionnaire
+                - BookingInvitation
+            reference:
+              description: Absolute URL to the Questionnaire or BookingInvitation resource in the Portal system.
+              type: string
+              example: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
+        extension:
+          description: FHIR extensions for task resources. Includes Portal link, client ID, optional linked appointment, and treatment function.
+          type: array
+          items:
+            anyOf:
+              - description: Unique identifier for the upstream application (Portal) the task came from.
+                type: object
+                required:
+                  - url
+                  - valueCode
+                properties:
+                  url:
+                    description: FHIR extension type.
+                    type: string
+                    enum:
+                      - https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+                  valueCode:
+                    description: Portal system identifier.
+                    type: string
+                    example: "myportal-01"
+              - description: Treatment function associated to the Task. Must be provided for PIFU questionnaires.
+                type: object
+                properties:
+                  url:
+                    description: Extension URL for treatment function.
+                    type: string
+                    enum:
+                      - "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
+                  valueCoding:
                     type: object
                     required:
                       - system
                       - code
                     properties:
                       system:
-                        description: Identifier system for task type. For questionnaires use Extension-Questionnaire-Type.
+                        description: Coding system for treatment function.
                         type: string
                         enum:
-                          - "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                          - "https://fhir.nhs.uk/CodeSystem/Specialty-1"
                       code:
-                        description: Task type code. Examples - 'pifu-triage' for PIFU questionnaires, 'appointment-booking-invite' for booking invites.
+                        description: Treatment function code.
                         type: string
-                        enum:
-                          - pre-appointment-questionnaire
-                          - post-appointment-questionnaire
-                          - general-update-questionnaire
-                          - pifu-triage
-                          - appointment-booking-invite
-                        example: "pifu-triage"
+                        example: "330"
                       display:
-                        description: Human-readable display name for the task type.
+                        description: Treatment function display name.
                         type: string
-                        example: "PIFU Triage Questionnaire"
-                text:
-                  description: Human-readable text description of the task type.
-                  type: string
-                  example: "Patient Initiated Follow-Up Questionnaire"
-            reasonReference:
-              description: Reference to the Questionnaire or BookingInvitation this task is requesting be completed.
-              type: object
-              required:
-                - type
-                - reference
-              properties:
-                type:
-                  description: Resource type being referenced.
-                  type: string
-                  enum:
-                    - Questionnaire
-                    - BookingInvitation
-                reference:
-                  description: Absolute URL to the Questionnaire or BookingInvitation resource in the Portal system.
-                  type: string
-                  example: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
-            extension:
-              description: FHIR extensions for task resources. Includes Portal link, client ID, optional linked appointment, and treatment function.
-              type: array
-              items:
-                anyOf:
-                  - description: Unique identifier for the upstream application (Portal) the task came from.
-                    type: object
-                    required:
-                      - url
-                      - valueCode
-                    properties:
-                      url:
-                        description: FHIR extension type.
-                        type: string
-                        enum:
-                          - https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
-                      valueCode:
-                        description: Portal system identifier.
-                        type: string
-                        example: "myportal-01"
-                  - description: Treatment function associated to the Task. Must be provided for PIFU questionnaires.
-                    type: object
-                    properties:
-                      url:
-                        description: Extension URL for treatment function.
-                        type: string
-                        enum:
-                          - "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
-                      valueCoding:
-                        type: object
-                        required:
-                          - system
-                          - code
-                        properties:
-                          system:
-                            description: Coding system for treatment function.
-                            type: string
-                            enum:
-                              - "https://fhir.nhs.uk/CodeSystem/Specialty-1"
-                          code:
-                            description: Treatment function code.
-                            type: string
-                            example: "330"
-                          display:
-                            description: Treatment function display name.
-                            type: string
-                            example: "Dermatology"                
+                        example: "Dermatology"
     OperationOutcome:
       description: A FHIR `OperationOutcome` resource containing details of the issues that have occurred.
       type: object
