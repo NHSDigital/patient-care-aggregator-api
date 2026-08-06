@@ -1266,7 +1266,7 @@ components:
           properties:
             coding:
               type: object
-              description: Array of Coding for the type of task to be completed.
+              description: Coding for the type of task to be completed.
               required:
                 - system
                 - code
@@ -1821,9 +1821,9 @@ components:
                 display: "Barnsley Hospital NHS Foundation Trust"
               reasonCode:
                 coding:
-                  - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
-                    code: "CONS-Survey"
-                    display: "Consultation Survey"
+                  system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
+                  code: "CONS-Survey"
+                  display: "Consultation Survey"
                 text: "Pre-consultation Survey"
               extension:
                 - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
