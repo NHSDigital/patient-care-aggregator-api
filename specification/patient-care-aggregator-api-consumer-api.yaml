@@ -1211,6 +1211,7 @@ components:
             - status
             - description
             - authored
+            - reasonCode
             - reasonReference
           properties:
             id:
@@ -1398,10 +1399,16 @@ components:
                         description: Identifier system for task type. For questionnaires use Extension-Questionnaire-Type.
                         type: string
                         enum:
-                          - "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
+                          - "https://fhir.nhs.uk/CodeSystem/Task-Type"
                       code:
                         description: Task type code. Examples - 'pifu-triage' for PIFU questionnaires, 'appointment-booking-invite' for booking invites.
                         type: string
+                        enum:
+                          - pre-appointment-questionnaire
+                          - post-appointment-questionnaire
+                          - general-update-questionnaire
+                          - pifu-triage
+                          - appointment-booking-invite
                         example: "pifu-triage"
                       display:
                         description: Human-readable display name for the task type.
@@ -4732,6 +4739,10 @@ components:
               system: "https://fhir.nhs.uk/Id/ods-organization-code"
               value: "RXP"
             display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+          reasonCode:
+            coding:
+              - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                code: "appointment-booking-invite"
           reasonReference:
             type: BookingInvitation
             reference: "https://my.portal.com/BookingInvitation/ad8baee0-f2b2-4258-ad25-a8de19c32c14"
@@ -4762,6 +4773,10 @@ components:
               system: "https://fhir.nhs.uk/Id/ods-organization-code"
               value: "RXP"
             display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+          reasonCode:
+            coding:
+              - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                code: "appointment-booking-invite"  
           reasonReference:
             type: BookingInvitation
             reference: "https://my.portal.com/BookingInvitation/76c9d16f-1640-45f7-9455-17359eb38b03"
@@ -4788,6 +4803,10 @@ components:
               system: "https://fhir.nhs.uk/Id/ods-organization-code"
               value: "RXP"
             display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+          reasonCode:
+            coding:
+              - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                code: "appointment-booking-invite"
           reasonReference:
             type: BookingInvitation
             reference: "https://my.portal.com/BookingInvitation/a814df2b-3e47-4f1a-9895-7e987bcdf5d6"
@@ -4818,6 +4837,10 @@ components:
               system: "https://fhir.nhs.uk/Id/ods-organization-code"
               value: "RXP"
             display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+          reasonCode:
+            coding:
+              - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                code: "appointment-booking-invite"  
           reasonReference:
             type: BookingInvitation
             reference: "https://my.portal.com/BookingInvitation/0d3d275b-b3f6-4419-a72a-f6f10f1bef94"
@@ -4845,6 +4868,10 @@ components:
               system: "https://fhir.nhs.uk/Id/ods-organization-code"
               value: "RXP"
             display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+          reasonCode:
+            coding:
+              - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                code: "appointment-booking-invite"  
           reasonReference:
             type: BookingInvitation
             reference: "https://my.portal.com/BookingInvitation/c293d1b5-a297-430a-8ffb-7b426854df93"
