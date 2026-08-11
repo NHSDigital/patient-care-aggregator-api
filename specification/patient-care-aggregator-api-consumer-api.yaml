@@ -1426,11 +1426,11 @@ components:
               enum:
                 - Task
             reference:
-              description: Absolute URL to the Questionnaire or BookingInvitation resource in the Portal system.
+              description: Absolute URL to the resource in the Portal system.
               type: string
               example: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
         extension:
-          description: FHIR extensions for task resources. Includes Portal link, client ID, optional linked appointment, and treatment function.
+          description: FHIR extensions for task resources. Includes client ID and treatment function.
           type: array
           items:
             anyOf:
