@@ -1424,8 +1424,7 @@ components:
               description: Resource type being referenced.
               type: string
               enum:
-                - Questionnaire
-                - BookingInvitation
+                - Task
             reference:
               description: Absolute URL to the Questionnaire or BookingInvitation resource in the Portal system.
               type: string
@@ -4662,7 +4661,7 @@ components:
               display: "PIFU Triage Questionnaire"
           text: "Patient Initiated Follow-Up Questionnaire"
         reasonReference:
-          type: Questionnaire
+          type: Task
           reference: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
@@ -4706,7 +4705,7 @@ components:
               display: "Pre-Appointment Questionnaire"
           text: "Pre-Appointment Questionnaire for upcoming appointment"
         reasonReference:
-          type: Questionnaire
+          type: Task
           reference: "https://my.portal.com/Questionnaire/b519a5f2-dc78-417c-a5aa-1d62d889787b"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
@@ -4736,7 +4735,7 @@ components:
             - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
               code: "appointment-booking-invite"
         reasonReference:
-          type: BookingInvitation
+          type: Task
           reference: "https://my.portal.com/BookingInvitation/ad8baee0-f2b2-4258-ad25-a8de19c32c14"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
@@ -4769,7 +4768,7 @@ components:
             - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
               code: "appointment-booking-invite"  
         reasonReference:
-          type: BookingInvitation
+          type: Task
           reference: "https://my.portal.com/BookingInvitation/76c9d16f-1640-45f7-9455-17359eb38b03"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
@@ -4798,7 +4797,7 @@ components:
             - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
               code: "appointment-booking-invite"
         reasonReference:
-          type: BookingInvitation
+          type: Task
           reference: "https://my.portal.com/BookingInvitation/a814df2b-3e47-4f1a-9895-7e987bcdf5d6"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
@@ -4831,7 +4830,7 @@ components:
             - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
               code: "appointment-booking-invite"  
         reasonReference:
-          type: BookingInvitation
+          type: Task
           reference: "https://my.portal.com/BookingInvitation/0d3d275b-b3f6-4419-a72a-f6f10f1bef94"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
@@ -4861,7 +4860,7 @@ components:
             - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
               code: "appointment-booking-invite"  
         reasonReference:
-          type: BookingInvitation
+          type: Task
           reference: "https://my.portal.com/BookingInvitation/c293d1b5-a297-430a-8ffb-7b426854df93"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
