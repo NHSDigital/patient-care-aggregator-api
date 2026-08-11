@@ -947,7 +947,7 @@ components:
                         properties:
                           reference:
                             type: string
-                            example: Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+                            example:https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
                   - description: Read receipt extension
                     type: object
                     required:
@@ -1104,7 +1104,7 @@ components:
                         properties:
                           reference:
                             type: string
-                            example: Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+                            example:https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
                   - description: FHIR extension for Questionnaire type coding
                     type: object
                     required:
@@ -1288,7 +1288,7 @@ components:
             reference:
               description: Absolute URL to the linked Appointment.
               type: string
-              example: Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+              example:https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
         for:
           description: Patient whom the task relates to.
           type: object
@@ -4337,7 +4337,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Read-Receipt
               valueCode: unread
           description: Dermatology follow-up letter
@@ -4386,7 +4386,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Read-Receipt
               valueCode: seen
           description: Rheumatology reschedule letter
@@ -4435,7 +4435,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Read-Receipt
               valueCode: read
           description: Urology booking letter
@@ -4508,7 +4508,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
           description: MSK health questionnaire
           scheduledPeriod:
             start: '2024-01-13T07:33:23.192Z'
@@ -4553,7 +4553,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
           description: Pre-consultation Survey
           scheduledPeriod:
             start: '2023-12-01T23:01:23.120Z'
@@ -4598,7 +4598,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
           description: Asthma questionnaire
           scheduledPeriod:
             start: '2023-10-01T09:23:12.029Z'
@@ -5304,7 +5304,7 @@ components:
                   valueCode: myportal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/F3A58FFD-8959-40EF-A2FE-FCD14764896E
+                    reference:https://example.uk/Appointment/F3A58FFD-8959-40EF-A2FE-FCD14764896E
                 description: Transplantation Surgery Pre-consultation Survey
                 scheduledPeriod:
                   start: '2025-02-08T06:07:33.500Z'
@@ -5407,7 +5407,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
+                    reference:https://example.uk/Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5483,7 +5483,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/f3fb86bf-dc44-446e-a975-34b13dd84e03
+                    reference:https://example.uk/Appointment/f3fb86bf-dc44-446e-a975-34b13dd84e03
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5511,7 +5511,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/1ba97032-fff2-4490-a1dd-2af0f9c29881
+                    reference:https://example.uk/Appointment/1ba97032-fff2-4490-a1dd-2af0f9c29881
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5537,7 +5537,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
+                    reference:https://example.uk/Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5596,7 +5596,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/fe625d51-80d2-49fc-a02f-ccd0c7d92981
+                    reference:https://example.uk/Appointment/fe625d51-80d2-49fc-a02f-ccd0c7d92981
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5654,7 +5654,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/ad0ae6c5-c5b4-439a-b79c-5e010e63ef17
+                    reference:https://example.uk/Appointment/ad0ae6c5-c5b4-439a-b79c-5e010e63ef17
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5736,7 +5736,7 @@ components:
                   valueCode: myportal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
+                    reference:https://example.uk/Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5763,7 +5763,7 @@ components:
                   valueCode: myportal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/F3A58FFD-8959-40EF-A2FE-FCD14764896E
+                    reference:https://example.uk/Appointment/F3A58FFD-8959-40EF-A2FE-FCD14764896E
                 description: Transplantation Surgery Pre-consultation Survey
                 scheduledPeriod:
                   start: '2025-02-08T06:07:33.500Z'
