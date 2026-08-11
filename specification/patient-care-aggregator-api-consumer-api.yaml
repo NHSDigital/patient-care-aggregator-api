@@ -4656,7 +4656,7 @@ components:
           display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
         code:
           coding:
-            - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
               code: "pifu-triage"
               display: "PIFU Triage Questionnaire"
           text: "Patient Initiated Follow-Up Questionnaire"
