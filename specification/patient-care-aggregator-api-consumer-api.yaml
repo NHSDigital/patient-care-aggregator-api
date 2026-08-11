@@ -1852,8 +1852,8 @@ components:
             # Tasks - Questionnaires (using Task resource)
             pifuQuestionnaireTask:
               $ref: "#/components/examples/pifuQuestionnaireTask"
-            preAssessmentQuestionnaireTask:
-              $ref: "#/components/examples/preAssessmentQuestionnaireTask"                         
+            preAppointmentQuestionnaireTask:
+              $ref: "#/components/examples/preAppointmentQuestionnaireTask"                         
             # PIFU
             pifuZeroWaitingListZeroPifu:
               $ref: "#/components/examples/pifuZeroWaitingListZeroPifu"
@@ -2261,7 +2261,7 @@ components:
                   value: '9000000023'
               activity:
                 - $ref: "#/components/examples/pifuQuestionnaireTask"
-                - $ref: "#/components/examples/preAssessmentQuestionnaireTask"    
+                - $ref: "#/components/examples/preAppointmentQuestionnaireTask"    
                 # what other questionniare state examples need to be included?         
     incompleteWaitingLists:
       summary: 200 One incomplete waiting list
@@ -4674,13 +4674,13 @@ components:
               system: "https://fhir.nhs.uk/CodeSystem/Specialty-1"
               code: "330"
               display: "Dermatology"
-    preAssessmentQuestionnaireTask:
-      summary: Fragment - Task for a pre-assessment questionnaire linked to an appointment
+    preAppointmentQuestionnaireTask:
+      summary: Fragment - Task for a pre-appointment questionnaire linked to an appointment
       value:
         id: b519a5f2-dc78-417c-a5aa-1d62d889787b
         status: in-progress
         intent: plan
-        description: Orthopaedic Surgery pre-assessment questionnaire
+        description: Orthopaedic Surgery pre-appointment questionnaire
         authored: '2025-06-15T09:00:00.000Z'
         lastModified: '2025-06-18T14:30:00.000Z'
         restriction:
@@ -4703,10 +4703,10 @@ components:
           display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
         reasonCode:
           coding:
-            - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
-              code: "pre-assessment"
-              display: "Pre-Assessment Questionnaire"
-          text: "Pre-assessment Questionnaire for upcoming appointment"
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "pre-appointment-questionnaire"
+              display: "Pre-Appointment Questionnaire"
+          text: "Pre-Appointment Questionnaire for upcoming appointment"
         reasonReference:
           type: Questionnaire
           reference: "https://my.portal.com/Questionnaire/b519a5f2-dc78-417c-a5aa-1d62d889787b"
