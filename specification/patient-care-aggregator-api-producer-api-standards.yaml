@@ -1809,7 +1809,7 @@ components:
                 identifier:
                   system: "https://fhir.nhs.uk/Id/nhs-number"
                   value: "9000000001"
-              authoredOn: "2021-06-13T12:30:00+00:00"
+              authored: "2021-06-13T12:30:00+00:00"
               reasonReference:
                 type: "Questionnaire"
                 reference: "https://my.portal.com/Questionnaire/cdb83383-f17e-4bf7-8f40-342f7f7c7d8d"
@@ -1857,7 +1857,7 @@ components:
                 identifier:
                   system: "https://fhir.nhs.uk/Id/nhs-number"
                   value: "9000000014"
-              authoredOn: "2026-07-13T12:30:00+00:00"
+              authored: "2026-07-13T12:30:00+00:00"
               restriction:
                 period:
                   end: "2026-07-13T18:00:00+00:00"
