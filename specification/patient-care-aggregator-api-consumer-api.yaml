@@ -1205,6 +1205,9 @@ components:
         - status
         - description
         - authored
+        - intent 
+        - for
+        - owner
         - reasonCode
         - reasonReference
       properties:
