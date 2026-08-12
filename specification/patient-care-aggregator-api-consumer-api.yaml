@@ -947,7 +947,7 @@ components:
                         properties:
                           reference:
                             type: string
-                            example:https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+                            example: https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
                   - description: Read receipt extension
                     type: object
                     required:
@@ -1104,7 +1104,7 @@ components:
                         properties:
                           reference:
                             type: string
-                            example:https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+                            example: https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
                   - description: FHIR extension for Questionnaire type coding
                     type: object
                     required:
@@ -1288,7 +1288,7 @@ components:
             reference:
               description: Absolute URL to the linked Appointment.
               type: string
-              example:https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+              example: https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
         for:
           description: Patient whom the task relates to.
           type: object
