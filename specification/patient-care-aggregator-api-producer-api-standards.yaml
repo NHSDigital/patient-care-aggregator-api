@@ -1130,7 +1130,6 @@ components:
           type: string
           enum:
             - requested
-            # rejected is in FHIR R4, but will need to be added to our spec
             - rejected
             - cancelled
             - in-progress
@@ -1222,8 +1221,8 @@ components:
               type: string
               description: The type of task, used to differentiate behaviour in the Aggregator. Must be either `BookingInvitation` for Invite to Book tasks, or `Questionnaire` for questionnaire completion tasks.
               enum:
-                - "BookingInvitation"
-                - "Questionnaire"
+                - Questionnaire
+                - Task
             reference: 
               type: string
               description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
@@ -1281,11 +1280,11 @@ components:
                 code:
                   type: string
                   description: Task type code. For questionnaires that are part of the patient initiated follow-up (PIFU) feature, the questionnaire type code must be set to "pifu-triage".
-                  example: CONS-Survey
+                  example: pifu-triage
                 display:
                   type: string
                   description: Task type
-                  example: Consultation Survey
+                  example: PIFU Triage
             text:
               type: string
               description: Task type
