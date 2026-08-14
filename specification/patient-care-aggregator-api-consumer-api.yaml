@@ -1204,7 +1204,7 @@ components:
         - id
         - status
         - description
-        - authored
+        - authoredOn
         - intent 
         - for
         - owner
@@ -1248,7 +1248,7 @@ components:
           description: The patient-friendly, standardised title of the task suitable for display to patients. For questionnaires, this should match the name shown in your interface and follow the structure {Specialty name} {Questionnaire type}. For appointment booking invites, use the description to indicate the action e.g. 'Book your appointment'. The values presented within this field are required for Data Quality Assurance.
           type: string
           example: Dermatology pre-assessment questionnaire
-        authored:
+        authoredOn:
           description: Date/time when the task was first made available to the patient in UTC format.
           type: string
           format: date-time
@@ -4638,7 +4638,7 @@ components:
         status: requested
         intent: plan
         description: Dermatology PIFU follow-up questionnaire
-        authored: '2025-06-20T18:00:00.000Z'
+        authoredOn: '2025-06-20T18:00:00.000Z'
         restriction:
           period:
             start: '2025-06-20T18:00:00.000Z'
@@ -4678,7 +4678,7 @@ components:
         status: in-progress
         intent: plan
         description: Orthopaedic Surgery pre-appointment questionnaire
-        authored: '2025-06-15T09:00:00.000Z'
+        authoredOn: '2025-06-15T09:00:00.000Z'
         lastModified: '2025-06-18T14:30:00.000Z'
         restriction:
           period:
@@ -4718,7 +4718,7 @@ components:
         status: requested
         intent: plan
         description: Book your Dermatology appointment
-        authored: '2025-07-16T09:00:00.000Z'
+        authoredOn: '2025-07-16T09:00:00.000Z'
         for:
           type: Patient
           identifier:
@@ -4747,7 +4747,7 @@ components:
         status: requested
         intent: plan
         description: Book your Cardiology appointment
-        authored: '2025-07-10T09:00:00.000Z'
+        authoredOn: '2025-07-10T09:00:00.000Z'
         restriction:
           period:
             start: '2025-07-16T09:00:00.000Z'
@@ -4780,7 +4780,7 @@ components:
         status: in-progress
         intent: plan
         description: Book your Oncology appointment
-        authored: '2025-07-10T09:00:00.000Z'
+        authoredOn: '2025-07-10T09:00:00.000Z'
         for:
           type: Patient
           identifier:
@@ -4809,7 +4809,7 @@ components:
         status: completed
         intent: plan
         description: Book your General Surgery appointment
-        authored: '2025-07-10T09:00:00.000Z'
+        authoredOn: '2025-07-10T09:00:00.000Z'
         lastModified: '2025-07-18T14:30:00.000Z'
         focus:
           type: Appointment
@@ -4842,7 +4842,7 @@ components:
         status: rejected
         intent: plan
         description: Book your Gastroenterology appointment
-        authored: '2025-07-16T09:00:00.000Z'
+        authoredOn: '2025-07-16T09:00:00.000Z'
         lastModified: '2025-07-17T10:00:00.000Z'
         for:
           type: Patient
