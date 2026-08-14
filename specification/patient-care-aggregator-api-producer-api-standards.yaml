@@ -1257,6 +1257,44 @@ components:
             display:
               type: string
               example: Barnsley Hospital NHS Foundation Trust
+        code:
+          description: A coding for the task, briefly describing what the task involves. Aligns with FHIR R4 Task.code
+          type: object
+          properties:
+            coding:
+              description: Array of codings for the type of task. Use system to distinguish between questionnaire types and booking invite types.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: object
+                required:
+                  - system
+                  - code
+                properties:
+                  system:
+                    description: Identifier system for task type.
+                    type: string
+                    enum:
+                      - "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                  code:
+                    description: Task type code. Examples - 'pifu-triage' for PIFU questionnaires, 'appointment-booking-invite' for booking invites.
+                    type: string
+                    enum:
+                      - pre-appointment-questionnaire
+                      - post-appointment-questionnaire
+                      - general-update-questionnaire
+                      - pifu-triage
+                      - appointment-booking-invite
+                    example: "pifu-triage"
+                  display:
+                    description: Human-readable display name for the task type.
+                    type: string
+                    example: "PIFU Triage Questionnaire"
+            text:
+              description: Plain text representation of the task type concept.
+              type: string
+              example: "Patient Initiated Follow-Up Questionnaire"
         reasonCode:
           type: object
           description: Reason for the Task, the request for a patient to complete a the Task. Required for questionnaire tasks.
@@ -1862,7 +1900,7 @@ components:
                 period:
                   end: "2026-07-13T18:00:00+00:00"
               reasonReference:
-                type: "BookingInvitation"
+                type: "Task"
                 reference: "https://my.portal.com/BookingInvitation/cdb83383-f17e-4bf7-8f40-342f7f7c7d8d"
               owner:
                 type: "Organization"
@@ -1870,6 +1908,10 @@ components:
                   system: "https://fhir.nhs.uk/Id/ods-organization-code"
                   value: "RFF"
                 display: "Barnsley Hospital NHS Foundation Trust"
+              code:
+                coding:
+                  - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                    code: "appointment-booking-invite"
               extension:
                 - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
                   valueCoding:
