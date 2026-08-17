@@ -3,7 +3,7 @@
 openapi: '3.0.3'
 info:
   title: "Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard"
-  version: "3.13.0"
+  version: "3.14.0"
   description: |
     ## Overview 
     ![Patient Care Aggregator Get Appointments, Documents and Questionnaires API Standard context diagram](https://digital.nhs.uk/binaries/content/gallery/website/developer/api-catalogue/patient-care-aggregator-fhir-api/patient-care-aggregator-get-appointments-api-standard.svg?raw=true)
@@ -148,7 +148,6 @@ paths:
         ## Patients with no appointments
         Where a patient has no appointments, including where appointments have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
         response with an HTTP status of 200 and a FHIR Bundle with no appointments in it.
-
         ## Capacity and response times
         Your endpoint must be capable of:
         - responding to requests within 400ms (at the 95th percentile)
@@ -177,6 +176,8 @@ paths:
           $ref: "#/components/responses/appointmentsHappyPath"
         4XX:
           $ref: "#/components/responses/4XX"
+        5XX:
+          $ref: "#/components/responses/5XX"
   /DocumentReference:
     get:
       summary: "Returns FHIR DocumentReferences resources"
@@ -207,7 +208,6 @@ paths:
         ## Patients with no document references
         Where a patient has no document references, including where document references have been excluded due to the various exclusion rules above, the endpoint returns a 'happy path'
         response with an HTTP status of 200 and a FHIR Bundle with no document references in it.
-
         ## Capacity and response times
         Your endpoint must be capable of:
         - responding to requests within 400ms (at the 95th percentile)
@@ -236,6 +236,8 @@ paths:
           $ref: "#/components/responses/documentsHappyPath"
         4XX:
           $ref: "#/components/responses/4XX"
+        5XX:
+          $ref: "#/components/responses/5XX"
   /Task:
     get:
       summary: "Returns FHIR Task resources"
@@ -292,6 +294,8 @@ paths:
           $ref: "#/components/responses/questionnaireHappyPath"
         4XX:
           $ref: "#/components/responses/4XX"
+        5XX:
+          $ref: "#/components/responses/5XX"
 components:
   schemas:
     Bundle:
@@ -1437,7 +1441,9 @@ components:
           scopes: {}
   responses:
     appointmentsHappyPath:
-      description: A successful request.
+      description: |
+        Successful search - 200 OK with FHIR Bundle.
+        Scenario 1 (patient exists, no data) and 2 (patient unknown) MUST return 200 with empty Bundle: Refer to `emptyBundle` example.
       headers:
         #X-Request-ID:
         #  $ref: "#/components/headers/xRequestId"
@@ -1455,7 +1461,9 @@ components:
             inpatientAdmission:
               $ref: "#/components/examples/inpatientAdmission"
     documentsHappyPath:
-      description: A successful request.
+      description: |
+        Successful search - 200 OK with FHIR Bundle.
+        Cases 1 and 2 MUST return 200 with empty Bundle.
       headers:
         #X-Request-ID:
         #  $ref: "#/components/headers/xRequestId"
@@ -1471,7 +1479,9 @@ components:
             document:
               $ref: "#/components/examples/document"
     questionnaireHappyPath:
-      description: A successful request.
+      description: |
+        Successful search - 200 OK with FHIR Bundle.
+        Cases 1 and 2 MUST return 200 with empty Bundle.
       headers:
         #X-Request-ID:
         #  $ref: "#/components/headers/xRequestId"
@@ -1489,14 +1499,12 @@ components:
     4XX:
       description: |
         When the service is unable to serve a successful response a FHIR `OperationOutcome` resource should be returned with the relevant HTTP status code defined as follows:
-  
         | HTTP status | Error code          | Description                                                         |
         | ----------- | ------------------- | ------------------------------------------------------------------- |
         | 400         | `exception`         | Missing or invalid NHS number in request                            |
         | 401         | `processing`        | Missing or invalid OAuth 2.0 bearer token in request                |
         | 401         | `processing`        | NHS number in request doesn't match NHS number in NHS login account |
         | 403         | `forbidden`         | Patient is under 16 years of age                                    |
-        | 404         | `not-found`         | Invalid value in `NHSD-Target-Identifier` header                    |
         | 429         | `TOO_MANY_REQUESTS` | You have exceeded your application's [rate limit](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#rate-limits). |
   
         For details see the `diagnostics` field.
@@ -1530,6 +1538,7 @@ components:
   
         | HTTP status | Error code          | Description                                                         |
         | ----------- | ------------------- | ------------------------------------------------------------------- |
+        | 503         | `exception`         | Service unavailable  
         | 504         | `exception`         | Gateway Timeout                                                     |
         
         For details see the `diagnostics` field.
@@ -1543,8 +1552,10 @@ components:
           schema:
             $ref: "#/components/schemas/OperationOutcome"
           examples:
+            serviceUnavailable:
+              $ref: "#/components/examples/serviceUnavailable"
             gatewayTimeout:
-              $ref: "#/components/examples/gatewayTimeout"
+              $ref: "#/components/examples/gatewayTimeout"  
   headers:
     xRequestId:
       schema:
@@ -1907,6 +1918,16 @@ components:
           - severity: error
             code: exception
             diagnostics: 'Gateway Timeout'
+    serviceUnavailable:
+      summary: HTTP Status 503 - Service Unavailable
+      description: HTTP Status 503 'Service unavailable' The external system is unavailable.
+      value:
+        resourceType: OperationOutcome
+        issue:
+          - severity: error
+            code: exception
+            diagnostics: 'Service Unavailable'        
+            
 security:
   - oAuth2ClientCredentials: []
 tags:
