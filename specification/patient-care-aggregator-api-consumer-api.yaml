@@ -1414,7 +1414,7 @@ components:
               type: string
               example: "Patient Initiated Follow-Up Questionnaire"
         input:
-          desciption: Additional information required to execute the task. Each entry consists of a typed key and a value, allowing identification and use of specific pieces of information needed to perform the task, such as a URL to an upstream portal system where the task is performed.
+          description: Additional information required to execute the task. Each entry consists of a typed key and a value, allowing identification and use of specific pieces of information needed to perform the task, such as a URL to an upstream portal system where the task is performed.
           type: array
           minItems: 1
           items:
