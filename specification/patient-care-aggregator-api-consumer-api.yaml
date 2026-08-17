@@ -1447,7 +1447,8 @@ components:
                         code:
                           description: The code identifying the type of input
                           type: string
-                          example: "appointment-booking-url"
+                          enum: 
+                            - portal-url
                         display:
                           description: Human-readable label for the input type code
                           type: string
@@ -4691,7 +4692,7 @@ components:
           - type:
               coding:
                 - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
-                  code: questionnaire-url
+                  code: portal-url
                   display: "PIFU Questionnaire portal system URL"
             valueUrl: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
         extension:
@@ -4739,9 +4740,9 @@ components:
           - type:
               coding:
                 - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
-                  code: questionnaire-url
+                  code: portal-url
                   display: "URL to Pre-appointment Questionnaire in portal system"
-            valueUrl: "https://my.portal.com/Questionnaire/b519a5f2-dc78-417c-a5aa-1d62d889787b"  
+            valueUrl: "https://my.portal.com/Questionnaire/b519a5f2-dc78-417c-a5aa-1d62d889787b"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
             valueCode: myportal-01
@@ -4773,9 +4774,9 @@ components:
           - type:
               coding:
                 - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
-                  code: appointment-booking-url
+                  code: portal-url
                   display: "URL to appointment booking screen in portal system"
-            valueUrl: "https://my.portal.com/BookingInvitation/ad8baee0-f2b2-4258-ad25-a8de19c32c14"  
+            valueUrl: "https://my.portal.com/BookingInvitation/ad8baee0-f2b2-4258-ad25-a8de19c32c14"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
             valueCode: myportal-01
@@ -4810,8 +4811,8 @@ components:
           - type:
               coding:
                 - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
-                  code: appointment-booking-url
-            valueUrl: "https://my.portal.com/BookingInvitation/76c9d16f-1640-45f7-9455-17359eb38b03"  
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/76c9d16f-1640-45f7-9455-17359eb38b03"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
             valueCode: myportal-01     
@@ -4842,8 +4843,8 @@ components:
           - type:
               coding:
                 - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
-                  code: appointment-booking-url
-            valueUrl: "https://my.portal.com/BookingInvitation/a814df2b-3e47-4f1a-9895-7e987bcdf5d6"  
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/a814df2b-3e47-4f1a-9895-7e987bcdf5d6"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
             valueCode: myportal-01
@@ -4878,8 +4879,8 @@ components:
           - type:
               coding:
                 - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
-                  code: appointment-booking-url
-            valueUrl: "https://my.portal.com/BookingInvitation/0d3d275b-b3f6-4419-a72a-f6f10f1bef94"  
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/0d3d275b-b3f6-4419-a72a-f6f10f1bef94"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
             valueCode: myportal-01
@@ -4911,8 +4912,8 @@ components:
           - type:
               coding:
                 - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
-                  code: appointment-booking-url
-            valueUrl: "https://my.portal.com/BookingInvitation/c293d1b5-a297-430a-8ffb-7b426854df93"  
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/c293d1b5-a297-430a-8ffb-7b426854df93"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
             valueCode: myportal-01
