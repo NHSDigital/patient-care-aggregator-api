@@ -1209,7 +1209,7 @@ components:
         - for
         - owner
         - code
-        - reasonReference
+        - input
       properties:
         id:
           description: Globally unique identifier for the Task. To be persisted over time.
@@ -1413,22 +1413,49 @@ components:
               description: Plain text representation of the task type concept.
               type: string
               example: "Patient Initiated Follow-Up Questionnaire"
-        reasonReference:
-          description: Reference to the Questionnaire or BookingInvitation this task is requesting be completed.
-          type: object
-          required:
-            - type
-            - reference
-          properties:
-            type:
-              description: Resource type being referenced.
-              type: string
-              enum:
-                - Task
-            reference:
-              description: Absolute URL to the resource in the Portal system.
-              type: string
-              example: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
+        input:
+          desciption: Additional information required to execute the task. Each entry consists of a typed key and a value, allowing identification and use of specific pieces of information needed to perform the task, such as a URL to an upstream portal system where the task is performed.
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - type
+              - valueUrl
+            properties:
+              type:
+                description: The type input required for completion of the task
+                type: object
+                required:
+                  - coding
+                properties:
+                  coding:
+                    type: array
+                    minItems: 1
+                    maxItems: 1
+                    items:
+                      type: object
+                      required:
+                        - system
+                        - code
+                      properties:
+                        system:
+                          description: The canonical URI of the CodeSystem from which the input type code is drawn.
+                          type: string
+                          enum:
+                            - "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                        code:
+                          description: The code identifying the type of input
+                          type: string
+                          example: "appointment-booking-url"
+                        display:
+                          description: Human-readable label for the input type code
+                          type: string
+                          example: "URL of booking screen in portal system"
+              valueUrl:
+                description: The value of the URL to the portal system where the task is performed
+                type: string
+                example: "https://my.portal.com/BookingInvitation/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
         extension:
           description: FHIR extensions for task resources. Includes client ID and treatment function.
           type: array
@@ -1475,7 +1502,7 @@ components:
                       display:
                         description: Treatment function display name.
                         type: string
-                        example: "Dermatology"
+                        example: "Dermatology"     
     OperationOutcome:
       description: A FHIR `OperationOutcome` resource containing details of the issues that have occurred.
       type: object
