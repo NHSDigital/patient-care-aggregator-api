@@ -1219,7 +1219,7 @@ components:
           properties:
             type: 
               type: string
-              description: The type of task, used to differentiate behaviour in the Aggregator. Must be either `BookingInvitation` for Invite to Book tasks, or `Questionnaire` for questionnaire completion tasks.
+              description: The type of task, used to differentiate behaviour in the Aggregator. Must be either `Task` for Invite to Book tasks, or `Questionnaire` for questionnaire completion tasks.
               enum:
                 - Questionnaire
                 - Task
