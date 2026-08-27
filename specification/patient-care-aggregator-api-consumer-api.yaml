@@ -1394,7 +1394,7 @@ components:
                     description: Identifier system for task type.
                     type: string
                     enum:
-                      - "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                      - "https://fhir.nhs.uk/England/CodeSystem/wayfinder-task-type"
                   code:
                     description: Task type code. Examples - 'pifu-triage' for PIFU questionnaires, 'appointment-booking-invite' for booking invites.
                     type: string
@@ -1443,7 +1443,7 @@ components:
                           description: The canonical URI of the CodeSystem from which the input type code is drawn.
                           type: string
                           enum:
-                            - "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                            - "https://fhir.nhs.uk/England/CodeSystem/wayfinder-task-input-type"
                         code:
                           description: The code identifying the type of input
                           type: string
