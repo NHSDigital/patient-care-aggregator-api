@@ -555,9 +555,11 @@ components:
                             description: The e-RS request status itself.
                             type: string
                             enum:
+                              - BOOKED
                               - bookable
                               - bookableWasCancelled
                               - inReview
+                              - accepted
                   - description: The specialty of the service to which the referral or booking applies. Always present for a booking; only present for a referral if the referral has been booked.
                     type: object
                     required:
