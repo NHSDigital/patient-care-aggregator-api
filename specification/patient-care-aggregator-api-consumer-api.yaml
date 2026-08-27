@@ -156,7 +156,7 @@ servers:
 paths:
   /aggregator/events:
     get:
-      summary: Get patients referrals, bookings, documents, questionnaires and waiting lists
+      summary: Get patients referrals, bookings, documents, questionnaires, tasks and waiting lists
       operationId: get-referrals-and-bookings
       description: The Wayfinder Patient Care Aggregator CarePlan response will return a FHIR [Bundle](https://www.hl7.org/fhir/r4/bundle.html) resource which will contain one [CarePlan](https://www.hl7.org/fhir/r4/careplan.html) resource per Waiting List Entry, one [CarePlan](https://www.hl7.org/fhir/r4/careplan.html) resource containing all Referrals, Appointments, Documents and Questionnaires and one optional [OperationOutcome](https://www.hl7.org/fhir/r4/OperationOutcome.html) resource (based on the UK Core FHIR specification) for use by the NHS App to the following specification.
         
@@ -451,7 +451,7 @@ components:
               type: string
               example: Isle of Wight NHS Trust
         activity:
-          description: Array of referral, appointments, documents and questionnaires related to the patients care.
+          description: Array of referral, appointments, documents, tasks and questionnaires related to the patients care.
           type: array
           items:
             anyOf:
@@ -459,6 +459,7 @@ components:
               - $ref: "#/components/schemas/Appointment"
               - $ref: "#/components/schemas/Document"
               - $ref: "#/components/schemas/Questionnaire"
+              - $ref: "#/components/schemas/Task"
       externalDocs:
         description: FHIR UK Core CarePlan (R4) Resource Profile
         url: https://hl7.org/fhir/R4/careplan.html
@@ -946,7 +947,7 @@ components:
                         properties:
                           reference:
                             type: string
-                            example: Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+                            example: https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
                   - description: Read receipt extension
                     type: object
                     required:
@@ -1103,7 +1104,7 @@ components:
                         properties:
                           reference:
                             type: string
-                            example: Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+                            example: https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
                   - description: FHIR extension for Questionnaire type coding
                     type: object
                     required:
@@ -1196,6 +1197,313 @@ components:
                     description: ODS Organisation name (NHS Trust)
                     type: string
                     example: THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST
+    Task:
+      description: A generic task resource representing an action for the patient to complete (e.g. questionnaire, appointment booking invite). Aligns with FHIR R4 Task and Producer spec implementation.
+      type: object
+      required:
+        - id
+        - status
+        - description
+        - authoredOn
+        - intent 
+        - for
+        - owner
+        - code
+        - input
+      properties:
+        id:
+          description: Globally unique identifier for the Task. To be persisted over time.
+          type: string
+          example: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
+        identifier:
+          description: The ID of the task in your Patient Portal database (system-specific identifier).
+          type: object
+          required:
+            - system
+            - value
+          properties:
+            system:
+              description: Local (portal) system identifier URI.
+              type: string
+              example: "https://my.portal.com/fhir/Task?Id={system|value}"
+            value:
+              description: Local (portal) system identifier value.
+              type: string
+              example: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
+        status:
+          description: The status of the task as progressed by the patient.
+          type: string
+          enum:
+            - requested
+            - rejected
+            - cancelled
+            - in-progress
+            - completed
+        intent:
+          description: Hardcoded to 'plan'. Indicates the intent is to perform as a plan/task (See FHIR Task.intent).
+          type: string
+          enum:
+            - plan
+        description:
+          description: The patient-friendly, standardised title of the task suitable for display to patients. For questionnaires, this should match the name shown in your interface and follow the structure {Specialty name} {Questionnaire type}. For appointment booking invites, use the description to indicate the action e.g. 'Book your appointment'. The values presented within this field are required for Data Quality Assurance.
+          type: string
+          example: Dermatology pre-assessment questionnaire
+        authoredOn:
+          description: Date/time when the task was first made available to the patient in UTC format.
+          type: string
+          format: date-time
+          example: '2025-06-20T18:00:00.000Z'
+        lastModified:
+          description: Date/time when the task was last modified by the patient in UTC format. For PIFU questionnaires, represents when the patient last requested a follow-up.
+          type: string
+          format: date-time
+          example: '2025-06-23T12:30:00.000Z'
+        restriction:
+          description: Constraints on the task, including deadline for task completion.
+          type: object
+          properties:
+            period:
+              description: The period during which the task should be actioned.
+              type: object
+              properties:
+                start:
+                  description: The effective start date/time when the task became available to the patient in UTC format.
+                  type: string
+                  format: date-time
+                  example: '2025-06-20T18:00:00.000Z'
+                end:
+                  description: The effective end date/time by which the task should be completed by the patient in UTC format. For appointment booking invites, this is when the invite expires.
+                  type: string
+                  format: date-time
+                  example: '2025-12-20T00:00:00.000Z'
+        focus:
+          description: Reference to the Appointment this task relates to (optional). Not required for appointment booking invites where the appointment doesn't exist yet.
+          type: object
+          properties:
+            type:
+              description: Resource type.
+              type: string
+              enum:
+                - Appointment
+            reference:
+              description: Absolute URL to the linked Appointment.
+              type: string
+              example: https://example.uk/Appointment/caa99978-05ab-4473-8280-e77ebfe797c4
+        for:
+          description: Patient whom the task relates to.
+          type: object
+          required:
+            - type
+            - identifier
+          properties:
+            type:
+              description: Resource type.
+              type: string
+              enum:
+                - Patient
+            identifier:
+              type: object
+              required:
+                - system
+                - value
+              properties:
+                system:
+                  description: URI to identifier NHS Numbers.
+                  type: string
+                  enum:
+                    - "https://fhir.nhs.uk/Id/nhs-number"
+                value:
+                  description: The patient's NHS Number.
+                  type: string
+                  example: "9000000002"
+        basedOn:
+          description: Reference to the related CarePlan (Pathway). Optional, used to identify related tasks from the same pathway.
+          type: array
+          minItems: 0
+          maxItems: 1
+          items:
+            type: object
+            properties:
+              type:
+                description: Resource type.
+                type: string
+                enum:
+                  - CarePlan
+              identifier:
+                type: object
+                required:
+                  - system
+                  - value
+                properties:
+                  system:
+                    description: Identifier system for Care Pathway.
+                    type: string
+                    enum:
+                      - "https://fhir.nhs.uk/Id/PathwayId"
+                  value:
+                    description: Care pathway identifier.
+                    type: string
+                    example: "RBH5644312231"
+        owner:
+          description: Organization responsible for the task (the provider organization).
+          type: object
+          required:
+            - type
+            - identifier
+          properties:
+            type:
+              description: Resource type.
+              type: string
+              enum:
+                - Organization
+            identifier:
+              type: object
+              required:
+                - system
+                - value
+              properties:
+                system:
+                  description: URI to identifier NHS Trust Organizations.
+                  type: string
+                  enum:
+                    - "https://fhir.nhs.uk/Id/ods-organization-code"
+                value:
+                  description: NHS Trust Organization (ODS) code.
+                  type: string
+                  example: "RTD"
+            display:
+              description: ODS Organisation name (NHS Trust).
+              type: string
+              example: "THE NEWCASTLE UPON TYNE HOSPITALS NHS FOUNDATION TRUST"
+        code:
+          description: A coding for the task, briefly describing what the task involves. Aligns with FHIR R4 Task.code 
+          type: object
+          properties:
+            coding:
+              description: Array of codings for the type of task. Use system to distinguish between questionnaire types and booking invite types.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: object
+                required:
+                  - system
+                  - code
+                properties:
+                  system:
+                    description: Identifier system for task type.
+                    type: string
+                    enum:
+                      - "https://fhir.nhs.uk/England/CodeSystem/wayfinder-task-type"
+                  code:
+                    description: Task type code. Examples - 'pifu-triage' for PIFU questionnaires, 'appointment-booking-invite' for booking invites.
+                    type: string
+                    enum:
+                      - pre-appointment-questionnaire
+                      - post-appointment-questionnaire
+                      - general-update-questionnaire
+                      - pifu-triage
+                      - appointment-booking-invite
+                    example: "pifu-triage"
+                  display:
+                    description: Human-readable display name for the task type.
+                    type: string
+                    example: "PIFU Triage Questionnaire"
+            text:
+              description: Plain text representation of the task type concept.
+              type: string
+              example: "Patient Initiated Follow-Up Questionnaire"
+        input:
+          description: Additional information required to execute the task. Each entry consists of a typed key and a value, allowing identification and use of specific pieces of information needed to perform the task, such as a URL to an upstream portal system where the task is performed.
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - type
+              - valueUrl
+            properties:
+              type:
+                description: The type input required for completion of the task
+                type: object
+                required:
+                  - coding
+                properties:
+                  coding:
+                    type: array
+                    minItems: 1
+                    maxItems: 1
+                    items:
+                      type: object
+                      required:
+                        - system
+                        - code
+                      properties:
+                        system:
+                          description: The canonical URI of the CodeSystem from which the input type code is drawn.
+                          type: string
+                          enum:
+                            - "https://fhir.nhs.uk/England/CodeSystem/wayfinder-task-input-type"
+                        code:
+                          description: The code identifying the type of input
+                          type: string
+                          enum: 
+                            - portal-url
+                        display:
+                          description: Human-readable label for the input type code
+                          type: string
+                          example: "URL of booking screen in portal system"
+              valueUrl:
+                description: The value of the URL to the portal system where the task is performed
+                type: string
+                example: "https://my.portal.com/BookingInvitation/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
+        extension:
+          description: FHIR extensions for task resources. Includes client ID and treatment function.
+          type: array
+          items:
+            anyOf:
+              - description: Unique identifier for the upstream application (Portal) the task came from.
+                type: object
+                required:
+                  - url
+                  - valueCode
+                properties:
+                  url:
+                    description: FHIR extension type.
+                    type: string
+                    enum:
+                      - https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+                  valueCode:
+                    description: Portal system identifier.
+                    type: string
+                    example: "myportal-01"
+              - description: Treatment function associated to the Task. Must be provided for PIFU questionnaires.
+                type: object
+                properties:
+                  url:
+                    description: Extension URL for treatment function.
+                    type: string
+                    enum:
+                      - "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
+                  valueCoding:
+                    type: object
+                    required:
+                      - system
+                      - code
+                    properties:
+                      system:
+                        description: Coding system for treatment function.
+                        type: string
+                        enum:
+                          - "https://fhir.nhs.uk/CodeSystem/Specialty-1"
+                      code:
+                        description: Treatment function code.
+                        type: string
+                        example: "330"
+                      display:
+                        description: Treatment function display name.
+                        type: string
+                        example: "Dermatology"     
     OperationOutcome:
       description: A FHIR `OperationOutcome` resource containing details of the issues that have occurred.
       type: object
@@ -1394,8 +1702,10 @@ components:
               $ref: "#/components/examples/allAppointmentStates"
             allDocumentStates:
               $ref: "#/components/examples/allDocumentStates"
-            allQuestionnairestates:
-              $ref: "#/components/examples/allQuestionnairestates"
+            allQuestionnaireStates:
+              $ref: "#/components/examples/allQuestionnaireStates"
+            allAppointmentBookingInvitationStates:
+              $ref: "#/components/examples/allAppointmentBookingInvitationStates"  
             incompleteWaitingLists:
               $ref: "#/components/examples/incompleteWaitingLists"
             incompleteWaitingListBreastScreening: # Not current supported
@@ -1540,7 +1850,7 @@ components:
               $ref: "#/components/examples/correspondenceReadUnlinked"
             #Attachment:
             #  $ref: "#/components/examples/Attachment"
-            # Questionnaires
+            # Questionnaires (using Questionnaire resource)
             questionnaireIncompleteLinked:
               $ref: "#/components/examples/questionnaireIncompleteLinked"
             questionnaireIncompleteUnlinked:
@@ -1553,6 +1863,22 @@ components:
               $ref: "#/components/examples/questionnaireCompleteLinked"
             questionnaireCompleteUnlinked:
               $ref: "#/components/examples/questionnaireCompleteUnlinked"
+            # Tasks - Appointment Booking Invitations  
+            appointmentBookingInvitation:
+              $ref: "#/components/examples/appointmentBookingInvitation"
+            appointmentBookingInvitationWithExpiryDate:
+              $ref: "#/components/examples/appointmentBookingInvitationWithExpiryDate"
+            appointmentBookingInvitationStartedNotComplete:
+              $ref: "#/components/examples/appointmentBookingInvitationStartedNotComplete"
+            appointmentBookingInvitationCompleted:
+              $ref: "#/components/examples/appointmentBookingInvitationCompleted"
+            appointmentBookingInvitationRejected:
+              $ref: "#/components/examples/appointmentBookingInvitationRejected"
+            # Tasks - Questionnaires (using Task resource)
+            pifuQuestionnaireTask:
+              $ref: "#/components/examples/pifuQuestionnaireTask"
+            preAppointmentQuestionnaireTask:
+              $ref: "#/components/examples/preAppointmentQuestionnaireTask"                         
             # PIFU
             pifuZeroWaitingListZeroPifu:
               $ref: "#/components/examples/pifuZeroWaitingListZeroPifu"
@@ -1867,7 +2193,7 @@ components:
                 - $ref: "#/components/examples/correspondenceReadLinked"
                 - $ref: "#/components/examples/correspondenceReadUnlinked"
                 #- $ref: "#/components/examples/Attachment" # Not current supported
-    allQuestionnairestates:
+    allQuestionnaireStates:
       summary: 200 All Questionnaire states
       value:
         resourceType: Bundle
@@ -1900,6 +2226,68 @@ components:
                 - $ref: "#/components/examples/questionnairePartiallyCompleteUnlinked"
                 - $ref: "#/components/examples/questionnaireCompleteLinked"
                 - $ref: "#/components/examples/questionnaireCompleteUnlinked"
+    allAppointmentBookingInvitationStates:
+      summary: 200 All Appointment Booking Invitation states
+      value:
+        resourceType: Bundle
+        id: 665c2aab-a7c1-49f5-a128-686db221be81
+        meta:
+          versionId: "3.3.4"
+          profile:
+            - https://fhir.nhs.uk/StructureDefinition/WayfinderUKCoreBundle
+        type: searchset
+        total: 1
+        entry:
+          - fullUrl: https://api.service.nhs.uk/patient-care-aggregator-api/CarePlan/665c2aab-a7c1-49f5-a128-686db221be81
+            search:
+              mode: match
+            resource:
+              resourceType: CarePlan
+              meta:
+                profile:
+                  - https://fhir.nhs.uk/StructureDefinition/WayfinderUKCoreCarePlan
+              status: active
+              intent: order
+              subject:
+                identifier:
+                  system: https://fhir.nhs.uk/Id/nhs-number
+                  value: '9000000014'
+              activity:
+                - $ref: "#/components/examples/appointmentBookingInvitation"
+                - $ref: "#/components/examples/appointmentBookingInvitationWithExpiryDate"
+                - $ref: "#/components/examples/appointmentBookingInvitationStartedNotComplete"
+                - $ref: "#/components/examples/appointmentBookingInvitationCompleted"
+                - $ref: "#/components/examples/appointmentBookingInvitationRejected"
+    allTaskStatesForQuestionnaires:
+      summary: 200 All Questionnaire states using Task resource
+      value:
+        resourceType: Bundle
+        id: 53315e22-8ce1-4303-a53a-1d6c825c3bc6
+        meta:
+          versionId: "3.3.4"
+          profile:
+            - https://fhir.nhs.uk/StructureDefinition/WayfinderUKCoreBundle
+        type: searchset
+        total: 1
+        entry:
+          - fullUrl: https://api.service.nhs.uk/patient-care-aggregator-api/CarePlan/53315e22-8ce1-4303-a53a-1d6c825c3bc6
+            search:
+              mode: match
+            resource:
+              resourceType: CarePlan
+              meta:
+                profile:
+                  - https://fhir.nhs.uk/StructureDefinition/WayfinderUKCoreCarePlan
+              status: active
+              intent: order
+              subject:
+                identifier:
+                  system: https://fhir.nhs.uk/Id/nhs-number
+                  value: '9000000023'
+              activity:
+                - $ref: "#/components/examples/pifuQuestionnaireTask"
+                - $ref: "#/components/examples/preAppointmentQuestionnaireTask"    
+                # what other questionniare state examples need to be included?         
     incompleteWaitingLists:
       summary: 200 One incomplete waiting list
       description: |
@@ -3977,7 +4365,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Read-Receipt
               valueCode: unread
           description: Dermatology follow-up letter
@@ -4026,7 +4414,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Read-Receipt
               valueCode: seen
           description: Rheumatology reschedule letter
@@ -4075,7 +4463,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Read-Receipt
               valueCode: read
           description: Urology booking letter
@@ -4133,7 +4521,7 @@ components:
                 system: https://fhir.nhs.uk/Id/ods-organization-code
                 value: 'RJ7'
               display: ST GEORGE'S UNIVERSITY HOSPITALS NHS FOUNDATION TRUST
-    # Questionnaires
+    # Questionnaires (using Questionnaire resource)
     questionnaireIncompleteLinked:
       summary: Fragment - Questionnaire in an incomplete state linked to an appointment
       value:
@@ -4148,7 +4536,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
           description: MSK health questionnaire
           scheduledPeriod:
             start: '2024-01-13T07:33:23.192Z'
@@ -4193,7 +4581,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
           description: Pre-consultation Survey
           scheduledPeriod:
             start: '2023-12-01T23:01:23.120Z'
@@ -4238,7 +4626,7 @@ components:
               valueCode: myportal-01
             - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
               valueReference:
-                reference: Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
+                reference:https://example.uk/Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c
           description: Asthma questionnaire
           scheduledPeriod:
             start: '2023-10-01T09:23:12.029Z'
@@ -4269,7 +4657,266 @@ components:
                 system: https://fhir.nhs.uk/Id/ods-organization-code
                 value: 'RXP'              
               display: COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST
-    # PIFU
+    # Tasks
+    # Questionnaires (using new Task resource)
+    pifuQuestionnaireTask:
+      summary: Fragment - Task for a PIFU questionnaire to be completed by the patient
+      value:
+        id: c21417eb-ffef-4a9e-b367-ebd8b8c29e7c
+        status: requested
+        intent: plan
+        description: Dermatology PIFU follow-up questionnaire
+        authoredOn: '2025-06-20T18:00:00.000Z'
+        restriction:
+          period:
+            start: '2025-06-20T18:00:00.000Z'
+            end: '2025-12-20T00:00:00.000Z'
+        for:
+          type: Patient
+          identifier:
+            system: "https://fhir.nhs.uk/Id/nhs-number"
+            value: "9000000002"
+        owner:
+          type: Organization
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "RXP"
+          display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+        code:
+          coding:
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "pifu-triage"
+              display: "PIFU Triage Questionnaire"
+          text: "Patient Initiated Follow-Up Questionnaire"
+        input:
+          - type:
+              coding:
+                - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                  code: portal-url
+                  display: "PIFU Questionnaire portal system URL"
+            valueUrl: "https://my.portal.com/Questionnaire/c21417eb-ffef-4a9e-b367-ebd8b8c29e7c"
+        extension:
+          - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+            valueCode: myportal-01
+          - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
+            valueCoding:
+              system: "https://fhir.nhs.uk/CodeSystem/Specialty-1"
+              code: "330"
+              display: "Dermatology"
+    preAppointmentQuestionnaireTask:
+      summary: Fragment - Task for a pre-appointment questionnaire linked to an appointment
+      value:
+        id: b519a5f2-dc78-417c-a5aa-1d62d889787b
+        status: in-progress
+        intent: plan
+        description: Orthopaedic Surgery pre-appointment questionnaire
+        authoredOn: '2025-06-15T09:00:00.000Z'
+        lastModified: '2025-06-18T14:30:00.000Z'
+        restriction:
+          period:
+            start: '2025-06-15T09:00:00.000Z'
+            end: '2025-07-15T09:00:00.000Z'
+        focus:
+          type: Appointment
+          reference: "Appointment/4a3836f5-2d42-4d3e-87c1-680173b7fa5c"
+        for:
+          type: Patient
+          identifier:
+            system: "https://fhir.nhs.uk/Id/nhs-number"
+            value: "9000000002"
+        owner:
+          type: Organization
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "RXP"
+          display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+        code:
+          coding:
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "pre-appointment-questionnaire"
+              display: "Pre-Appointment Questionnaire"
+          text: "Pre-Appointment Questionnaire for upcoming appointment"
+        input:
+          - type:
+              coding:
+                - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                  code: portal-url
+                  display: "URL to Pre-appointment Questionnaire in portal system"
+            valueUrl: "https://my.portal.com/Questionnaire/b519a5f2-dc78-417c-a5aa-1d62d889787b"
+        extension:
+          - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+            valueCode: myportal-01
+    # Appointment Booking Invitations      
+    appointmentBookingInvitation:
+      summary: Fragment - Task for an invitation to book an appointment which has not been undertaken by the patient yet
+      value:
+        id: ad8baee0-f2b2-4258-ad25-a8de19c32c14
+        status: requested
+        intent: plan
+        description: Book your Dermatology appointment
+        authoredOn: '2025-07-16T09:00:00.000Z'
+        for:
+          type: Patient
+          identifier:
+            system: "https://fhir.nhs.uk/Id/nhs-number"
+            value: "9000000002"
+        owner:
+          type: Organization
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "RXP"
+          display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+        code:
+          coding:
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "appointment-booking-invite"
+        input:
+          - type:
+              coding:
+                - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                  code: portal-url
+                  display: "URL to appointment booking screen in portal system"
+            valueUrl: "https://my.portal.com/BookingInvitation/ad8baee0-f2b2-4258-ad25-a8de19c32c14"
+        extension:
+          - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+            valueCode: myportal-01
+    appointmentBookingInvitationWithExpiryDate:
+      summary: Fragment - Task for an invitation to book an appointment which has an expiry date, and has not been undertaken by the patient yet
+      value:
+        id: 76c9d16f-1640-45f7-9455-17359eb38b03
+        status: requested
+        intent: plan
+        description: Book your Cardiology appointment
+        authoredOn: '2025-07-10T09:00:00.000Z'
+        restriction:
+          period:
+            start: '2025-07-16T09:00:00.000Z'
+            end: '2025-08-01T09:00:00.000Z'
+        for:
+          type: Patient
+          identifier:
+            system: "https://fhir.nhs.uk/Id/nhs-number"
+            value: "9000000002"
+        owner:
+          type: Organization
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "RXP"
+          display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+        code:
+          coding:
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "appointment-booking-invite"
+        input:
+          - type:
+              coding:
+                - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/76c9d16f-1640-45f7-9455-17359eb38b03"
+        extension:
+          - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+            valueCode: myportal-01     
+    appointmentBookingInvitationStartedNotComplete:
+      summary: Fragment - Task for an invitation to book an appointment which has been started but not yet completed by the patient
+      value:
+        id: a814df2b-3e47-4f1a-9895-7e987bcdf5d6
+        status: in-progress
+        intent: plan
+        description: Book your Oncology appointment
+        authoredOn: '2025-07-10T09:00:00.000Z'
+        for:
+          type: Patient
+          identifier:
+            system: "https://fhir.nhs.uk/Id/nhs-number"
+            value: "9000000002"
+        owner:
+          type: Organization
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "RXP"
+          display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+        code:
+          coding:
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "appointment-booking-invite"
+        input:
+          - type:
+              coding:
+                - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/a814df2b-3e47-4f1a-9895-7e987bcdf5d6"
+        extension:
+          - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+            valueCode: myportal-01
+    appointmentBookingInvitationCompleted:
+      summary: Fragment - Task for an invitation to book an appointment which has been completed by the patient
+      value:
+        id: 0d3d275b-b3f6-4419-a72a-f6f10f1bef94
+        status: completed
+        intent: plan
+        description: Book your General Surgery appointment
+        authoredOn: '2025-07-10T09:00:00.000Z'
+        lastModified: '2025-07-18T14:30:00.000Z'
+        focus:
+          type: Appointment
+          reference: "Appointment/067024ee-134c-45fe-aa04-1a8544653c8f"
+        for:
+          type: Patient
+          identifier:
+            system: "https://fhir.nhs.uk/Id/nhs-number"
+            value: "9000000002"
+        owner:
+          type: Organization
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "RXP"
+          display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+        code:
+          coding:
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "appointment-booking-invite"
+        input:
+          - type:
+              coding:
+                - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/0d3d275b-b3f6-4419-a72a-f6f10f1bef94"
+        extension:
+          - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+            valueCode: myportal-01
+    appointmentBookingInvitationRejected:
+      summary: Fragment - Task for an invitation to book an appointment which has been rejected by the patient within the booking window
+      value:
+        id: c293d1b5-a297-430a-8ffb-7b426854df93
+        status: rejected
+        intent: plan
+        description: Book your Gastroenterology appointment
+        authoredOn: '2025-07-16T09:00:00.000Z'
+        lastModified: '2025-07-17T10:00:00.000Z'
+        for:
+          type: Patient
+          identifier:
+            system: "https://fhir.nhs.uk/Id/nhs-number"
+            value: "9000000002"
+        owner:
+          type: Organization
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "RXP"
+          display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+        code:
+          coding:
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "appointment-booking-invite"  
+        input:
+          - type:
+              coding:
+                - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/c293d1b5-a297-430a-8ffb-7b426854df93"
+        extension:
+          - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+            valueCode: myportal-01
     pifuZeroWaitingListZeroPifu:
       summary: 200 - PIFU Zero Waiting List entries, Zero PIFU pathways
       description: Scenario 1 - Zero Waiting List entries, Zero PIFU pathways
@@ -4709,7 +5356,7 @@ components:
                   valueCode: myportal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/F3A58FFD-8959-40EF-A2FE-FCD14764896E
+                    reference:https://example.uk/Appointment/F3A58FFD-8959-40EF-A2FE-FCD14764896E
                 description: Transplantation Surgery Pre-consultation Survey
                 scheduledPeriod:
                   start: '2025-02-08T06:07:33.500Z'
@@ -4812,7 +5459,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
+                    reference:https://example.uk/Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -4888,7 +5535,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/f3fb86bf-dc44-446e-a975-34b13dd84e03
+                    reference:https://example.uk/Appointment/f3fb86bf-dc44-446e-a975-34b13dd84e03
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -4916,7 +5563,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/1ba97032-fff2-4490-a1dd-2af0f9c29881
+                    reference:https://example.uk/Appointment/1ba97032-fff2-4490-a1dd-2af0f9c29881
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -4942,7 +5589,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
+                    reference:https://example.uk/Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5001,7 +5648,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/fe625d51-80d2-49fc-a02f-ccd0c7d92981
+                    reference:https://example.uk/Appointment/fe625d51-80d2-49fc-a02f-ccd0c7d92981
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5059,7 +5706,7 @@ components:
                   valueCode: my-portal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/ad0ae6c5-c5b4-439a-b79c-5e010e63ef17
+                    reference:https://example.uk/Appointment/ad0ae6c5-c5b4-439a-b79c-5e010e63ef17
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5141,7 +5788,7 @@ components:
                   valueCode: myportal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
+                    reference:https://example.uk/Appointment/d5269d74-06f9-4725-9179-7216c3b58b61
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                   valueCoding:
                     system: https://fhir.nhs.uk/CodeSystem/Questionnaire-Type
@@ -5168,7 +5815,7 @@ components:
                   valueCode: myportal-01
                 - url: https://fhir.nhs.uk/StructureDefinition/Extension-Linked-Resource
                   valueReference:
-                    reference: Appointment/F3A58FFD-8959-40EF-A2FE-FCD14764896E
+                    reference:https://example.uk/Appointment/F3A58FFD-8959-40EF-A2FE-FCD14764896E
                 description: Transplantation Surgery Pre-consultation Survey
                 scheduledPeriod:
                   start: '2025-02-08T06:07:33.500Z'

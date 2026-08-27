@@ -244,13 +244,15 @@ paths:
       operationId: get-tasks
       description: |
         ## Overview
-        This endpoint returns a list of tasks for completion of questionnaires from a secondary care booking system for a given patient.
+        This endpoint returns a list of tasks, specifically Invite to Book tasks and questionnaire completion tasks, from a secondary care booking system for a given patient.
         It returns the tasks as a FHIR 'Bundle' containing FHIR 'Task' resources.
         
         Note that the above URL path is an example - you can use a different URL path if you prefer.
         
-        ## Questionnaires inclusion and exclusion rules
-        The endpoint includes / excludes tasks as per the following rules:
+        ## Task inclusion and exclusion rules
+        This endpoint returns only two types of tasks: **Invite to Book tasks** (prompting a patient to book an appointment) and **questionnaire completion tasks** (prompting a patient to complete a questionnaire, including Patient Initiated Follow-Up (PIFU) questionnaires). No other task types should be included.
+
+        The endpoint includes / excludes tasks of these types as per the following rules:
         - NHS in England only: Only include tasks related to appointments for care settings within the NHS in England.
         - NHS Trusts only: Only include tasks related to appointments for acute, mental health or community care settings - not any other type.
         - Elective care appointments only: Only include tasks related to outpatient appointments - not any other type.
@@ -291,7 +293,7 @@ paths:
         # - $ref: "#/components/parameters/nhsdTargetIdentifier"       
       responses:
         2XX:
-          $ref: "#/components/responses/questionnaireHappyPath"
+          $ref: "#/components/responses/tasksHappyPath"
         4XX:
           $ref: "#/components/responses/4XX"
         5XX:
@@ -1056,7 +1058,7 @@ components:
                     description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
                     example: "https://my.portal.com/Document/b710e648-c12e-4f66-80e2-9957a254900f"
     Task:
-      description: "FHIR TASK resource for the questionnaire"
+      description: "FHIR Task resource representing either an Invite to Book task (prompting a patient to book an appointment) or a questionnaire completion task (prompting a patient to complete a questionnaire, including Patient Initiated Follow-Up (PIFU) questionnaires)."
       type: object
       required: 
         - resourceType
@@ -1068,7 +1070,6 @@ components:
         - authored
         - reasonReference
         - owner
-        - reasonCode
       properties:
         resourceType:
           description: "FHIR resource type."
@@ -1095,7 +1096,7 @@ components:
               type: string
               example: "3a146c43-2b21-44e9-95bc-6f4849e504c8"
         basedOn:
-          description: Reference to the related CarePlan (Pathway). This reference should contain the pathway ID. This field is required for PIFU questionnaires to identify duplicate entries and is optional for other questionnaire types.
+          description: Reference to the related CarePlan (Pathway). This reference should contain the pathway ID. This field is required for PIFU questionnaires to identify duplicate entries and is optional for other task types.
           type: array
           minItems: 0
           maxItems: 1
@@ -1128,10 +1129,11 @@ components:
                         description: "Care pathway Identifier"
                         example: "RBH5644312231"
         status:
-          description: "Status of the Task for the completion of the Questionnaire. See: https://build.fhir.org/valueset-task-status.html"
+          description: "Status of the task. See the following link for details definitions of each status code: https://build.fhir.org/valueset-task-status.html"
           type: string
           enum:
             - requested
+            - rejected
             - cancelled
             - in-progress
             - completed
@@ -1141,12 +1143,14 @@ components:
           enum:
             - plan
         description:
-          description: "The patient-friendly, standardised title of the questionnaire that is suitable for display to patients. This value should match the name shown in your own interface and should follow the structure {Specialty name} {Questionnaire type}. If the questionnaire is linked to an appointment, the specialty should align with that appointment. For Patient Initiated Follow-Up (PIFU) questionnaires, the questionnaire type should not be included. The values presented within this field are required to be provided for Data Quality Assurance."
+          # Might need to extend this description to mention appointment bookings
+          description: "The patient-friendly, standardised title of the task that is suitable for display to patients. For questionnaires this value should match the name shown in your own interface and should follow the structure {Specialty name} {Questionnaire type}. If the questionnaire is linked to an appointment, the specialty should align with that appointment. For Patient Initiated Follow-Up (PIFU) questionnaires, the questionnaire type should not be included. The values presented within this field are required to be provided for Data Quality Assurance."
           type: string
           example: Dermatology pre-assessment questionnaire
         focus:
+          # This is optional and wouldn't apply to invites, as the appointment wouldn't exist
           type: object
-          description: Appointment reference to the appointments this questionnaire relates to.
+          description: Appointment reference to the appointments this task relates to (optional). Not required for appointment booking invites.
           required:
             - type
             - reference
@@ -1162,7 +1166,7 @@ components:
               example: https://my.portal.com/fhir/R4/Appointment/ec2458f2-1e24-41c8-b71b-0e701af7583d
         for:
           type: object
-          description: Patient whom the questionnaire relates to.
+          description: Patient whom the task relates to.
           required:
             - type
             - identifier
@@ -1189,35 +1193,39 @@ components:
                   example: "9123456789"
         authored:
           type: string
-          description: Date the questionnaire was first made available to a patient in a UTC format.
+          description: Date the task was first made available to a patient in a UTC format.
           example: "2021-06-13T12:30:00+00:00"
         lastModified:
           type: string
-          description: Records the date and time (UTC) the questionnaire was completed by the patient. For Patient Initiated Follow-up (PIFU) feature, this field represents the date and time the patient last requested a follow-up appointment, and applies only to that individual PIFU request. This date must be greater than or equal to authored date.
+          description: Records the date and time (UTC) the task was completed by the patient. For Patient Initiated Follow-up (PIFU) feature, this field represents the date and time the patient last requested a follow-up appointment, and applies only to that individual PIFU request. This date must be greater than or equal to authored date.
           example: "2025-08-28T12:30:00+00:00"
         restriction:
+          # This is optional, but can be used for invites to signal when it must be actioned by
           type: object
-          description: Constraints on the questionnaire.
+          description: Constraints on the task.
           properties:
             period: 
               type: object
               properties:
                 end:
                   type: string
-                  description: Indicates the end date for the questionnaire. For the Patient Initiated Follow-up (PIFU) feature, this represents the expiration date of the questionnaire. After this date has passed, the patient can no longer raise a follow-up request.
+                  description: The date after which the task expires and can no longer be acted upon by the patient.
                   example: "2025-10-18T12:30:00+00:00"
         reasonReference:
+          # This mandatory, so its type enum will need to be extended to include invites
+          # Not sure why it is called "reasonReference"; doesn't seem like a suitable name to me
           type: object
-          description: Reference to the Questionnaire being requested.
+          description: Reference to the Task being requested.
           required:
             - type
             - reference
           properties:
             type: 
               type: string
-              description: Questionnaire FHIR Resource
+              description: The type of task, used to differentiate behaviour in the Aggregator. Must be either `Task` for Invite to Book tasks, or `Questionnaire` for questionnaire completion tasks.
               enum:
-                - "Questionnaire"
+                - Questionnaire
+                - Task
             reference: 
               type: string
               description: The Portal provider deep link URL. If the provider is sending MI events to the Wayfinder Reporting Service API then the tracking id may need to be appended to the deep link URL. Refer to guidance at the beginning of the specification - Patient Care Aggregator Reporting Service API considerations.
@@ -1252,16 +1260,54 @@ components:
             display:
               type: string
               example: Barnsley Hospital NHS Foundation Trust
+        code:
+          description: A coding for the task, briefly describing what the task involves. Aligns with FHIR R4 Task.code
+          type: object
+          properties:
+            coding:
+              description: Array of codings for the type of task. Use system to distinguish between questionnaire types and booking invite types.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: object
+                required:
+                  - system
+                  - code
+                properties:
+                  system:
+                    description: Identifier system for task type.
+                    type: string
+                    enum:
+                      - "https://fhir.nhs.uk/England/CodeSystem/wayfinder-task-type"
+                  code:
+                    description: Task type code. Examples - 'pifu-triage' for PIFU questionnaires, 'appointment-booking-invite' for booking invites.
+                    type: string
+                    enum:
+                      - pre-appointment-questionnaire
+                      - post-appointment-questionnaire
+                      - general-update-questionnaire
+                      - pifu-triage
+                      - appointment-booking-invite
+                    example: "pifu-triage"
+                  display:
+                    description: Human-readable display name for the task type.
+                    type: string
+                    example: "PIFU Triage Questionnaire"
+            text:
+              description: Plain text representation of the task type concept.
+              type: string
+              example: "Patient Initiated Follow-Up Questionnaire"
         reasonCode:
           type: object
-          description: Reason for the Task, the request for a patient to complete a Questionnaire.
+          description: Reason for the Task, the request for a patient to complete a the Task. Required for questionnaire tasks.
           required:
             - coding
             - text
           properties:
             coding:
               type: object
-              description: Array of Coding for the type of questionnaire to be completed.
+              description: Coding for the type of task to be completed.
               required:
                 - system
                 - code
@@ -1269,27 +1315,27 @@ components:
               properties:
                 system:
                   type: string
-                  description: URI to identifier Questionnaire types
+                  description: URI to identify Task types
                   enum:
                     - https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type
                 code:
                   type: string
-                  description: Questionnaire type code. For questionnaires that are part of the patient initiated follow-up (PIFU) feature, the questionnaire type code must be set to "pifu-triage".
-                  example: CONS-Survey
+                  description: Task type code. For questionnaires that are part of the patient initiated follow-up (PIFU) feature, the questionnaire type code must be set to "pifu-triage".
+                  example: pifu-triage
                 display:
                   type: string
-                  description: Questionnaire type
-                  example: Consultation Survey
+                  description: Task type
+                  example: PIFU Triage
             text:
               type: string
-              description: Questionnaire type
+              description: Task type
               example: Pre-consultation Survey
         extension:
           description: "FHIR extensions for Task resources."
           type: array
           items:
             anyOf: 
-              - description: "Treatment function associated to the Questionnaire. Please note: this must be provided for any \"pifu-triage\" Questionnaires."
+              - description: "Treatment function associated to the Task. Please note: this must be provided for any \"pifu-triage\" Questionnaires."
                 type: object
                 required:
                   - url
@@ -1478,7 +1524,7 @@ components:
               $ref: "#/components/examples/emptyBundle"
             document:
               $ref: "#/components/examples/document"
-    questionnaireHappyPath:
+    tasksHappyPath:
       description: |
         Successful search - 200 OK with FHIR Bundle.
         Cases 1 and 2 MUST return 200 with empty Bundle.
@@ -1495,7 +1541,9 @@ components:
             emptyBundle:
               $ref: "#/components/examples/emptyBundle"
             questionnaire:
-              $ref: "#/components/examples/questionnaire"
+              $ref: "#/components/examples/taskQuestionnaire"
+            bookingInvitation:
+              $ref: "#/components/examples/taskBookingInvitation"
     4XX:
       description: |
         When the service is unable to serve a successful response a FHIR `OperationOutcome` resource should be returned with the relevant HTTP status code defined as follows:
@@ -1780,7 +1828,7 @@ components:
                 - attachment:
                     contentType: "application/pdf"
                     url: "https://my.portal.com/Document/2f02f7ac-0de5-4271-81ad-92b69ead27e9"
-    questionnaire:
+    taskQuestionnaire:
       summary: 200 Example Patient with a Questionnaire
       value:
         resourceType: Bundle
@@ -1809,7 +1857,7 @@ components:
                 identifier:
                   system: "https://fhir.nhs.uk/Id/nhs-number"
                   value: "9000000001"
-              authoredOn: "2021-06-13T12:30:00+00:00"
+              authored: "2021-06-13T12:30:00+00:00"
               reasonReference:
                 type: "Questionnaire"
                 reference: "https://my.portal.com/Questionnaire/cdb83383-f17e-4bf7-8f40-342f7f7c7d8d"
@@ -1821,10 +1869,59 @@ components:
                 display: "Barnsley Hospital NHS Foundation Trust"
               reasonCode:
                 coding:
-                  - system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
-                    code: "CONS-Survey"
-                    display: "Consultation Survey"
+                  system: "https://fhir.nhs.uk/StructureDefinition/Extension-Questionnaire-Type"
+                  code: "CONS-Survey"
+                  display: "Consultation Survey"
                 text: "Pre-consultation Survey"
+              extension:
+                - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
+                  valueCoding:
+                    system: "https://fhir.nhs.uk/CodeSystem/Specialty-1"
+                    code: "330"
+                    display: "Dermatology"
+    taskBookingInvitation:
+      summary: 200 Example Patient with a Appointment Booking Invitation
+      value:
+        resourceType: Bundle
+        type: searchset
+        total: 1
+        entry:
+          - fullUrl: "https://my.patientportal.co.uk/Task/3947e645-c7f9-4791-b5b5-386b97e4b271"
+            search:
+              mode: match
+            resource:
+              resourceType: Task
+              id: "6383658e-fef4-4b89-9f68-7af67ed8c382"
+              basedOn:
+                - type: "CarePlan"
+                  identifier:
+                    system: "https://fhir.nhs.uk/Id/PathwayId"
+                    value: "RBH5644312231"
+              status: "requested"
+              intent: "plan"
+              description: "Invitation to Book a Video Consultation Appointment"
+              for:
+                type: "Patient"
+                identifier:
+                  system: "https://fhir.nhs.uk/Id/nhs-number"
+                  value: "9000000014"
+              authored: "2026-07-13T12:30:00+00:00"
+              restriction:
+                period:
+                  end: "2026-07-13T18:00:00+00:00"
+              reasonReference:
+                type: "Task"
+                reference: "https://my.portal.com/BookingInvitation/cdb83383-f17e-4bf7-8f40-342f7f7c7d8d"
+              owner:
+                type: "Organization"
+                identifier:
+                  system: "https://fhir.nhs.uk/Id/ods-organization-code"
+                  value: "RFF"
+                display: "Barnsley Hospital NHS Foundation Trust"
+              code:
+                coding:
+                  - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+                    code: "appointment-booking-invite"
               extension:
                 - url: "https://fhir.nhs.uk/StructureDefinition/Extension-Task-TreatmentFunction"
                   valueCoding:
