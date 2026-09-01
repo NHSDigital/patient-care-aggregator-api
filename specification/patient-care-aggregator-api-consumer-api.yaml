@@ -2659,6 +2659,35 @@ components:
                 system: https://fhir.nhs.uk/Id/ods-organization-code
                 value: 'RYR'
               display: UNIVERSITY HOSPITALS SUSSEX NHS FOUNDATION TRUST
+    referralActiveBookLater:
+      summary: Fragment - Active referral with a triage outcome of 'Accept and refer/book later'
+      value:
+        detail:
+          id: '808993698035'
+          kind: ServiceRequest
+          status: in-progress
+          extension:
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Portal-Link
+              valueUrl: https://refer.nhs.uk/nhslogin?ubrn=808993698035
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+              valueCode: ers-01
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-eRS-ServiceRequest-State
+              valueCoding:
+                system: https://fhir.nhs.uk/CodeSystem/eRS-ReferralState
+                code: accepted
+            - url: https://fhir.nhs.uk/StructureDefinition/Extension-Specialty
+              valueCoding:
+                system: https://fhir.nhs.uk/CodeSystem/Specialty-1
+                display: Neurology
+          description: Neurology - University Hospitals Sussex - St Richard's Chichester - RYR
+          scheduledPeriod:
+            start: '2024-03-26T13:21:01.291Z'
+          performer:
+            - type: Organization
+              identifier:
+                system: https://fhir.nhs.uk/Id/ods-organization-code
+                value: 'RYR'
+              display: UNIVERSITY HOSPITALS SUSSEX NHS FOUNDATION TRUST          
     referralHistoric: # Not current supported
       summary: Fragment - Historic referral
       value:
