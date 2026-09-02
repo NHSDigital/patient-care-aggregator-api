@@ -2686,7 +2686,7 @@ components:
               identifier:
                 system: https://fhir.nhs.uk/Id/ods-organization-code
                 value: 'RYR'
-              display: UNIVERSITY HOSPITALS SUSSEX NHS FOUNDATION TRUST          
+              display: UNIVERSITY HOSPITALS SUSSEX NHS FOUNDATION TRUST
     referralHistoric: # Not current supported
       summary: Fragment - Historic referral
       value:
