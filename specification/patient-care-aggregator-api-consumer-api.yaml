@@ -555,7 +555,6 @@ components:
                             description: The e-RS request status itself.
                             type: string
                             enum:
-                              - BOOKED
                               - bookable
                               - bookableWasCancelled
                               - inReview
