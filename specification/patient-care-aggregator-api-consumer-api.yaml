@@ -1875,6 +1875,8 @@ components:
               $ref: "#/components/examples/appointmentBookingInvitationCompleted"
             appointmentBookingInvitationRejected:
               $ref: "#/components/examples/appointmentBookingInvitationRejected"
+            appointmentBookingInvitationOnHold:  
+              $ref: "#/components/examples/appointmentBookingInvitationOnHold"
             # Tasks - Questionnaires (using Task resource)
             pifuQuestionnaireTask:
               $ref: "#/components/examples/pifuQuestionnaireTask"
@@ -2259,6 +2261,7 @@ components:
                 - $ref: "#/components/examples/appointmentBookingInvitationStartedNotComplete"
                 - $ref: "#/components/examples/appointmentBookingInvitationCompleted"
                 - $ref: "#/components/examples/appointmentBookingInvitationRejected"
+                - $ref: "#/components/examples/appointmentBookingInvitationOnHold"
     allTaskStatesForQuestionnaires:
       summary: 200 All Questionnaire states using Task resource
       value:
@@ -4915,6 +4918,39 @@ components:
                 - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
                   code: portal-url
             valueUrl: "https://my.portal.com/BookingInvitation/c293d1b5-a297-430a-8ffb-7b426854df93"
+        extension:
+          - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
+            valueCode: myportal-01
+    appointmentBookingInvitationOnHold:
+      summary: Fragment - Task for an invitation to book an appointment for which the patient has started but cannot complete due to no suitable slots being available
+      value:
+        id: d417f2d4-a752-4d8d-8b7f-2ed0e04ed66a
+        status: on-hold
+        intent: plan
+        description: Book your Gastroenterology appointment
+        authoredOn: '2025-07-16T09:00:00.000Z'
+        lastModified: '2025-07-17T10:00:00.000Z'
+        for:
+          type: Patient
+          identifier:
+            system: "https://fhir.nhs.uk/Id/nhs-number"
+            value: "9000000002"
+        owner:
+          type: Organization
+          identifier:
+            system: "https://fhir.nhs.uk/Id/ods-organization-code"
+            value: "RXP"
+          display: "COUNTY DURHAM AND DARLINGTON NHS FOUNDATION TRUST"
+        code:
+          coding:
+            - system: "https://fhir.nhs.uk/CodeSystem/Task-Type"
+              code: "appointment-booking-invite"  
+        input:
+          - type:
+              coding:
+                - system: "https://fhir.nhs.uk/CodeSystem/Task-Input-Type"
+                  code: portal-url
+            valueUrl: "https://my.portal.com/BookingInvitation/d417f2d4-a752-4d8d-8b7f-2ed0e04ed66a"
         extension:
           - url: https://fhir.nhs.uk/StructureDefinition/Extension-Client-id
             valueCode: myportal-01
