@@ -1238,6 +1238,7 @@ components:
             - rejected
             - cancelled
             - in-progress
+            - on-hold
             - completed
         intent:
           description: Hardcoded to 'plan'. Indicates the intent is to perform as a plan/task (See FHIR Task.intent).

@@ -1136,6 +1136,7 @@ components:
             - rejected
             - cancelled
             - in-progress
+            - on-hold
             - completed
         intent: 
           description: "Hardcoded to plan. See: https://build.fhir.org/valueset-task-intent.html"
